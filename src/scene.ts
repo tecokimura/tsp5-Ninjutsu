@@ -34,7 +34,7 @@
         // PUSH/POPできるのか調べる
         // this.history = 
         this.present = next;
-        this.frame = -1;
+        this.frame = 0;
     }
 
     // 現在のSceneを調べる
@@ -43,7 +43,7 @@
     }
 
     // 
-    count(num:numer=1) {
+    count(num:number=1) {
         this.frame += num;
     }
 }

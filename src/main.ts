@@ -1,9 +1,11 @@
 import p5 from "p5";
 import {Def} from "./def";
 import {Scene} from "./scene";
+import {Img} from "./img";
 
 let scene = null;
 let isDraw = false;
+let img = null;
 
 const sketch = (p: p5) => {
     p.setup = () => {
@@ -16,6 +18,8 @@ const sketch = (p: p5) => {
 
     p.preload = () => {
         // 画像読み込み予定
+        // img = p.loadImage(Img.SAMPLE);
+        // img = p.loadImage("./res/ninja-stand.png");
     };
 
     p.draw = () => {
@@ -28,11 +32,17 @@ const sketch = (p: p5) => {
             if( scene.is(Scene.LOADING)) {
                 p.background(20);
                 p.ellipse(150, 150, 80, 80);
+
+                // p.image(img,0,0);
             }
 
             console.log("in draw");
         }
     };
+
+    p.keyIsDown = (code: number):boolean => {
+        return false;
+    }
 
     function repeatProc(time:number=100) {
         setTimeout(() => { proc(); }, time);
@@ -52,6 +62,10 @@ const sketch = (p: p5) => {
         if( scene.is(Scene.LOADING) ) {
             console.log("Scene.LOADING");
 
+            // キーが押されているかを調べる
+            if( p.keyIsPressed === true) {
+                console.log("keyIsPressed");
+            }
         }
 
         scene.count();
