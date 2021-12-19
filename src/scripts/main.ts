@@ -3,8 +3,6 @@ import {Def} from "./def";
 import {Scene} from "./scene";
 import {Img} from "./img";
 
-//@ts-ignore
-import IMG_PNGS from "../images/*.png";
 
 let scene = null;
 let isDraw = false;
@@ -21,7 +19,8 @@ const sketch = (p: p5) => {
 
     p.preload = () => {
         // 画像読み込み予定 sample
-        img = p.loadImage(IMG_PNGS["ninja-stand"]);
+        img = new Img(p);
+        img.preload(); 
     };
 
     p.draw = () => {
@@ -35,10 +34,10 @@ const sketch = (p: p5) => {
                 p.background(20);
                 p.ellipse(150, 150, 80, 80);
 
-                p.image(img,0,0);
+                img.drawImage(0,10,10);
             }
 
-            console.log("in draw");
+            // console.log("in draw");
         }
     };
 
@@ -52,17 +51,17 @@ const sketch = (p: p5) => {
 
     function proc() {
         isDraw = false;
-        console.log("in proc");
+        // console.log("in proc");
 
         if( scene.is(Scene.INIT) ) {
-            console.log("Scene.INIT");
+            // console.log("Scene.INIT");
             if(scene.frame > 10) {
                 scene.set(Scene.LOADING);
             }
         }
         else
         if( scene.is(Scene.LOADING) ) {
-            console.log("Scene.LOADING");
+            // console.log("Scene.LOADING");
 
             // キーが押されているかを調べる
             if( p.keyIsPressed === true) {
