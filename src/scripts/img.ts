@@ -27,7 +27,8 @@ export class Img {
 
     //===========================
     // File読み込み用
-    // ls -1 src/images | sed -e 's/.png$//' を貼れるように並べる
+    // ls -1 src/images | sed -e 's/.png$//'
+    // を貼れるように並べる
     static PNG_FNAMES:string[] = [
         'e0b1-bird1',
         'e0b2-bird2',
