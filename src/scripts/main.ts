@@ -57,7 +57,7 @@ const sketch = (p: p5) => {
             else
             if( scene.is(Scene.READY)) {
                 // Clear
-                p.fill(255,255,255);
+                p.fill(20,20,20);
                 p.rect(0, 0, Def.DISP_W, Def.DISP_H);
 
                 // とりあえず適当背景を描画する
@@ -87,26 +87,27 @@ const sketch = (p: p5) => {
         }
     };
 
-    function drawReadyNinjutsu(count:number) {
-        if(10 < count) {
+    function drawReadyNinjutsu(c:number) {
+        if(c < 10) {
             img.drawImage( Img.NINJA_JUTSU_BASE, Def.R_NINJA_POS_X, Def.R_NINJA_POS_Y );
         }
         else
-        if(20 < count) {
+        if(c < 15) {
             img.drawImage( Img.NINJA_JUTSU_GU, Def.R_NINJA_POS_X, Def.R_NINJA_POS_Y );
         }
         else
-        if(30 < count) {
+        if(c < 20) {
             img.drawImage( Img.NINJA_JUTSU_CHOKI, Def.R_NINJA_POS_X, Def.R_NINJA_POS_Y );
         }
         else
-        if(40 < count) {
+        if(c < 35) {
             img.drawImage( Img.NINJA_JUTSU_PA, Def.R_NINJA_POS_X, Def.R_NINJA_POS_Y );
         }
         else
-        if(40 < count) {
+        if(c < 40) {
             img.drawImage( Img.NINJA_JUTSU_BASE, Def.R_NINJA_POS_X, Def.R_NINJA_POS_Y );
         }
+        //ランダムで2回ぐらいなにか表示する
     }
 
     p.keyIsDown = (code: number):boolean => {
