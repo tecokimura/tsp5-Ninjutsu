@@ -7,9 +7,10 @@
     static readonly INIT :number = 0;
     static readonly LOADING :number = 1;
     static readonly TITLE :number = 2;
-    static readonly PLAY :number = 3;
-    static readonly GAMEOVER :number = 4;
-    static readonly MENU :number = 5;
+    static readonly READY :number = 3;
+    static readonly PLAY :number = 4;
+    static readonly GAMEOVER :number = 5;
+    static readonly MENU :number = 6;
 
     history :number[] = [Scene.NONE];
     frame :number = 0;
