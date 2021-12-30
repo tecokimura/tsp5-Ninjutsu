@@ -18,8 +18,29 @@ const sketch = (p: p5) => {
     let playH:number = 0;
     let playTime:number = 0;
 
-    let eneAppear = 0;
-    let count:number = 0;
+    // TODO:クラス化する
+	let enemyX: Array<number>   = new Array(Def.ENEMY_MAX);
+	let enemyY: Array<number>   = new Array(Def.ENEMY_MAX);
+	let enemyImg: Array<number> = new Array(Def.ENEMY_MAX);
+	let enemyTime: Array<number>= new Array(Def.ENEMY_MAX);
+	let enemySp: Array<number>  = new Array(Def.ENEMY_MAX);
+	let enemyAppearNum = 0;
+
+	let enemyImgArea= Def.AREA_BIRD; // 敵の絵の範囲
+	let enemySpArea = Def.SPEED_SP1; // 敵のスピードの範囲
+
+	// 星
+	let starX: Array<numher> = new Array(Def.STAR_MAX);	// 星x座標
+    let starY: Array<numher> = new Array(Def.STAR_MAX);	// 星y座標
+
+    let cloudX: Array<numher>  = new Array(Def.CLOUD_MAX);	// 星x座標
+    let cloudY: Array<numher>  = new Array(Def.CLOUD_MAX);	// 星y座標
+    let cloudZ: Array<numher>  = new Array(Def.CLOUD_MAX);	// 星y座標
+    let cloudSp: Array<numher> = new Array(Def.CLOUD_MAX);	// 星y座標
+
+    let is_playkey_push = false;
+	function isEnterKeyNow() {return false;}
+	function isNotEnterKeyNow() {return false;}
 
     p.setup = () => {
         p.createCanvas(240, 240);
@@ -36,9 +57,12 @@ const sketch = (p: p5) => {
         img.preload(); 
     };
 
+    /*
     p.keyIsDown = (code: number):boolean => {
+        console.log("keyIsDown="+code);
         return false;
     }
+    */
 
     p.draw = () => {
         if( isDraw ) {
@@ -86,6 +110,22 @@ const sketch = (p: p5) => {
             else
             if( scene.is(Scene.PLAY)) {
                 drawBg();
+                // drawEnemy();
+                //
+                if(is_playkey_push) {
+                    if(isEnterKeyNow() || isNotEnterKeyNow()) {
+                        img.drawImage(Img.NINJA_DOWN, playX, playY);
+                    } else {
+                        img.drawImage(Img.NINJA_DOWN2, playX, playY);
+                    }
+                } else {
+                    // TODO: 行ったりきたりするように要調整
+                    let i = mathFloor((playTime % 20)/5)%3;
+                    img.drawImage(Img.NINJA_FLY_L+i, playX, playY);
+                }
+                 
+
+                
             }
 
             // for DEBUG
@@ -95,7 +135,7 @@ const sketch = (p: p5) => {
 
             // console.log("in draw");
         }
-    };
+    }
 
     // Debug画面表示{
     function drawDebugInfo(p) {
@@ -151,16 +191,150 @@ const sketch = (p: p5) => {
         setTimeout(() => { proc(); }, time);
     };
 
+	function addEnemy() {
+		if( enemyAppearNum <= playH ) {
+			if( playH >= Def.FIRST_ENEMY_POS ) {
+				// 星出現
+				for(let i=0; i<Def.STAR_MAX; i++) {
+                	if( starY[i] == -99 && Def.AIR_LV_1 <= enemyAppearNum) {
+                    	starY[i] = -40-(getRandInt()>>>1)%120;
+						starX[i] = (getRandInt()>>>1)%240;
+						break;
+					}
+				}
+
+				// 雲出現
+				for(let i=0; i<Def.CLOUD_MAX; i++) {
+					if( cloudY[i] == -99
+					&&  (enemyAppearNum <= Def.AIR_LV_1 || Def.AIR_LV_3 <= eneAppear) ) {
+                        cloudY[i]	= -40-(getRandInt()>>>1)%20;
+						cloudX[i]	= (getRandInt()>>>1)%240;
+						cloudZ[i]	= (getRandInt()>>>1)%2;
+						cloudSp[i]	= (getRandInt()>>>1)%2+1;
+
+						if( ((getRandInt()>>>1)%2) == 0)
+                            cloudSp[i] *= -1;
+
+						break;
+					}
+				}
+
+                // 敵出現
+                for(let i=0; i<Def.ENEMY_MAX; i++) {
+                    if( enemyY[i] == -99 ) {
+                        if( enemyAppearNum < Def.AIR_LV_0 ) {
+                            // 鳥エリア
+                            // 速度 1-3
+                            // オプション 雲
+                            enemyAppearNum += 80;
+                            enemyY[i]   = -40-(getRandInt()>>>1)%10;
+                            enemyX[i]   = (getRandInt()>>>1)%240;
+
+                            enemyImg[i] = Def.AREA_BIRD;
+
+                            enemyTime[i]= 0;
+                            enemySp[i]  = ((getRandInt()>>>1)% 3 )+1;
+
+                            if( (getRandInt()>>>1)%2 == 0 )
+                                enemySp[i] *= -1;
+                        }
+                        else
+                        if( eneAppear < Def.AIR_LV_1 ) {
+                        	//	ヘリコプターエリア
+                        	//	速度2-4
+                        	//	オプション 雲
+                            enemyAppearNum	+= 40;
+                            enemyY[i]  	= -40-(getRandInt()>>>1)%10;	//敵
+	                        enemyX[i] 	= (getRandInt()>>>1)%240;
+	                        enemyImg[i]	= Def.AREA_HELI;
+	                        enemyTime[i]= 0;
+	                        enemySp[i]	= ((getRandtInt()>>>1)%3)+2;
+	                        if( (getRandInt()>>>1)%2 == 0 )enemySp[i] *= -1;
+                        }
+                        else
+                        if( enemyAppearNum < Def.AIR_LV_2 )
+                        {
+	                        //	UFOエリア
+                        	//	速度 3-5
+                        	//	オプション 星
+							enemyAppearNum += 20;
+							enemyY[i]   = -40-(getRandInt()>>>1)%10;	//敵
+	                        enemyX[i]   = (getRandInt()>>>1)%240;
+							enemyImg[i] = Def.AREA_UFO;
+	                        enemyTime[i]= 0;
+	                        enemySp[i]  = ((getRandInt()>>>1)%3)+3;
+	                        if( (getRandInt()>>>1)%2 == 0 )enemySp[i] *= -1;
+                        }
+                        else
+                        if( enemyAppearNum < Def.AIR_LV_3 )
+                        {
+                        	//	星エリア
+                        	//	速度 1-4
+                        	//	オプション なし
+                            enemyAppearNum	+= 30;
+                            enemyY[i]  	= -40-(getRandInt()>>>1)%10;	//敵
+	                        enemyX[i] 	= (getRandInt()>>>1)%240;
+	                        enemyGra[i]	= Def.AREA_STAR;
+	                        enemyTim[i]	= 0;
+	                        enemySpd[i]	= ((getRandInt()>>>1)%4)+1;
+	                        if( (getRandInt()>>>1)%2 == 0 )enemySpd[i] *= -1;
+                        }
+                        else
+                        if( enemyAppearNum < AIR_LV_4 )
+                        {
+                        	//	天使エリア
+                        	//	速度 1-2
+                        	//	オプション 雲
+                        	enemyAppearNum += 20;
+							enemyY[i]   = -40-(getRandInt()>>>1)%10;	//敵
+	                        enemyX[i]   = (getRandInt()>>>1)%240;
+							enemyGra[i] = Def.AREA_ANGEL;
+	                        enemyTim[i] = 0;
+	                        enemySpd[i] = ((getRandInt()>>>1)%2)+1;
+	                        if( (getRandInt()>>>1)%2 == 0 )enemySpd[i] *= -1;
+                        }
+                        else
+                        {
+                        	//	最後だよ!!全員集合
+                        	//	速度 1-5
+                        	//	オプション 雲・星
+                            enemyAppearNum	+= 20;
+                            enemyY[i]  	= -40-(getRandInt()>>>1)%10;	//敵
+	                        enemyX[i] 	= (getRandInt()>>>1)%240;
+							enemyGra[i]	= (getRandInt()>>>1)%Def.AREA_ALL;
+	                        enemyTim[i]	= 0;
+	                        enemySpd[i]	= ((getRandInt()>>>1)%Def.ENEMY_MAX_SPEED)+1;
+	                        if( (getRandInt()>>>1)%2 == 0 )enemySp[i] *= -1;
+                        }
+
+                       	break;
+                    }
+				}
+			}
+			else
+			{
+				// 敵がたまらないようにリセット
+				enemyAppearNum = playH + 80;
+			}
+        }
+	}
+
+
+    function getRandInt():number {
+        return 1;
+    }
+
     function init() {
         playY = Def.PLAY_INIT_POS_Y;
         playVY= 0;
         playH = 0;
-        eneAppear = 0;
+        enemyAppearNum = 0;
     }
 
     function proc() {
         isDraw = false;
         // console.log("in proc");
+
 
         if( scene.is(Scene.INIT) ) {
             console.log("Scene.INIT");
@@ -188,14 +362,103 @@ const sketch = (p: p5) => {
         }
         else
         if( scene.is(Scene.READY)) {
-            if(scene.count() > 70) {
+            if(scene.count() > 60) {
                 scene.set(Scene.PLAY);
             }
         }
         else
         if( scene.is(Scene.PLAY)) {
+            // キーを押しているかどうか
+            if( isEnterKey() && playH > 64) is_playkey_push = true;
+            if( isEnterKey() == false && playH > 64) is_playkey_push = false;
+           
+            // ボタンを押していたら上昇速度を上げる
+            if( is_playkey_push ) {
+                playVY++;
+            }
+            
+            if(is_playkey_push == false && playVY > -40) {
+                // TODO: why?
+                playVY--;
+            }
+
+            // 上昇しすぎないように調整する
+            if(playH < 100) {
+                playY += -4;
+                playVY = -8;
+            } else {
+                playY += playVY/2;
+            }
+
+            
+            // 風船がまだ画面の中にある場合
+            let i = 150 - playY;
+            if( 0 < i) {
+
+                // カウンターストップ
+                if(playH+i < 99999) {
+                    playH+=i;
+                } else {
+                    playH = 99999;
+                }
+
+                // 敵が存在するのなら
+                for(let j=0;j<Def.ENEMY_MAX;j++) {
+                    if(enemyY[j] != -99) {
+                        enemyY[j]+=i;
+                        if(enemyY[j]>260) enemyY[j]=-99;
+                    }
+                }
+
+                //
+                for(let j=0;j<Def.STAR_MAX;j++) {
+                    // 星が存在するのなら
+                    if(starY[j] != -99) {
+
+                        if( (starX[j]&1)==1 ) {
+                            // Xが奇数なら普通に落ちる
+                            starY[j]+=i;
+                        } else {
+                            // Xが偶数の場合は1.5倍で流れる
+                            starY[j]+=i+(i/2);
+                        }
+
+                        if(starY[j]>260) starY[j]=-99;
+                    }
+                }
+
+                for(let j=0;j<Def.CLOUD_MAX;j++) {
+                    // 雲が存在するのなら
+                    if(cloudY[j] != -99) {
+
+                        if( (cloudX[j]&1)==1 ) {
+                            // Xが奇数なら普通に落ちる
+                            cloudY[j]+=i;
+                        } else {
+                            // Xが偶数の場合は1.5倍で流れる
+                            cloudY[j]+=i+(i/2);
+                        }
+
+                        if(cloudY[j]>260) cloudY[j]=-99;
+
+                    }
+                }
+
+                playY=150;
+            }
+
+            // 敵出現
+            addEnemy();
+
+            // 画面下に切れた場合もゲームオーバー
+            if(playY>=240) {
+                pyon_time = 0;
+                set(SCENE.GAMEOVER);
+            }
+
         }
 
+        playTime++;
         scene.counting();
 
         isDraw = true;
@@ -203,47 +466,57 @@ const sketch = (p: p5) => {
     };
 
 
+    // 
+    function isEnterKey():boolean {
+        return p.keyIsDown(32);
+    }
+
+
+    function mathFloor(num:number):number {
+        return p.floor(num);
+    }
+
     /**
      * プログラムによるグラデーションの描画
      */
     function drawBg() {
         let i;
         let rgbs;
-        if( eneAppear < Def.BACK_SCR_STOP ) {
+        p.noStroke();
+        if( enemyAppearNum < Def.BACK_SCR_STOP ) {
             // 背景スクロール中
             for(i=0;i<12;i++) {
-                rgbs = Def.BG_COLOR_RGBs[i+(eneAppear/170)];
+                rgbs = Def.BG_COLOR_RGBs[mathFloor(i+(enemyAppearNum/170))];
                 p.fill(rgbs[0],rgbs[1],rgbs[2]);
                 p.rect(0, 220-(i*20), Def.DISP_W, 20);
             }
         } else {
-			// 背景スクロール停止後
-			for(i=0;i<12;i++) {
-                rgbs = Def.BG_COLOR_RGBs[i+(BACK_SCR_STOP/170)];
+            // 背景スクロール停止後
+            for(i=0;i<12;i++) {
+                rgbs = Def.BG_COLOR_RGBs[mathFloor(i+(Def.BACK_SCR_STOP/170))];
                 p.fill(rgbs[0],rgbs[1],rgbs[2]);
                 p.rect(0, 220-(i*20), Def.DISP_W, 20);
 			}
 		}
 
-		if(	(eneAppear >= AIR_LV_1
-		&&	eneAppear < AIR_LV_3)
-		||	eneAppear >= AIR_LV_4)	//大気圏-宇宙
+		if(	(enemyAppearNum >= Def.AIR_LV_1 && enemyAppearNum < Def.AIR_LV_3)
+		||	enemyAppearNum >= Def.AIR_LV_4)	//大気圏-宇宙
 		{
-			for(int i=0;i<STAR_MAX;i++)//星
+			for(i=0;i<Def.STAR_MAX;i++)//星
 			{
-				g.setColor(Graphics.getColorOfRGB(252,231,134));
-				g.fillRect(starX[i],starY[i],2,2);
+				// g.setColor(Graphics.getColorOfRGB(252,231,134));
+				// g.fillRect(starX[i],starY[i],2,2);
 			}
 		}
 
-		if(	eneAppear <= AIR_LV_2
-		||	eneAppear >= AIR_LV_3 )	// 青空-大気圏
+		if( enemyAppearNum <= Def.AIR_LV_2 || enemyAppearNum >= Def.AIR_LV_3 )
 		{
-			for(int i=0;i<CLOUD_MAX;i++)// 雲
+            // 青空-大気圏
+			for(i=0;i<Def.CLOUD_MAX;i++)// 雲
 			{
 				// 奥の雲なら出す
-				if(cloudZ[i] == 0)
-				g.drawImage(getImage(IMAGE.CLOUD),cloudX[i], cloudY[i]);
+				// if(cloudZ[i] == 0)
+				//     g.drawImage(getImage(IMAGE.CLOUD),cloudX[i], cloudY[i]);
 			}
 
 		}
