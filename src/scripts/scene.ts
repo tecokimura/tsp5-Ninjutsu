@@ -44,7 +44,10 @@
     }
 
     // 
-    count(num:number=1) {
+    count():number {
+        return this.frame;
+    }
+    counting(num:number=1) {
         this.frame += num;
     }
 }
