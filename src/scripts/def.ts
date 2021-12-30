@@ -64,6 +64,9 @@ export class Def {
     static T_DWANGO_POS_Y:number		= 205-10;
     static T_PUSH_KEY_POS_X:number		= 40;
     static T_PUSH_KEY_POS_Y:number		= 180-10;
+
+    static R_NINJA_POS_X:NUMBER = this.DISP_W/2+10;
+    static R_NINJA_POS_Y:NUMBER = this.DISP_H-90;
     
     static P_EARTH_POS_X:number			= 0;
     static P_EARTH_POS_Y:number			= 228;
