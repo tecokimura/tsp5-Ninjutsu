@@ -7,7 +7,7 @@ export class Def {
     static ENEMY_MAX:number = 15;
     static STAR_MAX:number  = 30;
     static CLOUD_MAX:number = 5;
-    static ENE_MAX_SPEED:number = 5;
+    static ENEMY_MAX_SPEED:number = 5;
     
     static PLAY_INIT_POS_X:number = (this.DISP_W/2)-12;
     static PLAY_INIT_POS_Y:number = this.DISP_W-64-12;
@@ -29,7 +29,7 @@ export class Def {
     static AIR_LV_4:number   = 10000;
     static AIR_LV_5:number   = 12000;
     
-    static FIRST_ENEMT_POS:number = 50;
+    static FIRST_ENEMY_POS:number = 50;
     
     static BIKKURI_POS_X:number = 32;
     static BIKKURI_POS_Y:number = 16;
@@ -106,6 +106,20 @@ export class Def {
     static P_GAMEOVER_SCORE_POS_W:number    = 240;
     static P_GAMEOVER_SCORE_POS_H:number    = 10;
 
+    // enum みたいに定義
+    static AREA_BIRD = 0;
+    static AREA_HERI = 1;
+    static AREA_STAR = 2;
+    static AREA_ANGEL= 3;
+    static AREA_UFO  = 4;
+    static AREA_ALL  = 5;
+
+    static SPEED_SP0 = 0;
+    static SPEED_SP1 = 1;
+    static SPEED_SP2 = 2;
+    static SPEED_SP3 = 3;
+    static SPEED_SP4 = 4;
+    static SPEED_SP5 = 5;
 
 	// 画像をいれる余裕がないので直接色を指定
 	static BG_COLOR_RGBs = [
