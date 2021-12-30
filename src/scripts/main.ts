@@ -11,6 +11,14 @@ let isDebug = true;
 
 const sketch = (p: p5) => {
 
+    // Player(Ninja) data
+    let playX:number = Def.PLAY_INIT_POS_X;
+    let playY:number = Def.PLAY_INIT_POS_Y;
+    let playVY:number = 0;
+    let playH:number = 0;
+    let playTime:number = 0;
+
+    let eneAppear = 0;
     let count:number = 0;
 
     p.setup = () => {
@@ -18,6 +26,7 @@ const sketch = (p: p5) => {
 
         scene = new Scene();
 
+        init();
         proc();
     };
 
@@ -65,6 +74,8 @@ const sketch = (p: p5) => {
                 p.fill(20,20,20);
                 p.rect(0, 0, Def.DISP_W, Def.DISP_H);
 
+                drawBg();
+
                 // とりあえず適当背景を描画する
                 p.fill(128,255,128);
                 p.rect(0, 215, Def.DISP_H, 25);
@@ -74,6 +85,7 @@ const sketch = (p: p5) => {
             }
             else
             if( scene.is(Scene.PLAY)) {
+                drawBg();
             }
 
             // for DEBUG
@@ -139,6 +151,13 @@ const sketch = (p: p5) => {
         setTimeout(() => { proc(); }, time);
     };
 
+    function init() {
+        playY = Def.PLAY_INIT_POS_Y;
+        playVY= 0;
+        playH = 0;
+        eneAppear = 0;
+    }
+
     function proc() {
         isDraw = false;
         // console.log("in proc");
@@ -182,6 +201,53 @@ const sketch = (p: p5) => {
         isDraw = true;
         repeatProc();
     };
+
+
+    /**
+     * プログラムによるグラデーションの描画
+     */
+    function drawBg() {
+        let i;
+        let rgbs;
+        if( eneAppear < Def.BACK_SCR_STOP ) {
+            // 背景スクロール中
+            for(i=0;i<12;i++) {
+                rgbs = Def.BG_COLOR_RGBs[i+(eneAppear/170)];
+                p.fill(rgbs[0],rgbs[1],rgbs[2]);
+                p.rect(0, 220-(i*20), Def.DISP_W, 20);
+            }
+        } else {
+			// 背景スクロール停止後
+			for(i=0;i<12;i++) {
+                rgbs = Def.BG_COLOR_RGBs[i+(BACK_SCR_STOP/170)];
+                p.fill(rgbs[0],rgbs[1],rgbs[2]);
+                p.rect(0, 220-(i*20), Def.DISP_W, 20);
+			}
+		}
+
+		if(	(eneAppear >= AIR_LV_1
+		&&	eneAppear < AIR_LV_3)
+		||	eneAppear >= AIR_LV_4)	//大気圏-宇宙
+		{
+			for(int i=0;i<STAR_MAX;i++)//星
+			{
+				g.setColor(Graphics.getColorOfRGB(252,231,134));
+				g.fillRect(starX[i],starY[i],2,2);
+			}
+		}
+
+		if(	eneAppear <= AIR_LV_2
+		||	eneAppear >= AIR_LV_3 )	// 青空-大気圏
+		{
+			for(int i=0;i<CLOUD_MAX;i++)// 雲
+			{
+				// 奥の雲なら出す
+				if(cloudZ[i] == 0)
+				g.drawImage(getImage(IMAGE.CLOUD),cloudX[i], cloudY[i]);
+			}
+
+		}
+    }
 };
 
 new p5(sketch);
