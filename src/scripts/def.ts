@@ -126,9 +126,9 @@ export class Def {
 
     // enum みたいに定義
     static AREA_BIRD = 0;
-    static AREA_HELI = 1;
-    static AREA_STAR = 2;
-    static AREA_ANGEL= 3;
+    static AREA_KUNAI = 1;
+    static AREA_SHURI = 2;
+    static AREA_SHINOBI= 3;
     static AREA_UFO  = 4;
     static AREA_ALL  = 5;
 
