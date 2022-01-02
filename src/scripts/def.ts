@@ -1,3 +1,5 @@
+import {Img} from "./img";
+
 export class Def {
     static HELLO:string = "Hello TSp5 World";
 
@@ -65,8 +67,8 @@ export class Def {
     static T_PUSH_KEY_POS_X:number		= 40;
     static T_PUSH_KEY_POS_Y:number		= 180-10;
 
-    static R_NINJA_POS_X:NUMBER = this.DISP_W/2+10;
-    static R_NINJA_POS_Y:NUMBER = this.DISP_H-90;
+    static R_NINJA_POS_X:number = this.DISP_W/2+10;
+    static R_NINJA_POS_Y:number = this.DISP_H-90;
     
     static P_EARTH_POS_X:number			= 0;
     static P_EARTH_POS_Y:number			= 228;
@@ -106,9 +108,24 @@ export class Def {
     static P_GAMEOVER_SCORE_POS_W:number    = 240;
     static P_GAMEOVER_SCORE_POS_H:number    = 10;
 
+    // p5 keyCode
+    // キーコード定義(p5にありそうだけど見つからなかったので独自に定義する)
+    // https://keycode.info/
+    static P5_KEYCODE_NONE:number  = -1;
+    static P5_KEYCODE_ENTER:number = 13;
+    static P5_KEYCODE_SPACE:number = 32;
+    static P5_KEYCODE_LEFT:number  = 37;
+    static P5_KEYCODE_UP:number    = 38;
+    static P5_KEYCODE_RIGHT:number = 39;
+    static P5_KEYCODE_UP:number    = 40;
+    static P5_KEYCODE_A:number     = 65;
+    static P5_KEYCODE_S:number     = 83;
+    static P5_KEYCODE_X:number     = 88;
+    static P5_KEYCODE_Z:number     = 90;
+
     // enum みたいに定義
     static AREA_BIRD = 0;
-    static AREA_HERI = 1;
+    static AREA_HELI = 1;
     static AREA_STAR = 2;
     static AREA_ANGEL= 3;
     static AREA_UFO  = 4;
@@ -120,6 +137,13 @@ export class Def {
     static SPEED_SP3 = 3;
     static SPEED_SP4 = 4;
     static SPEED_SP5 = 5;
+
+    static NINJA_FLY_ANIM = [
+        Img.NINJA_FLY_C,
+        Img.NINJA_FLY_R,
+        Img.NINJA_FLY_C,
+        Img.NINJA_FLY_L,
+    ]
 
 	// 画像をいれる余裕がないので直接色を指定
 	static BG_COLOR_RGBs = [
