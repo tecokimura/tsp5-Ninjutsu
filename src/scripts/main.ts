@@ -88,7 +88,7 @@ const sketch = (p: p5) => {
     // 
     p.keyReleased = () => {
         console.log("keyReleased:"+p.keyCode);
-        keyCodePre= Def.P5_KEYCODE_NONE;
+        keyCodePre = Def.P5_KEYCODE_NONE;
     }
 
     p.draw = () => {
@@ -137,22 +137,24 @@ const sketch = (p: p5) => {
             else
             if( scene.is(Scene.PLAY)) {
                 drawBg();
-                // drawEnemy();
-                //
+                drawEnemy();
+                
+                let imgNo = 0;
                 if(is_playkey_push) {
-                    if(isPushKeyNow()) {
-                        img.drawImage(Img.NINJA_DOWN, playX, playY);
-                    } else {
-                        img.drawImage(Img.NINJA_DOWN2, playX, playY);
-                    }
+                    // アニメーション切替中か降下中か
+                    if(isPushKeyNow())
+                        imgNo = Img.NINJA_DOWN;
+                    else
+                        imgNo = Img.NINJA_DOWN2;
                 } else {
-                    if(isReleaseKeyNow()) {
-                        img.drawImage(Img.NINJA_DOWN, playX, playY);
-                    } else {
-                        let i = mathFloor((playTime % 20)/5)% Def.NINJA_FLY_ANIM.length;
-                        img.drawImage(Def.NINJA_FLY_ANIM[i], playX, playY);
-                    }
+                    // アニメーション切替中か上昇中か
+                    if(isReleaseKeyNow())
+                        imgNo = Img.NINJA_DOWN;
+                    else
+                        imgNo = Def.NINJA_FLY_ANIM[mathFloor((playTime % 20)/5) % Def.NINJA_FLY_ANIM.length];
                 }
+
+                img.drawImage(imgNo, playX, playY);
                 
                 
             }
@@ -173,12 +175,13 @@ const sketch = (p: p5) => {
         let addy = 12;
         p.fill(255,0,0);
         p.textSize(y+=addy);
-        p.text('S:'+scene.present , x ,y+=addy);
-        p.text('F:'+scene.count() , x ,y+=addy);
-        p.text('PX:'+playX , x ,y+=addy);
-        p.text('PY:'+playY , x ,y+=addy);
-        p.text('PV:'+playVY, x ,y+=addy);
-        p.text('PH:'+playH , x ,y+=addy);
+        p.text('S:'+scene.present,   x, y+=addy);
+        p.text('F:'+scene.count(),   x, y+=addy);
+        p.text('PX:'+playX,          x, y+=addy);
+        p.text('PY:'+playY,          x, y+=addy);
+        p.text('PV:'+playVY,         x, y+=addy);
+        p.text('PH:'+playH,          x, y+=addy);
+        p.text('eA:'+enemyAppearNum, x, y+=addy);
     }
 
     // Ready の時のアニメーション
@@ -226,10 +229,10 @@ const sketch = (p: p5) => {
 
     function addEnemy() {
         if( enemyAppearNum <= playH ) {
-            if( playH >= Def.FIRST_ENEMY_POS ) {
+            if( Def.FIRST_ENEMY_POS <= playH) {
                 // 星出現
                 for(let i=0; i<Def.STAR_MAX; i++) {
-                    if( starY[i] == -99 && Def.AIR_LV_1 <= enemyAppearNum) {
+                    if( starY[i] == Def.DATA_NONE && Def.AIR_LV_1 <= enemyAppearNum) {
                         starY[i] = -40-(getRandInt()>>>1)%120;
                         starX[i] = (getRandInt()>>>1)%240;
                         break;
@@ -238,12 +241,12 @@ const sketch = (p: p5) => {
 
                 // 雲出現
                 for(let i=0; i<Def.CLOUD_MAX; i++) {
-                    if( cloudY[i] == -99
+                    if( cloudY[i] == Def.DATA_NONE
                     &&  (enemyAppearNum <= Def.AIR_LV_1 || Def.AIR_LV_3 <= enemyAppearNum) ) {
-                        cloudY[i]   = -40-(getRandInt()>>>1)%20;
-                        cloudX[i]   = (getRandInt()>>>1)%240;
-                        cloudZ[i]   = (getRandInt()>>>1)%2;
-                        cloudSp[i]  = (getRandInt()>>>1)%2+1;
+                        cloudY[i]  = -40-(getRandInt()>>>1)%20;
+                        cloudX[i]  = (getRandInt()>>>1)%240;
+                        cloudZ[i]  = (getRandInt()>>>1)%2;
+                        cloudSp[i] = (getRandInt()>>>1)%2+1;
 
                         if( ((getRandInt()>>>1)%2) == 0)
                             cloudSp[i] *= -1;
@@ -254,7 +257,7 @@ const sketch = (p: p5) => {
 
                 // 敵出現
                 for(let i=0; i<Def.ENEMY_MAX; i++) {
-                    if( enemyY[i] == -99 ) {
+                    if( enemyY[i] == Def.DATA_NONE ) {
                         if( enemyAppearNum < Def.AIR_LV_0 ) {
                             // 鳥エリア
                             // 速度 1-3
@@ -273,11 +276,11 @@ const sketch = (p: p5) => {
                         }
                         else
                         if( enemyAppearNum < Def.AIR_LV_1 ) {
-                        	//	ヘリコプターエリア
-                        	//	速度2-4
-                        	//	オプション 雲
+                        	// ヘリコプターエリア
+                        	// 速度2-4
+                        	// オプション 雲
                             enemyAppearNum	+= 40;
-                            enemyY[i]  	= -40-(getRandInt()>>>1)%10;	//敵
+                            enemyY[i]  	= -40-(getRandInt()>>>1)%10;
 	                        enemyX[i] 	= (getRandInt()>>>1)%240;
 	                        enemyImg[i]	= Def.AREA_HELI;
 	                        enemyTime[i]= 0;
@@ -287,13 +290,13 @@ const sketch = (p: p5) => {
                         else
                         if( enemyAppearNum < Def.AIR_LV_2 )
                         {
-	                        //	UFOエリア
-                        	//	速度 3-5
-                        	//	オプション 星
-							enemyAppearNum += 20;
-							enemyY[i]   = -40-(getRandInt()>>>1)%10;	//敵
-	                        enemyX[i]   = (getRandInt()>>>1)%240;
-							enemyImg[i] = Def.AREA_UFO;
+	                        // UFOエリア
+                            // 速度 3-5
+                            // オプション 星
+                            enemyAppearNum += 20;
+                            enemyY[i]   = -40-(getRandInt()>>>1)%10;
+                            enemyX[i]   = (getRandInt()>>>1)%240;
+                            enemyImg[i] = Def.AREA_UFO;
 	                        enemyTime[i]= 0;
 	                        enemySp[i]  = ((getRandInt()>>>1)%3)+3;
 	                        if( (getRandInt()>>>1)%2 == 0 )enemySp[i] *= -1;
@@ -305,7 +308,7 @@ const sketch = (p: p5) => {
                         	//	速度 1-4
                         	//	オプション なし
                             enemyAppearNum	+= 30;
-                            enemyY[i]  	= -40-(getRandInt()>>>1)%10;	//敵
+                            enemyY[i]  	= -40-(getRandInt()>>>1)%10;
 	                        enemyX[i] 	= (getRandInt()>>>1)%240;
 	                        enemyImg[i]	= Def.AREA_STAR;
 	                        enemyTime[i]	= 0;
@@ -340,12 +343,10 @@ const sketch = (p: p5) => {
 	                        if( (getRandInt()>>>1)%2 == 0 )enemySp[i] *= -1;
                         }
 
-                       	break;
+                        break;
                     }
 				}
-			}
-			else
-			{
+			} else {
 				// 敵がたまらないようにリセット
 				enemyAppearNum = playH + 80;
 			}
@@ -353,18 +354,47 @@ const sketch = (p: p5) => {
 	}
 
 
+	function moveCloudEnemy() {
+        // 雲の移動
+        for(let i=0;i<Def.CLOUD_MAX;i++) {
+            cloudX[i] += cloudSp[i];
+            if( cloudX[i] <= (0-48) || 240 <= cloudX[i])
+                cloudSp[i] *= -1;
+        }
+
+        for(let i=0;i<Def.ENEMY_MAX;i++) {
+            if(enemyY[i] > Def.DATA_NONE) {
+                enemyX[i] += enemySp[i];
+                if( enemyX[i] <= (0-48) || 240 <= enemyX[i])
+                    enemySp[i] *= -1;
+            }
+        }
+	}
+
+
+    /**
+     * 整数の乱数を取得する
+     * 100はなんとなく
+     * https://p5js.org/reference/#/p5/random
+     */
     function getRandInt():number {
-        return 1;
+        return p.round(p.random(100));
     }
 
     function init() {
+        let i=0;
+
         playY = Def.PLAY_INIT_POS_Y;
         playVY= 0;
         playH = 0;
         enemyAppearNum = 0;
 
+		for(let i=0;i<Def.ENEMY_MAX;i++) enemyY[i] = Def.DATA_NONE;
+		for(let i=0;i<Def.STAR_MAX;	i++) starY[i]  = Def.DATA_NONE;
+		for(let i=0;i<Def.CLOUD_MAX;i++) cloudY[i] = Def.DATA_NONE;
+
         keyCodePre = Def.P5_KEYCODE_NONE;
-        for(let i=0;i<keyCodeHistory.length;i++) {
+        for(i=0;i<keyCodeHistory.length;i++) {
             keyCodeHistory[i] = Def.P5_KEYCODE_NONE;
         }
     }
@@ -418,6 +448,9 @@ const sketch = (p: p5) => {
         }
         else
         if( scene.is(Scene.PLAY)) {
+
+            moveCloudEnemy();
+
             // キーを押しているかどうか
             if( isPushKey() && playH > 64) is_playkey_push = true;
             if( isPushKey() == false && playH > 64) is_playkey_push = false;
@@ -454,16 +487,16 @@ const sketch = (p: p5) => {
 
                 // 敵が存在するのなら
                 for(let j=0;j<Def.ENEMY_MAX;j++) {
-                    if(enemyY[j] != -99) {
+                    if(enemyY[j] != Def.DATA_NONE) {
                         enemyY[j]+=i;
-                        if(enemyY[j]>260) enemyY[j]=-99;
+                        if(enemyY[j]>260) enemyY[j]=Def.DATA_NONE;
                     }
                 }
 
                 //
                 for(let j=0;j<Def.STAR_MAX;j++) {
                     // 星が存在するのなら
-                    if(starY[j] != -99) {
+                    if(starY[j] != Def.DATA_NONE) {
 
                         if( (starX[j]&1)==1 ) {
                             // Xが奇数なら普通に落ちる
@@ -473,13 +506,13 @@ const sketch = (p: p5) => {
                             starY[j]+=i+(i/2);
                         }
 
-                        if(starY[j]>260) starY[j]=-99;
+                        if(starY[j]>260) starY[j]=Def.DATA_NONE;
                     }
                 }
 
                 for(let j=0;j<Def.CLOUD_MAX;j++) {
                     // 雲が存在するのなら
-                    if(cloudY[j] != -99) {
+                    if(cloudY[j] != Def.DATA_NONE) {
 
                         if( (cloudX[j]&1)==1 ) {
                             // Xが奇数なら普通に落ちる
@@ -489,7 +522,7 @@ const sketch = (p: p5) => {
                             cloudY[j]+=i+(i/2);
                         }
 
-                        if(cloudY[j]>260) cloudY[j]=-99;
+                        if(cloudY[j]>260) cloudY[j]=Def.DATA_NONE;
 
                     }
                 }
@@ -563,6 +596,59 @@ const sketch = (p: p5) => {
 			}
 
 		}
+    }
+
+    function drawEnemy() {
+        for(let i=0;i<Def.ENEMY_MAX;i++) {
+            if(Def.DATA_NONE < enemyY[i]) {
+                if( enemyImg[i] == Def.AREA_BIRD) {
+                    img.drawImage(Img.ENEMY_BIRD,enemyX[i],enemyY[i]);
+                }
+                else
+                if( enemyImg[i] == Def.AREA_HELI) {
+                    img.drawImage(Img.ENEMY_KUNAI,enemyX[i],enemyY[i]);
+                }
+                else
+                if( enemyImg[i] == Def.AREA_STAR) {
+                    img.drawImage(Img.ENEMY_SHURIKEN,enemyX[i],enemyY[i]);
+                }
+                else
+                if( enemyImg[i] == Def.AREA_ANGEL) {
+                    img.drawImage(Img.ENEMY_SHINOBI,enemyX[i],enemyY[i]);
+                }
+                else
+                if( enemyImg[i] == Def.AREA_UFO) {
+                    img.drawImage(Img.ENEMY_UFO,enemyX[i],enemyY[i]);
+                }
+                else
+                if( enemyImg[i] == Def.AREA_UFO) {
+                    img.drawImage(Img.ENEMY_BIRD1,enemyX[i],enemyY[i]);
+                }
+
+                // 敵の描画
+                // if(enemyImg[i] != Def.AREA_UFO)) {
+                //     if(enemySp[i] < 0) {
+                //         if( enemyTime[i] % enemyAnim[enemyImg[i]] < (enemyAnim[enemyImg[i]]>>1) ) {
+                //             img.drawImage(img[(enemyGra[i]*4)+get(IMAGE.BIRD_L_1)],enemyX[i],enemyY[i]);
+                //         } else {
+                //             img.drawImage(img[(enemyGra[i]*4)+get(IMAGE.BIRD_L_0)],enemyX[i],enemyY[i]);
+                //         }
+                //     } else {
+                //         if( enemyTime[i] % enemyAnim[enemyImg[i]] < (enemyAnim[enemyImg[i]]>>1) ) {
+                //             img.drawImage(img[(enemyGra[i]*4)+get(IMAGE.BIRD_R_1)],enemyX[i],enemyY[i]);
+                //         } else {
+                //             img.drawImage(img[(enemyGra[i]*4)+get(IMAGE.BIRD_R_0)],enemyX[i],enemyY[i]);
+                //         }
+                //     }
+                // } else {
+                //     if( enemyTim[i] % enemyAnim[enemyGra[i]] < (enemyAnim[enemyGra[i]]>>1) ) {
+                //         img.drawImage(getImage(IMAGE.UFO_1),enemyX[i],enemyY[i]);
+                //     } else {
+                //         img.drawImage(getImage(IMAGE.UFO_0),enemyX[i],enemyY[i]);
+                //     }
+                // }
+            }
+        }
     }
 };
 
