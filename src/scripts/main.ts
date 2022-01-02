@@ -282,7 +282,7 @@ const sketch = (p: p5) => {
                             enemyAppearNum	+= 40;
                             enemyY[i]  	= -40-(getRandInt()>>>1)%10;
 	                        enemyX[i] 	= (getRandInt()>>>1)%240;
-	                        enemyImg[i]	= Def.AREA_HELI;
+	                        enemyImg[i]	= Def.AREA_KUNAI;
 	                        enemyTime[i]= 0;
 	                        enemySp[i]	= ((getRandInt()>>>1)%3)+2;
 	                        if( (getRandInt()>>>1)%2 == 0 )enemySp[i] *= -1;
@@ -310,7 +310,7 @@ const sketch = (p: p5) => {
                             enemyAppearNum	+= 30;
                             enemyY[i]  	= -40-(getRandInt()>>>1)%10;
 	                        enemyX[i] 	= (getRandInt()>>>1)%240;
-	                        enemyImg[i]	= Def.AREA_STAR;
+	                        enemyImg[i]	= Def.AREA_SHURI;
 	                        enemyTime[i]	= 0;
 	                        enemySp[i]	= ((getRandInt()>>>1)%4)+1;
 	                        if( (getRandInt()>>>1)%2 == 0 )enemySp[i] *= -1;
@@ -324,7 +324,7 @@ const sketch = (p: p5) => {
                         	enemyAppearNum += 20;
 							enemyY[i]   = -40-(getRandInt()>>>1)%10;	//敵
 	                        enemyX[i]   = (getRandInt()>>>1)%240;
-							enemyImg[i] = Def.AREA_ANGEL;
+							enemyImg[i] = Def.AREA_SHINOBI;
 	                        enemyTime[i] = 0;
 	                        enemySp[i] = ((getRandInt()>>>1)%2)+1;
 	                        if( (getRandInt()>>>1)%2 == 0 )enemySp[i] *= -1;
@@ -605,15 +605,15 @@ const sketch = (p: p5) => {
                     img.drawImage(Img.ENEMY_BIRD,enemyX[i],enemyY[i]);
                 }
                 else
-                if( enemyImg[i] == Def.AREA_HELI) {
+                if( enemyImg[i] == Def.AREA_KUNAI) {
                     img.drawImage(Img.ENEMY_KUNAI,enemyX[i],enemyY[i]);
                 }
                 else
-                if( enemyImg[i] == Def.AREA_STAR) {
+                if( enemyImg[i] == Def.AREA_SHURI) {
                     img.drawImage(Img.ENEMY_SHURIKEN,enemyX[i],enemyY[i]);
                 }
                 else
-                if( enemyImg[i] == Def.AREA_ANGEL) {
+                if( enemyImg[i] == Def.AREA_SHINOBI) {
                     img.drawImage(Img.ENEMY_SHINOBI,enemyX[i],enemyY[i]);
                 }
                 else
