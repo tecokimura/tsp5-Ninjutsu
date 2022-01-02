@@ -2,6 +2,7 @@ import {Img} from "./img";
 
 export class Def {
     static HELLO:string = "Hello TSp5 World";
+    static DATA_NONE = -999;
 
     static DISP_W:number = 240;
     static DISP_H:number = 240;
