@@ -276,7 +276,7 @@ const sketch = (p: p5) => {
                         }
                         else
                         if( enemyAppearNum < Def.AIR_LV_1 ) {
-                        	// ヘリコプターエリア
+	                        // KUNAI エリア
                         	// 速度2-4
                         	// オプション 雲
                             enemyAppearNum	+= 40;
@@ -290,13 +290,13 @@ const sketch = (p: p5) => {
                         else
                         if( enemyAppearNum < Def.AIR_LV_2 )
                         {
-	                        // UFOエリア
+	                        // Shuri エリア
                             // 速度 3-5
                             // オプション 星
                             enemyAppearNum += 20;
                             enemyY[i]   = -40-(getRandInt()>>>1)%10;
                             enemyX[i]   = (getRandInt()>>>1)%240;
-                            enemyImg[i] = Def.AREA_UFO;
+                            enemyImg[i] = Def.AREA_SHURI;
 	                        enemyTime[i]= 0;
 	                        enemySp[i]  = ((getRandInt()>>>1)%3)+3;
 	                        if( (getRandInt()>>>1)%2 == 0 )enemySp[i] *= -1;
@@ -304,13 +304,13 @@ const sketch = (p: p5) => {
                         else
                         if( enemyAppearNum < Def.AIR_LV_3 )
                         {
-                        	//	星エリア
+                        	//	SHINOBI
                         	//	速度 1-4
                         	//	オプション なし
                             enemyAppearNum	+= 30;
                             enemyY[i]  	= -40-(getRandInt()>>>1)%10;
 	                        enemyX[i] 	= (getRandInt()>>>1)%240;
-	                        enemyImg[i]	= Def.AREA_SHURI;
+	                        enemyImg[i]	= Def.AREA_SHINOBI;
 	                        enemyTime[i]	= 0;
 	                        enemySp[i]	= ((getRandInt()>>>1)%4)+1;
 	                        if( (getRandInt()>>>1)%2 == 0 )enemySp[i] *= -1;
@@ -318,13 +318,13 @@ const sketch = (p: p5) => {
                         else
                         if( enemyAppearNum < Def.AIR_LV_4 )
                         {
-                        	//	天使エリア
+                        	//	UFO
                         	//	速度 1-2
                         	//	オプション 雲
                         	enemyAppearNum += 20;
 							enemyY[i]   = -40-(getRandInt()>>>1)%10;	//敵
 	                        enemyX[i]   = (getRandInt()>>>1)%240;
-							enemyImg[i] = Def.AREA_SHINOBI;
+							enemyImg[i] = Def.AREA_UFO;
 	                        enemyTime[i] = 0;
 	                        enemySp[i] = ((getRandInt()>>>1)%2)+1;
 	                        if( (getRandInt()>>>1)%2 == 0 )enemySp[i] *= -1;
