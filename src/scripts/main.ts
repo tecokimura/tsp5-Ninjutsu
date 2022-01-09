@@ -94,18 +94,15 @@ const sketch = (p: p5) => {
     p.draw = () => {
         if( isDraw ) {
             if( scene.is(Scene.INIT)) {
-                p.fill(0,0,0);
-                p.rect(0, 0, Def.DISP_W, Def.DISP_H);
+                drawClear();
             }
             else
             if( scene.is(Scene.LOADING)) {
-                p.fill(0,0,0);
-                p.rect(0, 0, Def.DISP_W, Def.DISP_H);
+                drawClear();
             }
             else
             if( scene.is(Scene.TITLE)) {
-                p.fill(255,255,255);
-                p.rect(0, 0, Def.DISP_W, Def.DISP_H);
+                drawClear();
 
                 p.fill(0,0,255);
                 p.textSize(24);
@@ -121,15 +118,7 @@ const sketch = (p: p5) => {
             }
             else
             if( scene.is(Scene.READY)) {
-                // Clear
-                p.fill(20,20,20);
-                p.rect(0, 0, Def.DISP_W, Def.DISP_H);
-
                 drawBg();
-
-                // とりあえず適当背景を描画する
-                p.fill(128,255,128);
-                p.rect(0, 215, Def.DISP_H, 25);
 
                 drawReadyNinjutsu(scene.count());
 
@@ -470,7 +459,7 @@ const sketch = (p: p5) => {
                 playY += -4;
                 playVY = -8;
             } else {
-                playY += playVY/2;
+                playY += mathFloor(playVY/2);
             }
 
             
@@ -527,6 +516,8 @@ const sketch = (p: p5) => {
                     }
                 }
 
+                // TODO: PlayerY 位置を調整する
+                // ここをコメントアウトすると上に飛び去ってしまう
                 playY=150;
             }
 
@@ -552,13 +543,30 @@ const sketch = (p: p5) => {
         return p.floor(num);
     }
 
+
+    /**
+      * 画面を単色で描画してクリアする
+      * 色を引数で渡せるとベスト
+      */
+    function drawClear() {
+        p.fill(0, 0, 0);
+        p.rect(0, 0, Def.DISP_W, Def.DISP_H);
+    }
+
+
     /**
      * プログラムによるグラデーションの描画
      */
-    function drawBg() {
+    function drawBg(isClear:boolean = true) {
         let i;
         let rgbs;
+
         p.noStroke();
+
+        // 描画クリア
+        if(isClear) drawClear();
+
+
         if( enemyAppearNum < Def.BACK_SCR_STOP ) {
             // 背景スクロール中
             for(i=0;i<12;i++) {
@@ -596,8 +604,20 @@ const sketch = (p: p5) => {
 			}
 
 		}
+
+        // 地面の描画
+        i = playH + 210;
+        if( i < 210+30) {
+            // とりあえず適当背景を描画する
+            p.fill(64,125,64);
+            p.rect(0, i, Def.DISP_W, 30);
+        }
     }
 
+
+    /**
+     * 敵（障害物の描画）
+     */
     function drawEnemy() {
         for(let i=0;i<Def.ENEMY_MAX;i++) {
             if(Def.DATA_NONE < enemyY[i]) {
