@@ -12,13 +12,13 @@ let isDebug = true;
 const sketch = (p: p5) => {
 
     // Player(Ninja) data
-    let playX:number = Def.PLAY_INIT_POS_X;
-    let playY:number = Def.PLAY_INIT_POS_Y;
-    let playVY:number = 0;
-    let playH:number = 0;
-    let playTime:number = 0;
+    let playX:number = Def.PLAY_INIT_POS_X; // X位置
+    let playY:number = Def.PLAY_INIT_POS_Y; // y位置
+    let playVY:number = 0;  // 上昇速度
+    let playH:number = 0; // 高さ
+    let playTime:number = 0; // 経過時間
 
-    // TODO:クラス化する
+    // TODO:クラス化する優先度低め
 	let enemyX: Array<number>   = new Array(Def.ENEMY_MAX);
 	let enemyY: Array<number>   = new Array(Def.ENEMY_MAX);
 	let enemyImg: Array<number> = new Array(Def.ENEMY_MAX);
@@ -170,6 +170,7 @@ const sketch = (p: p5) => {
         p.text('PY:'+playY,          x, y+=addy);
         p.text('PV:'+playVY,         x, y+=addy);
         p.text('PH:'+playH,          x, y+=addy);
+        p.text('PT:'+playTime,       x, y+=addy);
         p.text('eA:'+enemyAppearNum, x, y+=addy);
     }
 
@@ -444,27 +445,29 @@ const sketch = (p: p5) => {
             if( isPushKey() && playH > 64) is_playkey_push = true;
             if( isPushKey() == false && playH > 64) is_playkey_push = false;
            
-            // ボタンを押していたら上昇速度を上げる
+            // ボタンを押していたら上昇速度を下げる
             if( is_playkey_push ) {
-                playVY++;
-            }
-            
-            if(is_playkey_push == false && playVY > -40) {
-                // TODO: why?
                 playVY--;
             }
+            
+            // ボタンを押していない && MAXスピードではなければ
+            if(is_playkey_push == false && playVY < Def.PLAY_MAX_VY ) {
+                // 徐々に速度を上げる
+                playVY++;
+            }
 
-            // 上昇しすぎないように調整する
             if(playH < 100) {
+                // ある程度の高さまで行っていれば上昇しすぎないように調整する
                 playY += -4;
-                playVY = -8;
+                playVY = 8;
             } else {
-                playY += mathFloor(playVY/2);
+                // 速度分を移動させる
+                playY -= mathFloor(playVY/2);
             }
 
             
             // 風船がまだ画面の中にある場合
-            let i = 150 - playY;
+            let i = Def.PLAY_MAX_DRAW_POS_Y - playY;
             if( 0 < i) {
 
                 // カウンターストップ
@@ -518,7 +521,8 @@ const sketch = (p: p5) => {
 
                 // TODO: PlayerY 位置を調整する
                 // ここをコメントアウトすると上に飛び去ってしまう
-                playY=150;
+                if( playY < Def.PLAY_MAX_DRAW_POS_Y) playY=Def.PLAY_MAX_DRAW_POS_Y;
+                
             }
 
             // 敵出現
@@ -567,21 +571,18 @@ const sketch = (p: p5) => {
         if(isClear) drawClear();
 
 
-        if( enemyAppearNum < Def.BACK_SCR_STOP ) {
-            // 背景スクロール中
-            for(i=0;i<12;i++) {
-                rgbs = Def.BG_COLOR_RGBs[mathFloor(i+(enemyAppearNum/170))];
-                p.fill(rgbs[0],rgbs[1],rgbs[2]);
-                p.rect(0, 220-(i*20), Def.DISP_W, 20);
-            }
-        } else {
-            // 背景スクロール停止後
-            for(i=0;i<12;i++) {
-                rgbs = Def.BG_COLOR_RGBs[mathFloor(i+(Def.BACK_SCR_STOP/170))];
-                p.fill(rgbs[0],rgbs[1],rgbs[2]);
-                p.rect(0, 220-(i*20), Def.DISP_W, 20);
-			}
-		}
+        let rgbi = (enemyAppearNum/170);
+        if( Def.BG_COLOR_RGBs.length - 12 < rgbi ) {
+            rgbi = Def.BG_COLOR_RGBs.length - 12;
+        }
+        
+        // 背景スクロール中
+        for(i=0;i<12;i++) {
+            rgbs = Def.BG_COLOR_RGBs[mathFloor(i+rgbi)];
+            p.fill(rgbs[0],rgbs[1],rgbs[2]);
+            p.rect(0, 220-(i*20), Def.DISP_W, 20);
+        }
+
 
 		if(	(enemyAppearNum >= Def.AIR_LV_1 && enemyAppearNum < Def.AIR_LV_3)
 		||	enemyAppearNum >= Def.AIR_LV_4)	//大気圏-宇宙
