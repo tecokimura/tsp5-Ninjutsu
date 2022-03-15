@@ -1,22 +1,40 @@
 # tsp5-Ninjutsu
 Ninja in html5 game
 
-## 概要
-スマホでも遊べるブラウザゲームを作成する
-いつかBTCの寄付をできるようにしてみる
+# What's this ?
+I make browser game with smartphone and If you were fun give me BTC please. :)  
+But It doesn't how to pay nothing yet because I don't complete.  
+  
+Please see me with long time.  
+  
+to make continue.  
+Have you nice day :)  
 
-## 使用しているライブラリ
-TypeScript
-p5.js
 
-# Setup
-node,npm をインストールしておく
-node -v > v8.17.0
-npm -v > 6.9.0
-(必須条件は後々追加する)
+# It use source code.
+- [TypeScript](https://www.typescriptlang.org/)
+- [p5.js](https://p5js.org/)
 
-- npm install
+# How to change branch.
+% git fetch origin $BRANCH_NAME  
+% git checkout $BRANCH_NAME  
 
-# build & Run
-$ npm run dev
-Access to http://localhost:1234/
+# Require (I'm writing...)
+[node.js](https://nodejs.org/)
+> node -v > v8.17.0  
+> npm -v > 6.9.0   
+  
+# Install
+```
+% npm install  
+```
+
+# Build & run
+```
+npm run dev  
+```
+
+# Let's play
+[localhost](http://localhost:1234/)  
+> I wanna play on server at someday...
+
