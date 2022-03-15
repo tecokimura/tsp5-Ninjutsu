@@ -29,14 +29,16 @@ export class Img {
     }
 
     // 水平反転
-    // TODO: 調整中
     drawImageFlipH(index:number, x:number, y:number) {
-        let imgObj = this.getImage(index);
+        let imgObj= this.getImage(index);
+        let imgWH = imgObj.width/2;
 
         this.p.push();
-        this.p.translate(x+(imgObj.width/2), y);
+        // 画像の真ん中を中心にする
+        this.p.translate(x+imgWH, y);
         this.p.scale(-1, 1);
-        this.p.image(imgObj, imgObj.width/2*-1, 0);
+        // 中心を画像の真ん中にしたので画像半分分を描画位置にずらす
+        this.p.image(imgObj, imgWH*-1, 0);
         this.p.pop();
     }
 
