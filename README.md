@@ -1,6 +1,9 @@
 # tsp5-Ninjutsu
 Ninja in html5 game
 
+# How to play ?
+Click enter
+
 # What's this ?
 I make browser game with smartphone and If you were fun give me BTC please. :)  
 But It doesn't how to pay nothing yet because I don't complete.  
