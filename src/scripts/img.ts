@@ -20,9 +20,26 @@ export class Img {
         }
     }
 
-    drawImage(index:number, x:number, y:number) {
-        this.p.image(this.images[index],x,y);
+    getImage(index:number) :p5.Image {
+        return (this.images[index]);
     }
+
+    drawImage(index:number, x:number, y:number) {
+        this.p.image(this.getImage(index), x, y);
+    }
+
+    // 水平反転
+    // TODO: 調整中
+    drawImageFlipH(index:number, x:number, y:number) {
+        let imgObj = this.getImage(index);
+
+        this.p.push();
+        this.p.translate(x+(imgObj.width/2), y);
+        this.p.scale(-1, 1);
+        this.p.image(imgObj, imgObj.width/2*-1, 0);
+        this.p.pop();
+    }
+
 
 
     //===========================
@@ -54,28 +71,28 @@ export class Img {
     ]
 
     // 読み込み用配列にしてインデックスを別途定義する
-    static ENEMY_BIRD:number        =0; 
-    static ENEMY_BIRD1:number       =1;  
-    static ENEMY_KUNAI:number       =2;  
-    static ENEMY_KUNAI1:number      =3;  
-    static ENEMY_SHURIKEN:number    =4;  
-    static ENEMY_SHURIKEN1:number   =5;  
-    static ENEMY_SHINOBI:number     =6;  
-    static ENEMY_SHINOBI1:number    =7;  
-    static ENEMY_UFO:number         =8;  
-    static ENEMY_UFO1:number        =9;  
-    static NINJA_STAND:number       =10; 
-    static NINJA_JUTSU_BASE:number  =11; 
-    static NINJA_JUTSU_GU:number    =12; 
-    static NINJA_JUTSU_CHOKI:number =13; 
-    static NINJA_JUTSU_PA:number    =14; 
-    static NINJA_FLY_L:number       =15; 
-    static NINJA_FLY_C:number       =16; 
-    static NINJA_FLY_R:number       =17; 
-    static NINJA_CRASH:number       =18; 
-    static NINJA_DOWN:number        =19; 
-    static NINJA_DOWN2:number       =20; 
-    static IMAGE_MAX:number         =21;
+    static ENEMY_BIRD:number        = 0; 
+    static ENEMY_BIRD1:number       = 1;  
+    static ENEMY_KUNAI:number       = 2;  
+    static ENEMY_KUNAI1:number      = 3;  
+    static ENEMY_SHURIKEN:number    = 4;  
+    static ENEMY_SHURIKEN1:number   = 5;  
+    static ENEMY_SHINOBI:number     = 6;  
+    static ENEMY_SHINOBI1:number    = 7;  
+    static ENEMY_UFO:number         = 8;  
+    static ENEMY_UFO1:number        = 9;  
+    static NINJA_STAND:number       = 10; 
+    static NINJA_JUTSU_BASE:number  = 11; 
+    static NINJA_JUTSU_GU:number    = 12; 
+    static NINJA_JUTSU_CHOKI:number = 13; 
+    static NINJA_JUTSU_PA:number    = 14; 
+    static NINJA_FLY_L:number       = 15; 
+    static NINJA_FLY_C:number       = 16; 
+    static NINJA_FLY_R:number       = 17; 
+    static NINJA_CRASH:number       = 18; 
+    static NINJA_DOWN:number        = 19; 
+    static NINJA_DOWN2:number       = 20; 
+    static IMAGE_MAX:number         = 21;
     //===========================
 
 }

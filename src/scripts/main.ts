@@ -69,6 +69,7 @@ const sketch = (p: p5) => {
     // p5 の初期設定
     p.setup = () => {
         p.createCanvas(240, 240);
+        p.angleMode(p.DEGREES);
 
         scene = new Scene();
 
@@ -81,6 +82,7 @@ const sketch = (p: p5) => {
         // 画像読み込み予定 sample
         img = new Img(p);
         img.preload(); 
+
     };
 
 
@@ -110,6 +112,30 @@ const sketch = (p: p5) => {
             if( scene.is(Scene.TITLE)) {
                 drawClear();
 
+                // sample for test
+                p.image( img.getImage(Img.ENEMY_UFO), 0, 100);
+                // draw test
+                p.image( img.getImage(Img.ENEMY_UFO),  50, 100, 48, 24, 0, 0, 48, 24);
+
+                // 左右反転
+                p.push();
+                p.translate(240, 0);
+                p.scale(-1, 1);
+                p.image( img.getImage(Img.ENEMY_UFO), 0, 0, 48, 24, 0, 0, 48, 24);
+                p.pop();
+
+                // TODO: 調整中
+                p.image( img.getImage(Img.ENEMY_UFO), 70, 30, 48, 24, 0, 0, 48, 24);
+                // p.push();
+                // p.translate(70+24, 50);
+                // p.scale(-1, 1);
+                // p.image( img.getImage(Img.ENEMY_UFO), -24, 0, 48, 24, 0, 0, 48, 24);
+                // p.pop();
+                img.drawImageFlipH( Img.ENEMY_UFO, 70, 50);
+
+                p.image( img.getImage(Img.ENEMY_UFO), 100, 150, 24, 24, 0, 0, 48, 24);
+                p.image( img.getImage(Img.ENEMY_UFO), 200, 100, -48, 24, 0, 0, 48, 24);
+
                 // TEST DRAW
                 p.fill(0,0,255);
                 p.textSize(24);
@@ -122,6 +148,7 @@ const sketch = (p: p5) => {
                 p.fill(255,0,0);
                 p.textSize(16);
                 p.text('PUSH ENTER', 60 ,232);
+
             }
             else
             if( scene.is(Scene.READY)) {
@@ -434,7 +461,7 @@ const sketch = (p: p5) => {
         if( scene.is(Scene.TITLE)) {
             console.log("Scene.TITLE");
             // キーが押されているかを調べる
-            if( true || p.keyIsPressed === true) {
+            if( p.keyIsPressed === true) {
                 scene.set(Scene.READY);
             }
         }
