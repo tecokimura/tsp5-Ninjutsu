@@ -49,10 +49,10 @@ export class Img {
     // ls -1 src/images | sed -e 's/.png$//'
     // を貼れるように並べる
     static PNG_FNAMES:string[] = [
-        'e0b1-bird1',
-        'e0b2-bird2',
-        'e1k1-kunai1',
-        'e1k2-kunai2',
+        'e1b1-bird1',
+        'e1b2-bird2',
+        'e2k1-kunai1',
+        'e2k2-kunai2',
         'e3s1-shuri1',
         'e3s2-shuri2',
         'e4s1-shinobi1',
