@@ -8,6 +8,10 @@ let scene = null;
 let isDraw = false;
 let img = null;
 let isDebug = true;
+let isDebugLog = true;
+let isDebugInfo= true;
+let isDebugRect= true;
+let isDebugHit = true;
 
 const sketch = (p: p5) => {
 
@@ -46,7 +50,7 @@ const sketch = (p: p5) => {
     // キーが押されていればtrue
     function isPushKey() {
         let is = (keyCodeHistory[0] != Def.P5_KEYCODE_NONE);
-        if(is) console.log("isPushKey:0="+keyCodeHistory[0]+",1="+keyCodeHistory[1]);
+        if(is && isDebugLog) console.log("isPushKey:0="+keyCodeHistory[0]+",1="+keyCodeHistory[1]);
         return is;
     }
 
@@ -55,14 +59,14 @@ const sketch = (p: p5) => {
     function isPushKeyNow() {
         let is = (keyCodeHistory[0] != Def.P5_KEYCODE_NONE
                && keyCodeHistory[1] == Def.P5_KEYCODE_NONE);
-        if(is) console.log("isPushKeyNow:0="+keyCodeHistory[0]+",1="+keyCodeHistory[1]);
+        if(is && isDebugLog) console.log("isPushKeyNow:0="+keyCodeHistory[0]+",1="+keyCodeHistory[1]);
         return is;
     }
     
     function isReleaseKeyNow() {
         let is = (keyCodeHistory[0] == Def.P5_KEYCODE_NONE
                && keyCodeHistory[1] != Def.P5_KEYCODE_NONE);
-        if(is) console.log("isReleaseKeyNow:0="+keyCodeHistory[0]+",1="+keyCodeHistory[1]);
+        if(is && isDebugLog) console.log("isReleaseKeyNow:0="+keyCodeHistory[0]+",1="+keyCodeHistory[1]);
         return is;
     }
 
@@ -88,13 +92,13 @@ const sketch = (p: p5) => {
 
     // 
     p.keyPressed = () => {
-        console.log("keyPressed:"+p.keyCode);
+        if(isDebugLog) console.log("keyPressed:"+p.keyCode);
         keyCodePre = p.keyCode;
     }
 
     // 
     p.keyReleased = () => {
-        console.log("keyReleased:"+p.keyCode);
+        if(isDebugLog) console.log("keyReleased:"+p.keyCode);
         keyCodePre = Def.P5_KEYCODE_NONE;
     }
 
@@ -112,31 +116,7 @@ const sketch = (p: p5) => {
             if( scene.is(Scene.TITLE)) {
                 drawClear();
 
-                // sample for test
-                p.image( img.getImage(Img.ENEMY_UFO), 0, 100);
-                // draw test
-                p.image( img.getImage(Img.ENEMY_UFO),  50, 100, 48, 24, 0, 0, 48, 24);
-
-                // 左右反転
-                p.push();
-                p.translate(240, 0);
-                p.scale(-1, 1);
-                p.image( img.getImage(Img.ENEMY_UFO), 0, 0, 48, 24, 0, 0, 48, 24);
-                p.pop();
-
-                // TODO: 調整中
-                p.image( img.getImage(Img.ENEMY_UFO), 70, 30, 48, 24, 0, 0, 48, 24);
-                // p.push();
-                // p.translate(70+24, 50);
-                // p.scale(-1, 1);
-                // p.image( img.getImage(Img.ENEMY_UFO), -24, 0, 48, 24, 0, 0, 48, 24);
-                // p.pop();
-                img.drawImageFlipH( Img.ENEMY_UFO, 70, 50);
-
-                p.image( img.getImage(Img.ENEMY_UFO), 100, 150, 24, 24, 0, 0, 48, 24);
-                p.image( img.getImage(Img.ENEMY_UFO), 200, 100, -48, 24, 0, 0, 48, 24);
-
-                // TEST DRAW
+                // Test title
                 p.fill(0,0,255);
                 p.textSize(24);
                 p.text('Ninjutsu!!', 50 ,82);
@@ -161,7 +141,8 @@ const sketch = (p: p5) => {
             if( scene.is(Scene.PLAY)) {
                 drawBg();
                 drawEnemy();
-                
+               
+                // TODO: いづれ関数にする
                 let imgNo = 0;
                 if(is_playkey_push) {
                     // アニメーション切替中か降下中か
@@ -178,12 +159,21 @@ const sketch = (p: p5) => {
                 }
 
                 img.drawImage(imgNo, playX, playY);
-                
+
+                if( isDebugRect ) {
+                    let imgBuf = img.getImage(imgNo);
+                    p.stroke(0,0,200);
+                    p.noFill();
+                    p.rect(playX, playY, imgBuf.width, imgBuf.height);
+                    p.noStroke();
+                }
                 
             }
 
+
+
             // for DEBUG
-            if( isDebug ) {
+            if( isDebugInfo ) {
                 drawDebugInfo(p);
             }
 
@@ -461,7 +451,7 @@ const sketch = (p: p5) => {
         if( scene.is(Scene.TITLE)) {
             console.log("Scene.TITLE");
             // キーが押されているかを調べる
-            if( p.keyIsPressed === true) {
+            if( true || p.keyIsPressed === true) {
                 scene.set(Scene.READY);
             }
         }
@@ -670,6 +660,14 @@ const sketch = (p: p5) => {
 
                 if( enemySp[i] < 0) img.drawImage(imgNo, enemyX[i], enemyY[i]);
                 else  img.drawImageFlipH(imgNo, enemyX[i], enemyY[i]);
+
+                if( isDebugRect ) {
+                    let imgBuf = img.getImage(imgNo);
+                    p.stroke(0,128,0);
+                    p.noFill();
+                    p.rect(enemyX[i], enemyY[i], imgBuf.width, imgBuf.height);
+                    p.noStroke();
+                }
 
                 // 敵の描画
                 // if(enemyImg[i] != Def.AREA_UFO)) {
