@@ -652,33 +652,24 @@ const sketch = (p: p5) => {
 
     /**
      * 敵（障害物の描画）
+     * のちのちのリファクタは必要そう
      */
     function drawEnemy() {
-        for(let i=0;i<Def.ENEMY_MAX;i++) {
+        let imgNo = 0;
+        for(let i=0; i<Def.ENEMY_MAX; i++) {
+
             if(Def.DATA_NONE < enemyY[i]) {
-                if( enemyImg[i] == Def.AREA_BIRD) {
-                    img.drawImage(Img.ENEMY_BIRD,enemyX[i],enemyY[i]);
-                }
+                if( enemyImg[i] == Def.AREA_UFO) imgNo = Img.ENEMY_UFO;
                 else
-                if( enemyImg[i] == Def.AREA_KUNAI) {
-                    img.drawImage(Img.ENEMY_KUNAI,enemyX[i],enemyY[i]);
-                }
+                if( enemyImg[i] == Def.AREA_SHINOBI) imgNo = Img.ENEMY_SHINOBI;
                 else
-                if( enemyImg[i] == Def.AREA_SHURI) {
-                    img.drawImage(Img.ENEMY_SHURIKEN,enemyX[i],enemyY[i]);
-                }
+                if( enemyImg[i] == Def.AREA_SHURI) imgNo = Img.ENEMY_SHURIKEN;
                 else
-                if( enemyImg[i] == Def.AREA_SHINOBI) {
-                    img.drawImage(Img.ENEMY_SHINOBI,enemyX[i],enemyY[i]);
-                }
-                else
-                if( enemyImg[i] == Def.AREA_UFO) {
-                    img.drawImage(Img.ENEMY_UFO,enemyX[i],enemyY[i]);
-                }
-                else
-                if( enemyImg[i] == Def.AREA_UFO) {
-                    img.drawImage(Img.ENEMY_BIRD1,enemyX[i],enemyY[i]);
-                }
+                if( enemyImg[i] == Def.AREA_KUNAI) imgNo = Img.ENEMY_KUNAI;
+                else   imgNo = Img.ENEMY_BIRD;
+
+                if( enemySp[i] < 0) img.drawImage(imgNo, enemyX[i], enemyY[i]);
+                else  img.drawImageFlipH(imgNo, enemyX[i], enemyY[i]);
 
                 // 敵の描画
                 // if(enemyImg[i] != Def.AREA_UFO)) {
