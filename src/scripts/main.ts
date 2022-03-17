@@ -11,7 +11,7 @@ let isDebug = true;
 let isDebugLog = true;
 let isDebugInfo= true;
 let isDebugRect= true;
-let isDebugHit = true;
+// let isDebugHit = true;
 
 const sketch = (p: p5) => {
 
