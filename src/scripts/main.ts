@@ -271,8 +271,8 @@ const sketch = (p: p5) => {
                 // 星出現
                 for(let i=0; i<Def.STAR_MAX; i++) {
                     if( starY[i] == Def.DATA_NONE && Def.AIR_LV_1 <= enemyAppearNum) {
-                        starY[i] = -40-(getRandInt()>>>1)%120;
-                        starX[i] = (getRandInt()>>>1)%Def.DISP_W;
+                        starY[i] = -40-(getRandInt()%120);
+                        starX[i] = (getRandInt()%Def.DISP_W);
                         break;
                     }
                 }
@@ -300,40 +300,34 @@ const sketch = (p: p5) => {
                         if( enemyAppearNum < Def.AIR_LV_0 ) {
                             if( enemies[i].add(Def.TYPE_BIRD) ) {
                                 enemyAppearNum += 70;
-                                break;
                             }
                         }
                         else
                         if( enemyAppearNum < Def.AIR_LV_1 ) {
                             if( enemies[i].add(Def.TYPE_KUNAI) ) {
                                 enemyAppearNum += 50;
-                                break;
                             }
                         }
                         else
                         if( enemyAppearNum < Def.AIR_LV_2 ) {
                             if( enemies[i].add(Def.TYPE_SHURI) ) {
                                 enemyAppearNum += 40;
-                                break;
                             }
                         }
                         else
                         if( enemyAppearNum < Def.AIR_LV_3 ) {
                             if( enemies[i].add(Def.TYPE_SHINOBI) ) {
                                 enemyAppearNum += 30;
-                                break;
                             }
                         }
                         else
                         if( enemyAppearNum < Def.AIR_LV_4 ) {
                             if( enemies[i].add(Def.TYPE_UFO) ) {
                                 enemyAppearNum += 20;
-                                break;
                             }
                         } else {
-                            if( enemies[i].add(Def.TYPE_BIRD) ) {
+                            if( enemies[i].add(getRandInt()%Def.TYPE_ALL) ) {
                                 enemyAppearNum += 10;
-                                break;
                             }
                         }
 

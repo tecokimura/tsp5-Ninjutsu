@@ -45,22 +45,27 @@ export class Enemy {
               case Def.TYPE_UFO:
                 this.type = Def.TYPE_UFO;
                 this.imgNo= Img.ENEMY_UFO;
+                this.spX   = (this.getRandInt() % 10 )+1;
                 break;
               case Def.TYPE_SHINOBI:
                 this.type = Def.TYPE_SHINOBI;
                 this.imgNo= Img.ENEMY_SHINOBI;
+                this.spX   = (this.getRandInt() % 8 )+1;
                 break;
               case Def.TYPE_SHURI:
                 this.type = Def.TYPE_SHURI;
                 this.imgNo= Img.ENEMY_SHURIKEN;
+                this.spX   = (this.getRandInt() % 6 )+1;
                 break;
               case Def.TYPE_KUNAI:
                 this.type = Def.TYPE_KUNAI;
                 this.imgNo= Img.ENEMY_KUNAI;
+                this.spX   = (this.getRandInt() % 4 )+1;
                 break;
               default:
                 this.type = Def.TYPE_BIRD;;
                 this.imgNo= Img.ENEMY_BIRD;
+                this.spX   = (this.getRandInt() % 2 )+1;
                 break;
             }
 
@@ -69,13 +74,10 @@ export class Enemy {
             this.posY = -40-((this.getRandInt()>>>1)%10);
             this.posX = this.getRandInt() % Def.DISP_W;
             this.time  = 0;
-            this.spX   = ((this.getRandInt()>>>1)% 3 )+1;
 
-            if( (this.getRandInt()>>>1)%2 == 0 )
+            if( this.getRandInt()%2 == 0 )
                 this.spX *= -1;
 
-            console.log("add enemy this");
-            console.log(this);
         }
 
         return this.isEnable();
@@ -92,9 +94,9 @@ export class Enemy {
         if(this.isEnable()) {
             this.posX += this.spX;
             if( (this.posX <= (0-48) && this.spX < 0)
-            ||  (240 <= this.posX && 0 < this.spX)
+            ||  (240 <= this.posX && 0 < this.spX) {
                 this.spX *= -1;
-                console.log("change sp="+this.spX);
+            }
         }
     }
 
@@ -105,7 +107,6 @@ export class Enemy {
             this.posY += pMoveY;
             if(Def.DISP_H+20 < this.posY) {
                 this.posY = Def.DATA_NONE;
-                console.log("adjust enemy");
             }
         }
     }
