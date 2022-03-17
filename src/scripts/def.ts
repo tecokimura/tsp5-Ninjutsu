@@ -130,12 +130,12 @@ export class Def {
     static P5_KEYCODE_Z:number     = 90;
 
     // enum みたいに定義
-    static AREA_BIRD = 0;
-    static AREA_KUNAI = 1;
-    static AREA_SHURI = 2;
-    static AREA_SHINOBI= 3;
-    static AREA_UFO  = 4;
-    static AREA_ALL  = 5;
+    static TYPE_BIRD = 0;
+    static TYPE_KUNAI = 1;
+    static TYPE_SHURI = 2;
+    static TYPE_SHINOBI= 3;
+    static TYPE_UFO  = 4;
+    static TYPE_ALL  = 5;
 
     static SPEED_SP0 = 0;
     static SPEED_SP1 = 1;
