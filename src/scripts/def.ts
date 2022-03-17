@@ -115,13 +115,15 @@ export class Def {
     // p5 keyCode
     // キーコード定義(p5にありそうだけど見つからなかったので独自に定義する)
     // https://keycode.info/
-    static P5_KEYCODE_NONE:number  = -1;
+    static P5_KEYCODE_NONE:number  = 0; // Original for No push
+    static P5_KEYCODE_ANY:number   = 1; // Original for any key
+    // ------
     static P5_KEYCODE_ENTER:number = 13;
     static P5_KEYCODE_SPACE:number = 32;
     static P5_KEYCODE_LEFT:number  = 37;
     static P5_KEYCODE_UP:number    = 38;
     static P5_KEYCODE_RIGHT:number = 39;
-    static P5_KEYCODE_DOWN:number    = 40;
+    static P5_KEYCODE_DOWN:number  = 40;
     static P5_KEYCODE_A:number     = 65;
     static P5_KEYCODE_S:number     = 83;
     static P5_KEYCODE_X:number     = 88;
