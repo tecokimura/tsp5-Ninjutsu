@@ -22,6 +22,11 @@ export class Util {
         return ret;
     }
 
+    // 小数点を切り捨てる
+    static mathFloor(num:number) :number {
+        return p.floor(num);
+    }
+
     static debug(str:string) {
         if( Util.isDebugLog ) {
             console.log(str);

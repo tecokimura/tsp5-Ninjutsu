@@ -1,9 +1,10 @@
 import p5 from "p5";
 import {Def} from "./def";
-import {Scene} from "./scene";
 import {Img} from "./img";
-import {Enemy} from "./enemy";
 import {Util} from "./util";
+import {Player} from "./player";
+import {Enemy} from "./enemy";
+import {Scene} from "./scene";
 
 
 let scene = null;
@@ -17,13 +18,13 @@ let isDebugRect= true;
 const sketch = (p: p5) => {
 
     // Player(Ninja) data
-    let playX:number = Def.PLAY_INIT_POS_X; // X位置
-    let playY:number = Def.PLAY_INIT_POS_Y; // y位置
+    let player = null;
+    // let playX:number = Def.PLAY_INIT_POS_X; // X位置
+    // let playY:number = Def.PLAY_INIT_POS_Y; // y位置
     let playVY:number = 0;  // 上昇速度
     let playH:number = 0; // 高さ
     let playTime:number = 0; // 経過時間
 
-    // TODO:クラス化する優先度低め
     let enemies: Array<Enemey>  = new Array(Def.ENEMY_MAX);
     
     let appearAirLevel = 0;
@@ -367,9 +368,10 @@ const sketch = (p: p5) => {
     function init() {
         let i=0;
 
-        playY = Def.PLAY_INIT_POS_Y;
-        playVY= 0;
-        playH = 0;
+        player = new Player();
+        // playY = Def.PLAY_INIT_POS_Y;
+        // playVY= 0;
+        // playH = 0;
         appearAirLevel = 0;
 
 
@@ -442,50 +444,54 @@ const sketch = (p: p5) => {
             moveCloudEnemy();
 
             // キーを押しているかどうか
-            if(playH > 64) {
+            if(player.high > 64) {
                 if( isPushKey() ) is_playkey_push = true;
                 if( isPushKey() == false ) is_playkey_push = false;
                 if( isPushKey(Def.P5_KEYCODE_Z) ) {
                     scene.set(Scene.GAMEOVER);
-                    playVY *= 1.25; // いて！みたいにちょっと上に飛ばす(びっくりした感じを出す)
+                    player.setGameover();
+                    // playVY *= 1.25; 
                 }
             }
+           
+            player.isKeyDown(is_playkey_push);
+            // // ボタンを押していたら上昇速度を下げる
+            // if( is_playkey_push) {
+            //     playVY--;
+            // }
             
-            // ボタンを押していたら上昇速度を下げる
-            if( is_playkey_push) {
-                playVY--;
-            }
-            
-            // ボタンを押していない && MAXスピードではなければ
-            if(is_playkey_push== false && playVY < Def.PLAY_MAX_VY ) {
-                // 徐々に速度を上げる
-                playVY++;
-            }
+            // // ボタンを押していない && MAXスピードではなければ
+            // if(is_playkey_push== false && playVY < Def.PLAY_MAX_VY ) {
+            //     // 徐々に速度を上げる
+            //     playVY++;
+            // }
 
-            if(playH < 100) {
-                // ある程度の高さまで行っていれば上昇しすぎないように調整する
-                playY += -4;
-                playVY = 8;
-            } else {
-                // 速度分を移動させる
-                playY -= mathFloor(playVY/2);
-            }
+            // if(playH < 100) {
+            //     // ある程度の高さまで行っていれば上昇しすぎないように調整する
+            //     playY += -4;
+            //     playVY = 8;
+            // } else {
+            //     // 速度分を移動させる
+            //     playY -= mathFloor(playVY/2);
+            // }
 
             // 風船がまだ画面の中にある場合
-            let i = Def.PLAY_MAX_DRAW_POS_Y - playY;
-            if( 0 < i) {
+            // プレイヤーが動いた分他のものを動かす
+            // let adjustH = Def.PLAY_MAX_DRAW_POS_Y - player.posY;
+            let adjustH = player.adjustHigh(Def.PLAY_MAX_DRAW_POS_Y);
+            if( 0 < adjustH) {
 
-                // カウンターストップ
-                if(playH+i < 99999) {
-                    playH+=i;
-                } else {
-                    playH = 99999;
-                }
+                // // カウンターストップ
+                // if(playH+adjustH < 99999) {
+                //     playH+=adjustH;
+                // } else {
+                //     playH = 99999;
+                // }
 
                 // 敵が存在するのなら プレイヤーが移動した分を移動させる
                 // TODO: 変な処理だがリファクタはまた別に行う
                 for(let k=0;k<enemies.length;k++) {
-                    enemies[k].adjustDispPos(i); 
+                    enemies[k].adjustDispPos(adjustH); 
                 }
 
                 //
@@ -495,10 +501,10 @@ const sketch = (p: p5) => {
 
                         if( (starX[j]&1)==1 ) {
                             // Xが奇数なら普通に落ちる
-                            starY[j]+=i;
+                            starY[j]+=adjustH;
                         } else {
                             // Xが偶数の場合は1.5倍で流れる
-                            starY[j]+=i+(i/2);
+                            starY[j]+=adjustH+(adjustH/2);
                         }
 
                         if(starY[j]>260) starY[j]=Def.DATA_NONE;
@@ -511,10 +517,10 @@ const sketch = (p: p5) => {
 
                         if( (cloudX[j]&1)==1 ) {
                             // Xが奇数なら普通に落ちる
-                            cloudY[j]+=i;
+                            cloudY[j]+=adjustH;
                         } else {
                             // Xが偶数の場合は1.5倍で流れる
-                            cloudY[j]+=i+(i/2);
+                            cloudY[j]+=adjustH+(adjustH/2);
                         }
 
                         if(cloudY[j]>260) cloudY[j]=Def.DATA_NONE;
@@ -522,9 +528,8 @@ const sketch = (p: p5) => {
                     }
                 }
 
-                // TODO: PlayerY 位置を調整する
-                // ここをコメントアウトすると上に飛び去ってしまう
-                if( playY < Def.PLAY_MAX_DRAW_POS_Y) playY=Def.PLAY_MAX_DRAW_POS_Y;
+                // // ここをコメントアウトすると上に飛び去ってしまう
+                // if( playY < Def.PLAY_MAX_DRAW_POS_Y) playY=Def.PLAY_MAX_DRAW_POS_Y;
                 
             }
 
@@ -532,10 +537,15 @@ const sketch = (p: p5) => {
             addEnemy();
 
             // 画面下に切れた場合もゲームオーバー
-            if(playY>=Def.DISP_H) {
+            if( checkOverUnder(Def.DISP_H) ) {
                 // pyon_time = 0;
                 scene.set(Scene.GAMEOVER);
+                player.setGameover();
             }
+            // if(playY>=Def.DISP_H) {
+            //     // pyon_time = 0;
+            //     scene.set(Scene.GAMEOVER);
+            // }
 
         }
         else
@@ -544,6 +554,9 @@ const sketch = (p: p5) => {
 
             moveCloudEnemy();
 
+            // 
+            // TODO: リファクタ player でclassに書き換える
+            // 
             if( playY < Def.DISP_H) {
                 playVY -= 2;
                 playY -= mathFloor(playVY/2);
