@@ -24,7 +24,7 @@ export class Util {
 
     // 小数点を切り捨てる
     static mathFloor(num:number) :number {
-        return p.floor(num);
+        return Util.p5.floor(num);
     }
 
     static debug(str:string) {

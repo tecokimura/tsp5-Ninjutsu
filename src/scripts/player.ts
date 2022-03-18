@@ -26,11 +26,16 @@ export class Player extends Obj{
     init() {
         this.time = 0;
         this.type = Def.DATA_NONE;
-        this.posX = 0;
+        this.posX = Def.PLAY_INIT_POS_X;
         this.posY = Def.PLAY_INIT_POS_Y;
         this.spX  = 0;
         this.spY  = 0;
         this.imgNo= 0;
+
+        this.hitOfsX = 2;
+        this.hitOfsY = 15;
+        this.hitOfsW = 28;
+        this.hitOfsH = 10;
     }
 
     // 移動処理
@@ -55,33 +60,19 @@ export class Player extends Obj{
             this.posY -= Util.mathFloor(this.spVY/2);
         }
 
-        // 画面に映らなくなるので一番上の位置以上行かないように調整
-        if( playY < Def.PLAY_MAX_DRAW_POS_Y) {
-            playY=Def.PLAY_MAX_DRAW_POS_Y;
-        }
-    }
-
-    draw() {
-    }
-
-    // Utilにimgを移すかはのちのち検討する
-    draw(img:p5.Image) {
-    }
-
-    setGameover() {
-        // いて！みたいにちょっと上に飛ばす(びっくりした感じを出す)
-        this.spVY *= 1.25;
     }
 
     // 上に上昇しすぎないように描画位置の調整
     // 合わせて、他のオブジェクトを調整する値を返す
     adjustHigh(MAX_POS_Y:number) :number {
         let aH = MAX_POS_Y - this.posY;
+        Util.debug("aH="+aH);
 
         if( 0 < aH) {
             // カウンターストップ
-            this.high += aH;
-            if( 99999 < this.high + aH < 99999) {
+            if(this.high+aH < 99999) {
+                this.high += aH;
+            } else {
                 this.high = 99999;
             }
         }
@@ -92,6 +83,68 @@ export class Player extends Obj{
     // 下を超えてないか調べる
     checkOverUnder(MAX_DISP_Y:number):boolean {
         return (MAX_DISP_Y <= this.posY);
+    }
+    // Utilにimgを移すかはのちのち検討する
+    draw(img:p5.Image, isPushKey, isPushNow, isReleaseNow) {
+
+        // proc で決めたほうが良さそう
+        let imgNo = 0;
+        if( isPushKey ) {
+            // アニメーション切替中か降下中か
+            if( isPushNow ) {
+                imgNo = Img.NINJA_DOWN;
+            } else {
+                imgNo = Img.NINJA_DOWN2;
+            }
+        } else {
+            // アニメーション切替中か上昇中か
+            if( isReleaseNow ) {
+                imgNo = Img.NINJA_DOWN;
+            } else {
+                imgNo = Util.mathFloor((this.time % 20)/5) % Def.NINJA_FLY_ANIM.length;
+                imgNo = Def.NINJA_FLY_ANIM[imgNo];
+            }
+        }
+
+        img.drawImage(imgNo, this.posX, this.posY);
+
+
+        if( Util.isDebugRect ) {
+            let imgBuf = img.getImage(imgNo);
+            img.p.stroke(0,127,255);
+            img.p.noFill();
+            img.p.rect(this.posX, this.posY, imgBuf.width, imgBuf.height);
+            img.p.noStroke();
+        }
+
+        if( Util.isDebugHit ) {
+            img.p.stroke(170,225,250);
+            img.p.noFill();
+            img.p.rect(
+                this.posX+this.hitOfsX,
+                this.posY+this.hitOfsY,
+                this.hitOfsW,
+                this.hitOfsH
+            );
+            img.p.noStroke();
+        }
+    }
+
+    drawCrush(img:p5.Image) {
+        img.drawImage(img.NINJA_CRASH, this.posX, this.posY);
+    }
+
+    setGameover() {
+        // いて！みたいにちょっと上に飛ばす(びっくりした感じを出す)
+        this.spVY *= 1.25;
+    }
+
+
+    moveInGameover(MAX_DISP_H:number) {
+        if( this.posY < MAX_DISP_H) {
+            this.spVY -= 2;
+            this.posY -= Util.mathFloor(this.spVY/2);
+        }
     }
 
 }
