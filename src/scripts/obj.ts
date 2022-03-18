@@ -28,6 +28,11 @@ export class Obj {
         this.hitOfsH = 8;
     }
 
+    countTime(add:number=1):number {
+        this.time += add;
+        return this.time;
+    }
+
     /**
      * 当たり判定をとる
      */

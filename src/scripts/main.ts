@@ -21,9 +21,9 @@ const sketch = (p: p5) => {
     let player = null;
     // let playX:number = Def.PLAY_INIT_POS_X; // X位置
     // let playY:number = Def.PLAY_INIT_POS_Y; // y位置
-    let playVY:number = 0;  // 上昇速度
-    let playH:number = 0; // 高さ
-    let playTime:number = 0; // 経過時間
+    // let playVY:number = 0;  // 上昇速度
+    // let playH:number = 0; // 高さ
+    // let playTime:number = 0; // 経過時間
 
     let enemies: Array<Enemey>  = new Array(Def.ENEMY_MAX);
     
@@ -154,32 +154,9 @@ const sketch = (p: p5) => {
             if( scene.is(Scene.PLAY)) {
                 drawBg();
                 drawEnemy();
+
+                player.draw(img, is_playkey_push, isPushKeyNow(), isReleaseKeyNow());
                
-                // TODO: いづれ関数にする
-                let imgNo = 0;
-                if(is_playkey_push) {
-                    // アニメーション切替中か降下中か
-                    if(isPushKeyNow())
-                        imgNo = Img.NINJA_DOWN;
-                    else
-                        imgNo = Img.NINJA_DOWN2;
-                } else {
-                    // アニメーション切替中か上昇中か
-                    if(isReleaseKeyNow())
-                        imgNo = Img.NINJA_DOWN;
-                    else
-                        imgNo = Def.NINJA_FLY_ANIM[mathFloor((playTime % 20)/5) % Def.NINJA_FLY_ANIM.length];
-                }
-
-                img.drawImage(imgNo, playX, playY);
-
-                if( Util.isDebugRect ) {
-                    let imgBuf = img.getImage(imgNo);
-                    p.stroke(0,127,255);
-                    p.noFill();
-                    p.rect(playX, playY, imgBuf.width, imgBuf.height);
-                    p.noStroke();
-                }
                 
             }
             else
@@ -187,8 +164,8 @@ const sketch = (p: p5) => {
                 drawBg();
                 drawEnemy();
                 
-                if( playY < Def.DISP_H ) {
-                    img.drawImage(Img.NINJA_CRASH, playX, playY);
+                if( player.posY < Def.DISP_H ) {
+                    player.drawCrush();
                 }
             }
 
@@ -213,13 +190,13 @@ const sketch = (p: p5) => {
             let addy = 12;
             p.fill(255,0,0);
             p.textSize(y+=addy);
-            p.text('SC:'+scene.present,   x, y+=addy);
-            p.text('FR:'+scene.count(),   x, y+=addy);
-            p.text('PX:'+playX,          x, y+=addy);
-            p.text('PY:'+playY,          x, y+=addy);
-            p.text('PV:'+playVY,         x, y+=addy);
-            p.text('PH:'+playH,          x, y+=addy);
-            p.text('PT:'+playTime,       x, y+=addy);
+            p.text('SC:'+scene.present,  x, y+=addy);
+            p.text('FR:'+scene.count(),  x, y+=addy);
+            p.text('PX:'+player.posX,    x, y+=addy);
+            p.text('PY:'+player.posY,    x, y+=addy);
+            p.text('PV:'+player.spVY,    x, y+=addy);
+            p.text('PH:'+player.high,    x, y+=addy);
+            p.text('PT:'+player.time,    x, y+=addy);
             p.text('eA:'+appearAirLevel, x, y+=addy);
         }
     }
@@ -268,8 +245,8 @@ const sketch = (p: p5) => {
     };
 
     function addEnemy() {
-        if( appearAirLevel <= playH ) {
-            if( Def.FIRST_ENEMY_POS <= playH) {
+        if( appearAirLevel <= player.high ) {
+            if( Def.FIRST_ENEMY_POS <= player.high) {
                 // 星出現
                 for(let i=0; i<Def.STAR_MAX; i++) {
                     if( starY[i] == Def.DATA_NONE && Def.AIR_LV_1 <= appearAirLevel) {
@@ -333,12 +310,13 @@ const sketch = (p: p5) => {
                             }
                         }
 
+                        Util.debug("added Enemy");
                         break;
                     }
                 }
             } else {
                 // 敵がたまらないようにリセット
-                appearAirLevel = playH + 80;
+                appearAirLevel = player.high + 80;
             }
         }
     }
@@ -369,6 +347,7 @@ const sketch = (p: p5) => {
         let i=0;
 
         player = new Player();
+        // player.posX = Def.PLAY_INIT_POS_X;
         // playY = Def.PLAY_INIT_POS_Y;
         // playVY= 0;
         // playH = 0;
@@ -454,7 +433,7 @@ const sketch = (p: p5) => {
                 }
             }
            
-            player.isKeyDown(is_playkey_push);
+            player.move(is_playkey_push);
             // // ボタンを押していたら上昇速度を下げる
             // if( is_playkey_push) {
             //     playVY--;
@@ -529,7 +508,8 @@ const sketch = (p: p5) => {
                 }
 
                 // // ここをコメントアウトすると上に飛び去ってしまう
-                // if( playY < Def.PLAY_MAX_DRAW_POS_Y) playY=Def.PLAY_MAX_DRAW_POS_Y;
+                if( player.posY < Def.PLAY_MAX_DRAW_POS_Y)
+                    player.posY = Def.PLAY_MAX_DRAW_POS_Y;
                 
             }
 
@@ -537,7 +517,7 @@ const sketch = (p: p5) => {
             addEnemy();
 
             // 画面下に切れた場合もゲームオーバー
-            if( checkOverUnder(Def.DISP_H) ) {
+            if( player.checkOverUnder(Def.DISP_H) ) {
                 // pyon_time = 0;
                 scene.set(Scene.GAMEOVER);
                 player.setGameover();
@@ -555,32 +535,27 @@ const sketch = (p: p5) => {
             moveCloudEnemy();
 
             // 
-            // TODO: リファクタ player でclassに書き換える
-            // 
-            if( playY < Def.DISP_H) {
-                playVY -= 2;
-                playY -= mathFloor(playVY/2);
-            }
+            player.moveInGameover(Def.DISP_H);
         }
 
-        playTime++;
+        // play.Time++;
+        player.countTime();
         scene.counting();
 
         isDraw = true;
         repeatProc();
     }
 
-    function mathFloor(num:number):number {
-        return p.floor(num);
-    }
+    // function mathFloor(num:number):number {
+    //     return p.floor(num);
+    // }
 
 
     /**
       * 画面を単色で描画してクリアする
-      * 色を引数で渡せるとベスト
       */
-    function drawClear() {
-        p.fill(0, 0, 0);
+    function drawClear(r:number=0, g:number=0, b:number=0) {
+        p.fill(r, g, b);
         p.rect(0, 0, Def.DISP_W, Def.DISP_H);
     }
 
@@ -597,7 +572,6 @@ const sketch = (p: p5) => {
         // 描画クリア
         if(isClear) drawClear();
 
-
         let rgbi = (appearAirLevel/170);
         if( Def.BG_COLOR_RGBs.length - 12 < rgbi ) {
             rgbi = Def.BG_COLOR_RGBs.length - 12;
@@ -605,14 +579,13 @@ const sketch = (p: p5) => {
         
         // 背景スクロール中
         for(i=0;i<12;i++) {
-            rgbs = Def.BG_COLOR_RGBs[mathFloor(i+rgbi)];
+            rgbs = Def.BG_COLOR_RGBs[Util.mathFloor(i+rgbi)];
             p.fill(rgbs[0],rgbs[1],rgbs[2]);
             p.rect(0, 220-(i*20), Def.DISP_W, 20);
         }
 
-
-        if(    (appearAirLevel >= Def.AIR_LV_1 && appearAirLevel < Def.AIR_LV_3)
-        ||    appearAirLevel >= Def.AIR_LV_4)    //大気圏-宇宙
+        if( (appearAirLevel >= Def.AIR_LV_1 && appearAirLevel < Def.AIR_LV_3)
+        ||   appearAirLevel >= Def.AIR_LV_4)    //大気圏-宇宙
         {
             for(i=0;i<Def.STAR_MAX;i++)//星
             {
@@ -633,8 +606,8 @@ const sketch = (p: p5) => {
 
         }
 
-        // 地面の描画
-        i = playH + 210;
+        // TODO:地面の描画
+        i = player.high + 210;
         if( i < 210+30) {
             // とりあえず適当背景を描画する
             p.fill(64,125,64);
