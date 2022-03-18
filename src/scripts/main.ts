@@ -3,6 +3,7 @@ import {Def} from "./def";
 import {Scene} from "./scene";
 import {Img} from "./img";
 import {Enemy} from "./enemy";
+import {Util} from "./util";
 
 
 let scene = null;
@@ -12,7 +13,6 @@ let isDebug = true;
 let isDebugLog = true;
 let isDebugInfo= true;
 let isDebugRect= true;
-// let isDebugHit = true;
 
 const sketch = (p: p5) => {
 
@@ -25,15 +25,8 @@ const sketch = (p: p5) => {
 
     // TODO:クラス化する優先度低め
     let enemies: Array<Enemey>  = new Array(Def.ENEMY_MAX);
-    // let enemyX: Array<number>   = new Array(Def.ENEMY_MAX);
-    // let enemyY: Array<number>   = new Array(Def.ENEMY_MAX);
-    // let enemyImg: Array<number> = new Array(Def.ENEMY_MAX);
-    // let enemyTime: Array<number>= new Array(Def.ENEMY_MAX);
-    // let enemySp: Array<number>  = new Array(Def.ENEMY_MAX);
-    let enemyAppearNum = 0;
-
-    let enemyImgArea= Def.TYPE_BIRD; // 敵の絵の範囲
-    let enemySpArea = Def.SPEED_SP1; // 敵のスピードの範囲
+    
+    let appearAirLevel = 0;
 
     // 星
     let starX: Array<number> = new Array(Def.STAR_MAX);    // 星x座標
@@ -60,9 +53,7 @@ const sketch = (p: p5) => {
                 is = (keyCodeHistory[0] == code);
             }
 
-            if( isDebugLog ) {
-                console.log("isPushKey:0="+keyCodeHistory[0]+",1="+keyCodeHistory[1]);
-            }
+            Util.debug("isPushKey:0="+keyCodeHistory[0]+",1="+keyCodeHistory[1]);
         }
         return is;
     }
@@ -72,14 +63,14 @@ const sketch = (p: p5) => {
     function isPushKeyNow() {
         let is = (keyCodeHistory[0] != Def.P5_KEYCODE_NONE
                && keyCodeHistory[1] == Def.P5_KEYCODE_NONE);
-        if(is && isDebugLog) console.log("isPushKeyNow:0="+keyCodeHistory[0]+",1="+keyCodeHistory[1]);
+        if(is) Util.debug("isPushKeyNow:0="+keyCodeHistory[0]+",1="+keyCodeHistory[1]);
         return is;
     }
     
     function isReleaseKeyNow() {
         let is = (keyCodeHistory[0] == Def.P5_KEYCODE_NONE
                && keyCodeHistory[1] != Def.P5_KEYCODE_NONE);
-        if(is && isDebugLog) console.log("isReleaseKeyNow:0="+keyCodeHistory[0]+",1="+keyCodeHistory[1]);
+        if(is) Util.debug("isReleaseKeyNow:0="+keyCodeHistory[0]+",1="+keyCodeHistory[1]);
         return is;
     }
 
@@ -89,6 +80,14 @@ const sketch = (p: p5) => {
         p.angleMode(p.DEGREES);
 
         scene = new Scene();
+
+        // Utilにp5を設定
+        Util.setP5(p);
+        Util.isDebug = true;
+        Util.isDebugLog = true;
+        Util.isDebugRect = true;
+        Util.isDebugInfo = true;
+        Util.isDebugHit = true;
 
         init();
         proc();
@@ -105,13 +104,13 @@ const sketch = (p: p5) => {
 
     // 
     p.keyPressed = () => {
-        if(isDebugLog) console.log("keyPressed:"+p.keyCode);
+        Util.debug("keyPressed:"+p.keyCode);
         keyCodePre = p.keyCode;
     }
 
     // 
     p.keyReleased = () => {
-        if(isDebugLog) console.log("keyReleased:"+p.keyCode);
+        Util.debug("keyReleased:"+p.keyCode);
         keyCodePre = Def.P5_KEYCODE_NONE;
     }
 
@@ -173,9 +172,9 @@ const sketch = (p: p5) => {
 
                 img.drawImage(imgNo, playX, playY);
 
-                if( isDebugRect ) {
+                if( Util.isDebugRect ) {
                     let imgBuf = img.getImage(imgNo);
-                    p.stroke(0,0,200);
+                    p.stroke(0,127,255);
                     p.noFill();
                     p.rect(playX, playY, imgBuf.width, imgBuf.height);
                     p.noStroke();
@@ -195,11 +194,11 @@ const sketch = (p: p5) => {
 
 
             // for DEBUG
-            if( isDebugInfo ) {
+            if( Util.isDebugInfo ) {
                 drawDebugInfo(p);
             }
 
-            // console.log("in draw");
+            // Util.debug("in draw");
         }
         // draw()
     }
@@ -207,19 +206,21 @@ const sketch = (p: p5) => {
     // Debug画面表示
     // Player情報などの表示
     function drawDebugInfo(p) {
-        let x = 5;
-        let y = 0;
-        let addy = 12;
-        p.fill(255,0,0);
-        p.textSize(y+=addy);
-        p.text('S:'+scene.present,   x, y+=addy);
-        p.text('F:'+scene.count(),   x, y+=addy);
-        p.text('PX:'+playX,          x, y+=addy);
-        p.text('PY:'+playY,          x, y+=addy);
-        p.text('PV:'+playVY,         x, y+=addy);
-        p.text('PH:'+playH,          x, y+=addy);
-        p.text('PT:'+playTime,       x, y+=addy);
-        p.text('eA:'+enemyAppearNum, x, y+=addy);
+        if(Util.isDebugInfo) {
+            let x = 5;
+            let y = 0;
+            let addy = 12;
+            p.fill(255,0,0);
+            p.textSize(y+=addy);
+            p.text('SC:'+scene.present,   x, y+=addy);
+            p.text('FR:'+scene.count(),   x, y+=addy);
+            p.text('PX:'+playX,          x, y+=addy);
+            p.text('PY:'+playY,          x, y+=addy);
+            p.text('PV:'+playVY,         x, y+=addy);
+            p.text('PH:'+playH,          x, y+=addy);
+            p.text('PT:'+playTime,       x, y+=addy);
+            p.text('eA:'+appearAirLevel, x, y+=addy);
+        }
     }
 
     // Ready の時のアニメーション
@@ -266,11 +267,11 @@ const sketch = (p: p5) => {
     };
 
     function addEnemy() {
-        if( enemyAppearNum <= playH ) {
+        if( appearAirLevel <= playH ) {
             if( Def.FIRST_ENEMY_POS <= playH) {
                 // 星出現
                 for(let i=0; i<Def.STAR_MAX; i++) {
-                    if( starY[i] == Def.DATA_NONE && Def.AIR_LV_1 <= enemyAppearNum) {
+                    if( starY[i] == Def.DATA_NONE && Def.AIR_LV_1 <= appearAirLevel) {
                         starY[i] = -40-(getRandInt()%120);
                         starX[i] = (getRandInt()%Def.DISP_W);
                         break;
@@ -280,7 +281,7 @@ const sketch = (p: p5) => {
                 // 雲出現
                 for(let i=0; i<Def.CLOUD_MAX; i++) {
                     if( cloudY[i] == Def.DATA_NONE
-                    &&  (enemyAppearNum <= Def.AIR_LV_1 || Def.AIR_LV_3 <= enemyAppearNum) ) {
+                    &&  (appearAirLevel <= Def.AIR_LV_1 || Def.AIR_LV_3 <= appearAirLevel) ) {
                         cloudY[i]  = -40-(getRandInt()>>>1)%20;
                         cloudX[i]  = (getRandInt()>>>1)%Def.DISP_W;
                         cloudZ[i]  = (getRandInt()>>>1)%2;
@@ -297,37 +298,37 @@ const sketch = (p: p5) => {
                 
                 for(let i=0; i<enemies.length; i++) {
                     if( enemies[i].isEnable() == false) {
-                        if( enemyAppearNum < Def.AIR_LV_0 ) {
+                        if( appearAirLevel < Def.AIR_LV_0 ) {
                             if( enemies[i].add(Def.TYPE_BIRD) ) {
-                                enemyAppearNum += 70;
+                                appearAirLevel += 70;
                             }
                         }
                         else
-                        if( enemyAppearNum < Def.AIR_LV_1 ) {
+                        if( appearAirLevel < Def.AIR_LV_1 ) {
                             if( enemies[i].add(Def.TYPE_KUNAI) ) {
-                                enemyAppearNum += 50;
+                                appearAirLevel += 50;
                             }
                         }
                         else
-                        if( enemyAppearNum < Def.AIR_LV_2 ) {
+                        if( appearAirLevel < Def.AIR_LV_2 ) {
                             if( enemies[i].add(Def.TYPE_SHURI) ) {
-                                enemyAppearNum += 40;
+                                appearAirLevel += 40;
                             }
                         }
                         else
-                        if( enemyAppearNum < Def.AIR_LV_3 ) {
+                        if( appearAirLevel < Def.AIR_LV_3 ) {
                             if( enemies[i].add(Def.TYPE_SHINOBI) ) {
-                                enemyAppearNum += 30;
+                                appearAirLevel += 30;
                             }
                         }
                         else
-                        if( enemyAppearNum < Def.AIR_LV_4 ) {
+                        if( appearAirLevel < Def.AIR_LV_4 ) {
                             if( enemies[i].add(Def.TYPE_UFO) ) {
-                                enemyAppearNum += 20;
+                                appearAirLevel += 20;
                             }
                         } else {
                             if( enemies[i].add(getRandInt()%Def.TYPE_ALL) ) {
-                                enemyAppearNum += 10;
+                                appearAirLevel += 10;
                             }
                         }
 
@@ -336,7 +337,7 @@ const sketch = (p: p5) => {
                 }
             } else {
                 // 敵がたまらないようにリセット
-                enemyAppearNum = playH + 80;
+                appearAirLevel = playH + 80;
             }
         }
     }
@@ -358,11 +359,9 @@ const sketch = (p: p5) => {
 
     /**
      * 整数の乱数を取得する
-     * 1000はなんとなく
-     * https://p5js.org/reference/#/p5/random
      */
     function getRandInt():number {
-        return p.round(p.random(1000));
+        return Util.getRandInt();
     }
 
     function init() {
@@ -371,7 +370,7 @@ const sketch = (p: p5) => {
         playY = Def.PLAY_INIT_POS_Y;
         playVY= 0;
         playH = 0;
-        enemyAppearNum = 0;
+        appearAirLevel = 0;
 
 
         for(let i=0;i<Def.STAR_MAX;    i++) starY[i]  = Def.DATA_NONE;
@@ -387,7 +386,7 @@ const sketch = (p: p5) => {
 
     function proc() {
         isDraw = false;
-        // console.log("in proc");
+        // Util.debug("in proc");
 
         //
         // KEY CODE 更新
@@ -399,9 +398,8 @@ const sketch = (p: p5) => {
 
         // キーが押しっぱなし
         if(p.keyIsPressed === true) {
-            // Enterしか押せないので外す
             keyCodePre = p.keyCode;
-            if( isDebugLog ) console.log('kCH='+keyCodeHistory[1]);
+            Util.debug('kCH='+keyCodeHistory[1]);
         }
 
         keyCodeHistory[0] = keyCodePre;
@@ -409,24 +407,24 @@ const sketch = (p: p5) => {
 
 
         if( scene.is(Scene.INIT) ) {
-            console.log("Scene.INIT");
+            Util.debug("Scene.INIT");
             if(scene.count() > 10) {
                 scene.set(Scene.LOADING);
             }
         }
         else
         if( scene.is(Scene.LOADING) ) {
-            console.log("Scene.LOADING");
+            Util.debug("Scene.LOADING");
 
             // TODO: 画像読み込みが完了しているかチェックする
-            if( isDebug ) {
+            if( Util.isDebug ) {
                 scene.set(Scene.TITLE);
             }
 
         }
         else
         if( scene.is(Scene.TITLE)) {
-            console.log("Scene.TITLE");
+            Util.debug("Scene.TITLE");
             // キーが押されているかを調べる
             if( true || p.keyIsPressed === true) {
                 scene.set(Scene.READY);
@@ -434,7 +432,7 @@ const sketch = (p: p5) => {
         }
         else
         if( scene.is(Scene.READY)) {
-            if(scene.count() > 60 || isDebug) {
+            if(scene.count() > 60 || Util.isDebug) {
                 scene.set(Scene.PLAY);
             }
         }
@@ -542,7 +540,7 @@ const sketch = (p: p5) => {
         }
         else
         if( scene.is(Scene.GAMEOVER)) {
-            console.log("Scene.GAMEOVER");
+            Util.debug("Scene.GAMEOVER");
 
             moveCloudEnemy();
 
@@ -587,7 +585,7 @@ const sketch = (p: p5) => {
         if(isClear) drawClear();
 
 
-        let rgbi = (enemyAppearNum/170);
+        let rgbi = (appearAirLevel/170);
         if( Def.BG_COLOR_RGBs.length - 12 < rgbi ) {
             rgbi = Def.BG_COLOR_RGBs.length - 12;
         }
@@ -600,8 +598,8 @@ const sketch = (p: p5) => {
         }
 
 
-        if(    (enemyAppearNum >= Def.AIR_LV_1 && enemyAppearNum < Def.AIR_LV_3)
-        ||    enemyAppearNum >= Def.AIR_LV_4)    //大気圏-宇宙
+        if(    (appearAirLevel >= Def.AIR_LV_1 && appearAirLevel < Def.AIR_LV_3)
+        ||    appearAirLevel >= Def.AIR_LV_4)    //大気圏-宇宙
         {
             for(i=0;i<Def.STAR_MAX;i++)//星
             {
@@ -610,7 +608,7 @@ const sketch = (p: p5) => {
             }
         }
 
-        if( enemyAppearNum <= Def.AIR_LV_2 || enemyAppearNum >= Def.AIR_LV_3 )
+        if( appearAirLevel <= Def.AIR_LV_2 || appearAirLevel >= Def.AIR_LV_3 )
         {
             // 青空-大気圏
             for(i=0;i<Def.CLOUD_MAX;i++)// 雲
@@ -638,7 +636,7 @@ const sketch = (p: p5) => {
      */
     function drawEnemy() {
         for(let i=0;i<enemies.length; i++) {
-            enemies[i].draw(img, isDebugRect);
+            enemies[i].draw(img);
         }
     }
 };
