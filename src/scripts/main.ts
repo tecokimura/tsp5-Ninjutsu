@@ -19,11 +19,6 @@ const sketch = (p: p5) => {
 
     // Player(Ninja) data
     let player = null;
-    // let playX:number = Def.PLAY_INIT_POS_X; // X位置
-    // let playY:number = Def.PLAY_INIT_POS_Y; // y位置
-    // let playVY:number = 0;  // 上昇速度
-    // let playH:number = 0; // 高さ
-    // let playTime:number = 0; // 経過時間
 
     let enemies: Array<Enemey>  = new Array(Def.ENEMY_MAX);
     
@@ -40,7 +35,6 @@ const sketch = (p: p5) => {
 
     let keyCodePre = Def.P5_KEYCODE_NONE;
     let keyCodeHistory: Array<number> = new Array(5);
-    let is_playkey_push = false;
 
 
     // p5のキーコードと変数を見て調べる
@@ -155,7 +149,7 @@ const sketch = (p: p5) => {
                 drawBg();
                 drawEnemy();
 
-                player.draw(img, is_playkey_push, isPushKeyNow(), isReleaseKeyNow());
+                player.draw(img, isPushKey(), isPushKeyNow(), isReleaseKeyNow());
                
                 
             }
@@ -165,7 +159,7 @@ const sketch = (p: p5) => {
                 drawEnemy();
                 
                 if( player.posY < Def.DISP_H ) {
-                    player.drawCrush();
+                    player.drawCrush(img);
                 }
             }
 
@@ -240,6 +234,7 @@ const sketch = (p: p5) => {
         //ランダムで2回ぐらいなにか表示する
     }
 
+    // 定期的にprocを実行する
     function repeatProc(time:number=100) {
         setTimeout(() => { proc(); }, time);
     };
@@ -346,21 +341,20 @@ const sketch = (p: p5) => {
     function init() {
         let i=0;
 
-        player = new Player();
-        // player.posX = Def.PLAY_INIT_POS_X;
-        // playY = Def.PLAY_INIT_POS_Y;
-        // playVY= 0;
-        // playH = 0;
         appearAirLevel = 0;
 
+        player = new Player();
 
-        for(let i=0;i<Def.STAR_MAX;    i++) starY[i]  = Def.DATA_NONE;
-        for(let i=0;i<Def.CLOUD_MAX;i++) cloudY[i] = Def.DATA_NONE;
+        for(let i=0; i<Def.STAR_MAX;   i++) starY[i]  = Def.DATA_NONE;
+        for(let i=0; i<Def.CLOUD_MAX;  i++) cloudY[i] = Def.DATA_NONE;
 
-        for(let i=0;i<enemies.length; i++) { enemies[i] = new Enemy(p); enemies[i].init(); }
+        for(let i=0; i<enemies.length; i++) {
+            enemies[i] = new Enemy(p);
+            enemies[i].init();
+        }
 
         keyCodePre = Def.P5_KEYCODE_NONE;
-        for(i=0;i<keyCodeHistory.length;i++) {
+        for(let i=0; i<keyCodeHistory.length;i++) {
             keyCodeHistory[i] = Def.P5_KEYCODE_NONE;
         }
     }
@@ -370,8 +364,6 @@ const sketch = (p: p5) => {
         // Util.debug("in proc");
 
         //
-        // KEY CODE 更新
-
         // キーコード履歴 を更新する
         for(let i=0;i<keyCodeHistory.length-1;i++) {
             keyCodeHistory[i+1] = keyCodeHistory[i];
@@ -386,7 +378,7 @@ const sketch = (p: p5) => {
         keyCodeHistory[0] = keyCodePre;
         keyCodePre = Def.P5_KEYCODE_NONE;
 
-
+        // SCENE
         if( scene.is(Scene.INIT) ) {
             Util.debug("Scene.INIT");
             if(scene.count() > 10) {
@@ -424,48 +416,17 @@ const sketch = (p: p5) => {
 
             // キーを押しているかどうか
             if(player.high > 64) {
-                if( isPushKey() ) is_playkey_push = true;
-                if( isPushKey() == false ) is_playkey_push = false;
                 if( isPushKey(Def.P5_KEYCODE_Z) ) {
                     scene.set(Scene.GAMEOVER);
                     player.setGameover();
-                    // playVY *= 1.25; 
                 }
             }
            
-            player.move(is_playkey_push);
-            // // ボタンを押していたら上昇速度を下げる
-            // if( is_playkey_push) {
-            //     playVY--;
-            // }
-            
-            // // ボタンを押していない && MAXスピードではなければ
-            // if(is_playkey_push== false && playVY < Def.PLAY_MAX_VY ) {
-            //     // 徐々に速度を上げる
-            //     playVY++;
-            // }
+            player.move(isPushKey());
+            player.updateImgNo(isPushKey(), isPushKeyNow(), isReleaseKeyNow());
 
-            // if(playH < 100) {
-            //     // ある程度の高さまで行っていれば上昇しすぎないように調整する
-            //     playY += -4;
-            //     playVY = 8;
-            // } else {
-            //     // 速度分を移動させる
-            //     playY -= mathFloor(playVY/2);
-            // }
-
-            // 風船がまだ画面の中にある場合
-            // プレイヤーが動いた分他のものを動かす
-            // let adjustH = Def.PLAY_MAX_DRAW_POS_Y - player.posY;
             let adjustH = player.adjustHigh(Def.PLAY_MAX_DRAW_POS_Y);
             if( 0 < adjustH) {
-
-                // // カウンターストップ
-                // if(playH+adjustH < 99999) {
-                //     playH+=adjustH;
-                // } else {
-                //     playH = 99999;
-                // }
 
                 // 敵が存在するのなら プレイヤーが移動した分を移動させる
                 // TODO: 変な処理だがリファクタはまた別に行う
@@ -490,6 +451,7 @@ const sketch = (p: p5) => {
                     }
                 }
 
+                //
                 for(let j=0;j<Def.CLOUD_MAX;j++) {
                     // 雲が存在するのなら
                     if(cloudY[j] != Def.DATA_NONE) {
@@ -513,6 +475,15 @@ const sketch = (p: p5) => {
                 
             }
 
+            // 当たり判定
+            for(let i=0; i<enemies.length; i++) {
+                if( enemies[i].hit(player) ) {
+                    Util.debug("!!!!! Enemy Hit !!!!!");
+                    scene.set(Scene.GAMEOVER);
+                    player.setGameover();
+                }
+            }
+
             // 敵出現
             addEnemy();
 
@@ -522,15 +493,16 @@ const sketch = (p: p5) => {
                 scene.set(Scene.GAMEOVER);
                 player.setGameover();
             }
-            // if(playY>=Def.DISP_H) {
-            //     // pyon_time = 0;
-            //     scene.set(Scene.GAMEOVER);
-            // }
 
         }
         else
         if( scene.is(Scene.GAMEOVER)) {
             Util.debug("Scene.GAMEOVER");
+
+            if( isPushKey(Def.P5_KEYCODE_Z) ) {
+                // Data reset する
+                scene.set(Scene.TITLE);
+            }
 
             moveCloudEnemy();
 
@@ -545,10 +517,6 @@ const sketch = (p: p5) => {
         isDraw = true;
         repeatProc();
     }
-
-    // function mathFloor(num:number):number {
-    //     return p.floor(num);
-    // }
 
 
     /**
@@ -584,27 +552,28 @@ const sketch = (p: p5) => {
             p.rect(0, 220-(i*20), Def.DISP_W, 20);
         }
 
-        if( (appearAirLevel >= Def.AIR_LV_1 && appearAirLevel < Def.AIR_LV_3)
-        ||   appearAirLevel >= Def.AIR_LV_4)    //大気圏-宇宙
-        {
-            for(i=0;i<Def.STAR_MAX;i++)//星
-            {
-                // g.setColor(Graphics.getColorOfRGB(252,231,134));
-                // g.fillRect(starX[i],starY[i],2,2);
-            }
-        }
+        // // STAR
+        // if( (appearAirLevel >= Def.AIR_LV_1 && appearAirLevel < Def.AIR_LV_3)
+        // ||   appearAirLevel >= Def.AIR_LV_4)    //大気圏-宇宙
+        // {
+        //     for(i=0;i<Def.STAR_MAX;i++)//星
+        //     {
+        //         g.setColor(Graphics.getColorOfRGB(252,231,134));
+        //         g.fillRect(starX[i],starY[i],2,2);
+        //     }
+        // }
 
-        if( appearAirLevel <= Def.AIR_LV_2 || appearAirLevel >= Def.AIR_LV_3 )
-        {
-            // 青空-大気圏
-            for(i=0;i<Def.CLOUD_MAX;i++)// 雲
-            {
-                // 奥の雲なら出す
-                // if(cloudZ[i] == 0)
-                //     g.drawImage(getImage(IMAGE.CLOUD),cloudX[i], cloudY[i]);
-            }
-
-        }
+        // // CLOUD
+        // if( appearAirLevel <= Def.AIR_LV_2 || appearAirLevel >= Def.AIR_LV_3 )
+        // {
+        //     // 青空-大気圏
+        //     for(i=0;i<Def.CLOUD_MAX;i++)// 雲
+        //     {
+        //         // 奥の雲なら出す
+        //         if(cloudZ[i] == 0)
+        //             g.drawImage(getImage(IMAGE.CLOUD),cloudX[i], cloudY[i]);
+        //     }
+        // }
 
         // TODO:地面の描画
         i = player.high + 210;
@@ -625,6 +594,11 @@ const sketch = (p: p5) => {
             enemies[i].draw(img);
         }
     }
+
+    // 再ゲームするためのデータリセット
+    function resetDataPlay() {
+    }
 };
 
 new p5(sketch);
+
