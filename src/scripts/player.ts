@@ -6,7 +6,7 @@ import {Img} from "./img";
 import {Util} from "./util";
 
 export class Player extends Obj{
-    p:p5 = null;
+    // p:p5 = null;
 
     enable:boolean = false;
     status:number = 0;
@@ -18,7 +18,7 @@ export class Player extends Obj{
 
     constructor(p5: p5) {
         super();
-        this.p = p5;
+        // this.p = p5;
         this.init();
     }
 
@@ -30,7 +30,7 @@ export class Player extends Obj{
         this.posY = Def.PLAY_INIT_POS_Y;
         this.spX  = 0;
         this.spY  = 0;
-        this.imgNo= 0;
+        this.imgNo= Def.DATA_NONE;
 
         this.hitOfsX = 2;
         this.hitOfsY = 15;
@@ -84,54 +84,60 @@ export class Player extends Obj{
     checkOverUnder(MAX_DISP_Y:number):boolean {
         return (MAX_DISP_Y <= this.posY);
     }
-    // Utilにimgを移すかはのちのち検討する
-    draw(img:p5.Image, isPushKey, isPushNow, isReleaseNow) {
 
+    // 描画する画像番号を設定する
+    updateImgNo(isPushKey, isPushNow, isReleaseNow) {
         // proc で決めたほうが良さそう
-        let imgNo = 0;
         if( isPushKey ) {
             // アニメーション切替中か降下中か
             if( isPushNow ) {
-                imgNo = Img.NINJA_DOWN;
+                this.imgNo = Img.NINJA_DOWN;
             } else {
-                imgNo = Img.NINJA_DOWN2;
+                this.imgNo = Img.NINJA_DOWN2;
             }
         } else {
             // アニメーション切替中か上昇中か
             if( isReleaseNow ) {
-                imgNo = Img.NINJA_DOWN;
+                this.imgNo = Img.NINJA_DOWN;
             } else {
-                imgNo = Util.mathFloor((this.time % 20)/5) % Def.NINJA_FLY_ANIM.length;
-                imgNo = Def.NINJA_FLY_ANIM[imgNo];
+                // アニメーションでゆらゆらさせる
+                this.imgNo = Util.mathFloor((this.time % 20)/5) % Def.NINJA_FLY_ANIM.length;
+                this.imgNo = Def.NINJA_FLY_ANIM[this.imgNo];
             }
         }
+    }
 
-        img.drawImage(imgNo, this.posX, this.posY);
+
+    // Utilにimgを移すかはのちのち検討する
+    draw(img:p5.Image) {
+        if (this.imgNo != Def.DATA_NONE) {
+            img.drawImage(this.imgNo, this.posX, this.posY);
 
 
-        if( Util.isDebugRect ) {
-            let imgBuf = img.getImage(imgNo);
-            img.p.stroke(0,127,255);
-            img.p.noFill();
-            img.p.rect(this.posX, this.posY, imgBuf.width, imgBuf.height);
-            img.p.noStroke();
-        }
+            if( Util.isDebugRect ) {
+                let imgBuf = img.getImage(this.imgNo);
+                img.p.stroke(0,127,255);
+                img.p.noFill();
+                img.p.rect(this.posX, this.posY, imgBuf.width, imgBuf.height);
+                img.p.noStroke();
+            }
 
-        if( Util.isDebugHit ) {
-            img.p.stroke(170,225,250);
-            img.p.noFill();
-            img.p.rect(
-                this.posX+this.hitOfsX,
-                this.posY+this.hitOfsY,
-                this.hitOfsW,
-                this.hitOfsH
-            );
-            img.p.noStroke();
+            if( Util.isDebugHit ) {
+                img.p.stroke(170,225,250);
+                img.p.noFill();
+                img.p.rect(
+                    this.posX+this.hitOfsX,
+                    this.posY+this.hitOfsY,
+                    this.hitOfsW,
+                    this.hitOfsH
+                );
+                img.p.noStroke();
+            }
         }
     }
 
     drawCrush(img:p5.Image) {
-        img.drawImage(img.NINJA_CRASH, this.posX, this.posY);
+        img.drawImage(Img.NINJA_CRASH, this.posX, this.posY);
     }
 
     setGameover() {
@@ -142,7 +148,8 @@ export class Player extends Obj{
 
     moveInGameover(MAX_DISP_H:number) {
         if( this.posY < MAX_DISP_H) {
-            this.spVY -= 2;
+            // 上に飛びすぎてたので重力を重くする
+            this.spVY -= 2*2;
             this.posY -= Util.mathFloor(this.spVY/2);
         }
     }

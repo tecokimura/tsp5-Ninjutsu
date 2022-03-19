@@ -44,7 +44,11 @@ export class Obj {
         && othr.posY + othr.hitOfsY < this.posY + this.hitOfsY + this.hitOfsH)
     }
 
-    hit(x:number, y:number, w:number, h:number) :boolean {
-        return false;
+
+    getStringHit() :string {
+        return "hx="+(this.posX + this.hitOfsX)
+             +",hy="+(this.posY + this.hitOfsY)
+             +",hw="+(this.posX + this.hitOfsX + this.hitOfsW)
+             +",hh="+(this.posY + this.hitOfsY + this.hitOfsH);
     }
 }
