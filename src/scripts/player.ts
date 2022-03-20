@@ -8,9 +8,11 @@ import {Util} from "./util";
 export class Player extends Obj{
     // p:p5 = null;
 
-    enable:boolean = false;
-    status:number = 0;
-    type:number = 0;
+    // いつか使いそう
+    // enable:boolean = false;
+    // status:number = 0;
+    // type:number = 0;
+
     imgNo:number= 0;
    
     // 上昇している高さ
@@ -25,12 +27,14 @@ export class Player extends Obj{
     // データをリセットしたい時などの初期化
     init() {
         this.time = 0;
-        this.type = Def.DATA_NONE;
+        // this.type = Def.DATA_NONE;
         this.posX = Def.PLAY_INIT_POS_X;
         this.posY = Def.PLAY_INIT_POS_Y;
         this.spX  = 0;
         this.spY  = 0;
         this.imgNo= Def.DATA_NONE;
+
+        this.high = 0;
 
         this.hitOfsX = 2;
         this.hitOfsY = 15;
