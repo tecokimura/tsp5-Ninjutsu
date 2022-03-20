@@ -27,6 +27,11 @@ export class Util {
         return Util.p5.floor(num);
     }
 
+    
+    static mathAbs(num:number) :number {
+        return Util.p5.abs(num);
+    }
+
     static debug(str:string) {
         if( Util.isDebugLog ) {
             console.log(str);
