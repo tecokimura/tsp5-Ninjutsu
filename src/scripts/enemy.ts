@@ -7,7 +7,6 @@ import {Util} from "./util";
 
 // TODO: 背景として動くcloud, starもあるので一個superclassがあったほうがいいかも
 export class Enemy extends Obj{
-    p:p5 = null;
 
     // status:number = 0;
     enable:boolean = false;
@@ -19,9 +18,8 @@ export class Enemy extends Obj{
     imgNo:number= 0;
    
 
-    constructor(p5: p5) {
+    constructor() {
         super();
-        this.p = p5;
         this.init();
     }
 
@@ -94,7 +92,9 @@ export class Enemy extends Obj{
 
     // 敵としてゲームに存在しているか？
     isEnable():boolean {
-        this.enable = (this.posY != Def.DATA_NONE);
+        this.enable =
+            (this.type != Def.DATA_NONE
+          && this.posY != Def.DATA_NONE);
         return this.enable;
     }
 

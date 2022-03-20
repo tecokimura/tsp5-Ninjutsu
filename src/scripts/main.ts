@@ -84,6 +84,11 @@ const sketch = (p: p5) => {
         Util.isDebugInfo = true;
         Util.isDebugHit = true;
 
+        player = new Player();
+        for(let i=0; i<enemies.length; i++) {
+            enemies[i] = new Enemy();
+        }
+
         init();
         proc();
     };
@@ -140,7 +145,6 @@ const sketch = (p: p5) => {
             else
             if( scene.is(Scene.READY)) {
                 drawBg();
-
                 drawReadyNinjutsu(scene.count());
 
             }
@@ -200,36 +204,23 @@ const sketch = (p: p5) => {
     // アニメーション定義をして配列かに別定義する
     // procでカウントを判定して次のPLAYに移行させている
     function drawReadyNinjutsu(c:number) {
-        if(c < 10) {
-            img.drawImage( Img.NINJA_JUTSU_BASE, Def.R_NINJA_POS_X, Def.R_NINJA_POS_Y );
-        }
-        else
-        if(c < 15) {
-            img.drawImage( Img.NINJA_JUTSU_GU, Def.R_NINJA_POS_X, Def.R_NINJA_POS_Y );
-        }
-        else
-        if(c < 20) {
-            img.drawImage( Img.NINJA_JUTSU_CHOKI, Def.R_NINJA_POS_X, Def.R_NINJA_POS_Y );
-        }
-        else
-        if(c < 25) {
-            img.drawImage( Img.NINJA_JUTSU_BASE, Def.R_NINJA_POS_X, Def.R_NINJA_POS_Y );
-        }
-        else
-        if(c < 30) {
-            img.drawImage( Img.NINJA_JUTSU_PA, Def.R_NINJA_POS_X, Def.R_NINJA_POS_Y );
-        }
-        else
-        if(c < 35) {
-            img.drawImage( Img.NINJA_JUTSU_GU, Def.R_NINJA_POS_X, Def.R_NINJA_POS_Y );
-        }
-        else
-        if(c < 40) {
-            img.drawImage( Img.NINJA_JUTSU_BASE, Def.R_NINJA_POS_X, Def.R_NINJA_POS_Y );
-        }
-        else
-        if(c < 45) {
-            img.drawImage( Img.NINJA_JUTSU_PA, Def.R_NINJA_POS_X, Def.R_NINJA_POS_Y );
+
+        let imgAry = [
+            Img.NINJA_JUTSU_BASE,
+            Img.NINJA_JUTSU_GU,
+            Img.NINJA_JUTSU_CHOKI,
+            Img.NINJA_JUTSU_BASE,
+            Img.NINJA_JUTSU_PA,
+            Img.NINJA_JUTSU_GU,
+            Img.NINJA_JUTSU_BASE,
+            Img.NINJA_JUTSU_PA,
+        ];
+
+        for(let i=0; i< imgAry.length; i++) {
+            if( c < 4*(i+1) ) {
+                img.drawImage( imgAry[i], Def.R_NINJA_POS_X, Def.R_NINJA_POS_Y );
+                break;
+            }
         }
         //ランダムで2回ぐらいなにか表示する
     }
@@ -343,15 +334,14 @@ const sketch = (p: p5) => {
 
         appearAirLevel = 0;
 
-        player = new Player();
+        player.init();
+
+        for(let i=0; i<enemies.length; i++) {
+            enemies[i].init();
+        }
 
         for(let i=0; i<Def.STAR_MAX;   i++) starY[i]  = Def.DATA_NONE;
         for(let i=0; i<Def.CLOUD_MAX;  i++) cloudY[i] = Def.DATA_NONE;
-
-        for(let i=0; i<enemies.length; i++) {
-            enemies[i] = new Enemy(p);
-            enemies[i].init();
-        }
 
         keyCodePre = Def.P5_KEYCODE_NONE;
         for(let i=0; i<keyCodeHistory.length;i++) {
@@ -405,7 +395,7 @@ const sketch = (p: p5) => {
         }
         else
         if( scene.is(Scene.READY)) {
-            if(scene.count() > 60 || Util.isDebug) {
+            if(scene.count() > 40 ) {
                 scene.set(Scene.PLAY);
             }
         }
@@ -416,7 +406,7 @@ const sketch = (p: p5) => {
 
             // キーを押しているかどうか
             if(player.high > 64) {
-                if( isPushKey(Def.P5_KEYCODE_Z) ) {
+                if( isPushKey(Def.P5_KEYCODE_O) ) {
                     scene.set(Scene.GAMEOVER);
                     player.setGameover();
                 }
@@ -499,15 +489,16 @@ const sketch = (p: p5) => {
         if( scene.is(Scene.GAMEOVER)) {
             Util.debug("Scene.GAMEOVER");
 
-            if( isPushKey(Def.P5_KEYCODE_Z) ) {
-                // Data reset する
-                scene.set(Scene.TITLE);
-            }
-
             moveCloudEnemy();
-
             // 
             player.moveInGameover(Def.DISP_H);
+
+            if( isPushKey(Def.P5_KEYCODE_T) ) {
+                // Data reset する
+                scene.set(Scene.TITLE);
+                init();
+            }
+
         }
 
         // play.Time++;

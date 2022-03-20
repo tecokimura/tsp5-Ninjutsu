@@ -125,7 +125,10 @@ export class Def {
     static P5_KEYCODE_RIGHT:number = 39;
     static P5_KEYCODE_DOWN:number  = 40;
     static P5_KEYCODE_A:number     = 65;
+    static P5_KEYCODE_G:number     = 71;
+    static P5_KEYCODE_O:number     = 79;
     static P5_KEYCODE_S:number     = 83;
+    static P5_KEYCODE_T:number     = 84;
     static P5_KEYCODE_X:number     = 88;
     static P5_KEYCODE_Z:number     = 90;
 
