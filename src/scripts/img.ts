@@ -32,13 +32,13 @@ export class Img {
 
         // 画像サイズを図る
         let imgObj= this.getImage(index);
-        let imgW = imgObj.width/2;
-        let imgH = imgObj.height/2;
+        let imgHarfW = imgObj.width/2;
+        let imgHarfH = imgObj.height/2;
 
         this.p.push();
   
         // まず中心位置に変更する
-        this.p.translate(x+imgW, y+imgH);
+        this.p.translate(x+imgHarfW, y+imgHarfH);
 
         // 反転描画
         if( isFlip ) {
@@ -63,7 +63,7 @@ export class Img {
         // this.p.tint(0, 153, 204, 127);
         
         // 画像の真ん中を中心にする
-        this.p.image(imgObj, imgW*-1, imgH*-1);
+        this.p.image(imgObj, imgHarfW*-1, imgHarfH*-1);
 
         this.p.pop();
 
