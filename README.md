@@ -2,10 +2,10 @@
 Ninja in html5 game
 
 # How to play ?
-Click enter
+Push enter
 
 # What's this ?
-I make browser game with smartphone and If you were fun give me BTC please. :)  
+I make browser game with smartphone and If you were fun give me BTC please. ;)   
 But It doesn't how to pay nothing yet because I don't complete.  
   
 Please see me with long time.  
@@ -19,8 +19,10 @@ Have you nice day :)
 - [p5.js](https://p5js.org/)
 
 # How to change branch.
+```
 % git fetch origin $BRANCH_NAME  
 % git checkout $BRANCH_NAME  
+```
 
 # Require (I'm writing...)
 [node.js](https://nodejs.org/)

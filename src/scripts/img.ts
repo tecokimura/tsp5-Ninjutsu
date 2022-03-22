@@ -25,23 +25,44 @@ export class Img {
     }
 
     drawImage(index:number, x:number, y:number) {
-        this.p.image(this.getImage(index), x, y);
+        // this.p.image(this.getImage(index), x, y);
+        this.drawImageRotate(index,x,y,30);
     }
 
     // 水平反転
     drawImageFlipH(index:number, x:number, y:number) {
         let imgObj= this.getImage(index);
-        let imgWH = imgObj.width/2;
+        let imgW = imgObj.width/2;
+        let imgH = imgObj.height/2;
 
         this.p.push();
         // 画像の真ん中を中心にする
-        this.p.translate(x+imgWH, y);
+        this.p.translate(x+imgW, y+imgH);
         this.p.scale(-1, 1);
         // 中心を画像の真ん中にしたので画像半分分を描画位置にずらす
-        this.p.image(imgObj, imgWH*-1, 0);
+        this.p.image(imgObj, imgW*-1, imgH*-1);
         this.p.pop();
     }
 
+    // 回転描画
+    // x,y 描画位置
+    // r 回転量(時計回り)
+    // fixX, fixY 回転の中心位置の補正値
+    drawImageRotate(index:number, x:number, y:number, r:number, fixX:number=0, fixY:number=0) {
+        let imgObj= this.getImage(index);
+        let imgW = imgObj.width/2;
+        let imgH = imgObj.height/2;
+
+        this.p.push();
+        this.p.angleMode(this.p.DEGREES);
+        // 画像の真ん中を中心にする
+        this.p.translate(x+imgW+fixX, y+imgH+fixY);
+        // 時計回りに回転
+        this.p.rotate(r);
+        // 中心を画像の真ん中にしたので画像半分分を描画位置にずらす
+        this.p.image(imgObj, (imgW+fixX)*-1, (imgH+fixY)*-1);
+        this.p.pop();
+    }
 
 
     //===========================
