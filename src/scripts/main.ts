@@ -10,10 +10,9 @@ import {Scene} from "./scene";
 let scene = null;
 let isDraw = false;
 let img = null;
-let isDebug = true;
-let isDebugLog = true;
-let isDebugInfo= true;
-let isDebugRect= true;
+// let isDebug = true;
+// let isDebugLog = true;
+// let isDebugInfo= true;
 
 const sketch = (p: p5) => {
 
@@ -80,9 +79,10 @@ const sketch = (p: p5) => {
         Util.setP5(p);
         Util.isDebug = true;
         Util.isDebugLog = true;
-        Util.isDebugRect = true;
         Util.isDebugInfo = true;
+        Util.isDebugRect = true;
         Util.isDebugHit = true;
+        Util.isDebugEnemyType = true;
 
         player = new Player();
         for(let i=0; i<enemies.length; i++) {
@@ -184,10 +184,10 @@ const sketch = (p: p5) => {
     function drawDebugInfo(p) {
         if(Util.isDebugInfo) {
             let x = 5;
-            let y = 0;
+            let y = 5;
             let addy = 12;
             p.fill(255,0,0);
-            p.textSize(y+=addy);
+            p.textSize(10);
             p.text('SC:'+scene.present,  x, y+=addy);
             p.text('FR:'+scene.count(),  x, y+=addy);
             p.text('PX:'+player.posX,    x, y+=addy);
@@ -318,6 +318,7 @@ const sketch = (p: p5) => {
 
         for(let i=0; i<enemies.length; i++) {
             enemies[i].move();
+            enemies[i].updateImgNo();
         }
     }
 
@@ -410,6 +411,10 @@ const sketch = (p: p5) => {
                     scene.set(Scene.GAMEOVER);
                     player.setGameover();
                 }
+
+                if( isPushKey(Def.P5_KEYCODE_H) ) {
+                    player.high = 99999;
+                }
             }
            
             player.move(isPushKey());
@@ -418,8 +423,8 @@ const sketch = (p: p5) => {
             let adjustH = player.adjustHigh(Def.PLAY_MAX_DRAW_POS_Y);
             if( 0 < adjustH) {
 
-                // 敵が存在するのなら プレイヤーが移動した分を移動させる
                 // TODO: 変な処理だがリファクタはまた別に行う
+                //       敵が存在するのなら プレイヤーが移動した分を移動させる
                 for(let k=0;k<enemies.length;k++) {
                     enemies[k].adjustDispPos(adjustH); 
                 }
@@ -503,6 +508,9 @@ const sketch = (p: p5) => {
 
         // play.Time++;
         player.countTime();
+        for(let i=0;i<enemies.length;i++) {
+            enemies[i].countTime();
+        }
         scene.counting();
 
         isDraw = true;

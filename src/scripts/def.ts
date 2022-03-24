@@ -22,6 +22,11 @@ export class Def {
     
     static ATARI_W:number    = 48;
     
+    // 各オブジェクトごと共通で作ってみる
+    static ST_NONE = Def.DATA_NONE;
+    static ST_OVER = -1;
+    static ST_PLAY = 0;
+
     static BIRD_ANIM:number  = 6;
     static HELI_ANIM:number  = 2;
     static STAR_ANIM:number  = 10;

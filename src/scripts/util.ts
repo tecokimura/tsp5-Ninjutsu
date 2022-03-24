@@ -7,6 +7,7 @@ export class Util {
     static isDebugRect :boolean = false;
     static isDebugInfo :boolean = false;
     static isDebugHit :boolean = false;
+    static isDebugEnemyType :boolean = false;
 
     constructor() {
     }
