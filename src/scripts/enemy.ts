@@ -10,32 +10,32 @@ export class Enemy extends Obj{
 
     // status:number = 0;
     enable:boolean = false;
+    status:number = 0;
     type:number = 0;
-    // time:number = 0;
+    time:number = 0;
     // posX:number = 0;
     // posY:number = 0;
     // spX:number  = 0;
     imgNo:number= 0;
-   
+
+    animations = new Array();
 
     constructor() {
         super();
         this.init();
     }
 
-    preload() {
-    }
-    
-
     // データをリセットしたい時などの初期化
     init() {
-        this.time = 0;
-        this.type = Def.DATA_NONE;
-        this.posX = 0;
-        this.posY = Def.DATA_NONE;
-        this.spX  = 0;
-        this.spY  = 0;
-        this.imgNo= 0;
+        this.status= Def.DATA_NONE;
+        this.type  = Def.DATA_NONE;
+        this.time  = 0;
+        this.posX  = 0;
+        this.posY  = Def.DATA_NONE;
+        this.spX   = 0;
+        this.spY   = 0;
+        this.imgNo = 0;
+        this.animations = new Array();
     }
 
     remove() { this.init(); }
@@ -45,47 +45,36 @@ export class Enemy extends Obj{
      * 配列の空きを確認して敵を配置する
      * 戻り値（boolean）で配置できたかを返す
      */
-    add(type:number) {
+    add(type:number, isDebug=false) {
+    
+        // Debugように色んな種類を出す
+        if( Util.isDebugEnemyType ) {
+            type = (Util.getRandInt() % Def.TYPE_ALL);
+        }
+
         if(this.isEnable() == false) {
             this.init();
 
             switch (type) {
               case Def.TYPE_UFO:
-                this.type = Def.TYPE_UFO;
-                this.imgNo= Img.ENEMY_UFO;
-                this.spX   = (Util.getRandInt() % 10 )+1;
+                  this.initTypeUfo();
                 break;
               case Def.TYPE_SHINOBI:
-                this.type = Def.TYPE_SHINOBI;
-                this.imgNo= Img.ENEMY_SHINOBI;
-                this.spX   = (Util.getRandInt() % 8 )+1;
+                  this.initTypeShinobi();
                 break;
               case Def.TYPE_SHURI:
-                this.type = Def.TYPE_SHURI;
-                this.imgNo= Img.ENEMY_SHURIKEN;
-                this.spX   = (Util.getRandInt() % 6 )+1;
+                  this.initTypeShuri();
                 break;
               case Def.TYPE_KUNAI:
-                this.type = Def.TYPE_KUNAI;
-                this.imgNo= Img.ENEMY_KUNAI;
-                this.spX   = (Util.getRandInt() % 4 )+1;
+                  this.initTypeKunai();
                 break;
               default:
-                this.type = Def.TYPE_BIRD;;
-                this.imgNo= Img.ENEMY_BIRD;
-                this.spX   = (Util.getRandInt() % 2 )+1;
+                  this.initTypeBird();
                 break;
             }
-
-
-            // 画面に映らないちょっと上に出す
-            this.posY = -40-(Util.getRandInt()%10);
-            this.posX = Util.getRandInt() % Def.DISP_W;
-
-            if( Util.getRandInt()%2 == 0 )
-                this.spX *= -1;
-
         }
+
+        this.status = Def.ST_PLAY;
 
         return this.isEnable();
     }
@@ -123,24 +112,38 @@ export class Enemy extends Obj{
     }
 
 
+    // 表示する画像を更新する
+    updateImgNo() {
+        if( this.isEnable() ) {
+            if( 0 < this.animations.length) {
+                let i = this.time % this.animations.length;
+                this.imgNo = this.animations[i];
+            }
+        }
+    }
+
     // Utilにimgを移すかはのちのち検討する
     draw(img:p5.Image) {
         if( this.isEnable() ) {
+            let r = 0;
+            // 回転させる場合
+            // r = (this.time*30) $ 360;
+
             if( this.spX < 0)
-                img.drawImage(this.imgNo, this.posX, this.posY);
+                img.drawImage(this.imgNo, this.posX, this.posY, false, r);
             else
-                img.drawImageFlipH(this.imgNo, this.posX, this.posY);
+                img.drawImage(this.imgNo, this.posX, this.posY, true, r*-1);
 
             if( Util.isDebugRect ) {
                 let imgBuf = img.getImage(this.imgNo);
-                img.p.stroke(0,255,0);
+                img.p.stroke(0,255,0,100);
                 img.p.noFill();
                 img.p.rect(this.posX, this.posY, imgBuf.width, imgBuf.height);
                 img.p.noStroke();
             }
 
             if( Util.isDebugHit ) {
-                img.p.stroke(255,255,255);
+                img.p.stroke(255,255,255,100);
                 img.p.noFill();
                 img.p.rect(
                     this.posX+this.hitOfsX,
@@ -152,5 +155,100 @@ export class Enemy extends Obj{
 
             }
         }
+    }
+
+
+    countTime() {
+        if( this.isEnable() ) {
+            this.time++;
+        }
+    }
+
+
+
+    initTypeUfo() {
+        this.type = Def.TYPE_UFO;
+        this.imgNo= Img.ENEMY_UFO;
+        this.spX  = (Util.getRandInt() % 10 )+1;
+        this.posY = -40-(Util.getRandInt()%10);
+        this.posX = Util.getRandInt() % Def.DISP_W;
+        this.animations = [
+            Img.ENEMY_UFO, Img.ENEMY_UFO, Img.ENEMY_UFO,
+            Img.ENEMY_UFO1,Img.ENEMY_UFO1,Img.ENEMY_UFO1
+        ];
+
+        if( Util.getRandInt()%2 == 0 )
+            this.spX *= -1;
+
+    }
+
+    initTypeShinobi() {
+        this.type = Def.TYPE_SHINOBI;
+        this.imgNo= Img.ENEMY_SHINOBI;
+        this.spX  = (Util.getRandInt() % 8 )+1;
+        this.posY = -40-(Util.getRandInt()%10);
+        this.posX = Util.getRandInt() % Def.DISP_W;
+        this.animations = [
+            Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI,
+            Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI,
+            Img.ENEMY_SHINOBI1,Img.ENEMY_SHINOBI1,Img.ENEMY_SHINOBI1
+        ];
+
+        if( Util.getRandInt()%2 == 0 )
+            this.spX *= -1;
+
+    }
+
+    initTypeShuri() {
+        this.type = Def.TYPE_SHURI;
+        this.imgNo= Img.ENEMY_SHURIKEN;
+        this.spX   = (Util.getRandInt() % 4 ) * 3;
+        this.posY = -40-(Util.getRandInt()%10);
+        this.posX = Util.getRandInt() % Def.DISP_W;
+        this.animations = [
+            Img.ENEMY_SHURIKEN,
+            // Img.ENEMY_SHURIKEN1,
+        ];
+
+        if( Util.getRandInt()%2 == 0 )
+            this.spX *= -1;
+
+    }
+
+    initTypeKunai() {
+        this.type = Def.TYPE_KUNAI;
+        this.imgNo= Img.ENEMY_KUNAI;
+        this.spX   = (Util.getRandInt() % 4 )+1;
+        this.posY = -40-(Util.getRandInt()%10);
+        this.posX = Util.getRandInt() % Def.DISP_W;
+        this.animations = [
+            Img.ENEMY_KUNAI, Img.ENEMY_KUNAI, Img.ENEMY_KUNAI,
+            Img.ENEMY_KUNAI1,Img.ENEMY_KUNAI1,Img.ENEMY_KUNAI1
+        ];
+
+        if( Util.getRandInt()%2 == 0 )
+            this.spX *= -1;
+
+    }
+
+    initTypeBird() {
+        this.type = Def.TYPE_BIRD;;
+        this.imgNo= Img.ENEMY_BIRD;
+        this.spX   = (Util.getRandInt() % 2 )+1;
+        this.posY = -40-(Util.getRandInt()%10);
+        this.posX = Util.getRandInt() % Def.DISP_W;
+        this.animations = [
+            Img.ENEMY_BIRD, Img.ENEMY_BIRD, Img.ENEMY_BIRD,
+            Img.ENEMY_BIRD1,Img.ENEMY_BIRD1,Img.ENEMY_BIRD1,
+            Img.ENEMY_BIRD1,Img.ENEMY_BIRD1,Img.ENEMY_BIRD1
+        ];
+
+        if( Util.getRandInt()%2 == 0 ) {
+            this.spX *= -1;
+        }
+
+        // これが入ると一気に難しくなる・・・
+        // this.spY = 2;
+
     }
 }
