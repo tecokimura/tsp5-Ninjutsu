@@ -4,6 +4,7 @@ import {Img} from "./img";
 import {Util} from "./util";
 import {Player} from "./player";
 import {Enemy} from "./enemy";
+import {BgObj} from "./bgobj";
 import {Scene} from "./scene";
 
 
@@ -27,10 +28,11 @@ const sketch = (p: p5) => {
     let starX: Array<number> = new Array(Def.STAR_MAX);    // 星x座標
     let starY: Array<number> = new Array(Def.STAR_MAX);    // 星y座標
 
-    let cloudX: Array<number>  = new Array(Def.CLOUD_MAX);    // 星x座標
-    let cloudY: Array<number>  = new Array(Def.CLOUD_MAX);    // 星y座標
-    let cloudZ: Array<number>  = new Array(Def.CLOUD_MAX);    // 星y座標
-    let cloudSp: Array<number> = new Array(Def.CLOUD_MAX);    // 星y座標
+    let clouds: Array<BgObj> = new Array(Def.CLOUD_MAX);
+    // let cloudX: Array<number>  = new Array(Def.CLOUD_MAX);    // 星x座標
+    // let cloudY: Array<number>  = new Array(Def.CLOUD_MAX);    // 星y座標
+    // let cloudZ: Array<number>  = new Array(Def.CLOUD_MAX);    // 星y座標
+    // let cloudSp: Array<number> = new Array(Def.CLOUD_MAX);    // 星y座標
 
     let keyCodePre = Def.P5_KEYCODE_NONE;
     let keyCodeHistory: Array<number> = new Array(5);
@@ -71,6 +73,7 @@ const sketch = (p: p5) => {
     // p5 の初期設定
     p.setup = () => {
         p.createCanvas(Def.DISP_W, Def.DISP_H);
+        // 全部に反映されるので注意
         p.angleMode(p.DEGREES);
 
         scene = new Scene();
@@ -80,14 +83,17 @@ const sketch = (p: p5) => {
         Util.isDebug = true;
         Util.isDebugLog = true;
         Util.isDebugInfo = true;
-        Util.isDebugRect = true;
         Util.isDebugHit = true;
+        Util.isDebugRectObj = true;
+        Util.isDebugRectHit = true;
         Util.isDebugEnemyType = true;
 
         player = new Player();
-        for(let i=0; i<enemies.length; i++) {
+        for(let i=0; i<enemies.length; i++)
             enemies[i] = new Enemy();
-        }
+
+        for(let i=0; i<clouds.length; i++)
+            clouds[i] = new BgObj();
 
         init();
         proc();
@@ -186,6 +192,12 @@ const sketch = (p: p5) => {
             let x = 5;
             let y = 5;
             let addy = 12;
+
+            let eL = 0;
+            enemies.forEach((e) => { if(e.isEnable()) eL++; });
+            let cL = 0;
+            clouds.forEach((c) => { if(c.isEnable()) cL++; });
+
             p.fill(255,0,0);
             p.textSize(10);
             p.text('SC:'+scene.present,  x, y+=addy);
@@ -196,6 +208,8 @@ const sketch = (p: p5) => {
             p.text('PH:'+player.high,    x, y+=addy);
             p.text('PT:'+player.time,    x, y+=addy);
             p.text('eA:'+appearAirLevel, x, y+=addy);
+            p.text('eL:'+eL, x, y+=addy);
+            p.text('cL:'+cL, x, y+=addy);
         }
     }
 
@@ -231,35 +245,32 @@ const sketch = (p: p5) => {
     };
 
     function addEnemy() {
+
+
+        if( appearAirLevel <= player.high ) {
+            // 星出現
+            for(let i=0; i<Def.STAR_MAX; i++) {
+                if( starY[i] == Def.DATA_NONE && Def.AIR_LV_1 <= appearAirLevel) {
+                    starY[i] = -40-(getRandInt()%120);
+                    starX[i] = (getRandInt()%Def.DISP_W);
+                    break;
+                }
+            }
+
+            // 雲出現
+            for(let i=0; i<clouds.length; i++) {
+                if( clouds[i].add() ) {
+                    // Util.debug("added cloud");
+                    break;
+                }
+            }
+        }
+
+
+
         if( appearAirLevel <= player.high ) {
             if( Def.FIRST_ENEMY_POS <= player.high) {
-                // 星出現
-                for(let i=0; i<Def.STAR_MAX; i++) {
-                    if( starY[i] == Def.DATA_NONE && Def.AIR_LV_1 <= appearAirLevel) {
-                        starY[i] = -40-(getRandInt()%120);
-                        starX[i] = (getRandInt()%Def.DISP_W);
-                        break;
-                    }
-                }
-
-                // 雲出現
-                for(let i=0; i<Def.CLOUD_MAX; i++) {
-                    if( cloudY[i] == Def.DATA_NONE
-                    &&  (appearAirLevel <= Def.AIR_LV_1 || Def.AIR_LV_3 <= appearAirLevel) ) {
-                        cloudY[i]  = -40-(getRandInt()>>>1)%20;
-                        cloudX[i]  = (getRandInt()>>>1)%Def.DISP_W;
-                        cloudZ[i]  = (getRandInt()>>>1)%2;
-                        cloudSp[i] = (getRandInt()>>>1)%2+1;
-
-                        if( ((getRandInt()>>>1)%2) == 0)
-                            cloudSp[i] *= -1;
-
-                        break;
-                    }
-                }
-
                 // 敵出現
-                
                 for(let i=0; i<enemies.length; i++) {
                     if( enemies[i].isEnable() == false) {
                         if( appearAirLevel < Def.AIR_LV_0 ) {
@@ -296,7 +307,7 @@ const sketch = (p: p5) => {
                             }
                         }
 
-                        Util.debug("added Enemy");
+                        // Util.debug("added Enemy");
                         break;
                     }
                 }
@@ -310,10 +321,8 @@ const sketch = (p: p5) => {
 
     function moveCloudEnemy() {
         // 雲の移動
-        for(let i=0;i<Def.CLOUD_MAX;i++) {
-            cloudX[i] += cloudSp[i];
-            if( cloudX[i] <= (0-48) || 240 <= cloudX[i])
-                cloudSp[i] *= -1;
+        for(let i=0; i<clouds.length; i++) {
+            clouds[i].move();
         }
 
         for(let i=0; i<enemies.length; i++) {
@@ -342,7 +351,10 @@ const sketch = (p: p5) => {
         }
 
         for(let i=0; i<Def.STAR_MAX;   i++) starY[i]  = Def.DATA_NONE;
-        for(let i=0; i<Def.CLOUD_MAX;  i++) cloudY[i] = Def.DATA_NONE;
+
+        for(let i=0; i<clouds.length; i++) {
+            clouds[i].init();
+        }
 
         keyCodePre = Def.P5_KEYCODE_NONE;
         for(let i=0; i<keyCodeHistory.length;i++) {
@@ -413,6 +425,7 @@ const sketch = (p: p5) => {
                 }
 
                 if( isPushKey(Def.P5_KEYCODE_H) ) {
+                    Util.debug("isPushKey(Def.P5_KEYCODE_H)");
                     player.high = 99999;
                 }
             }
@@ -425,9 +438,9 @@ const sketch = (p: p5) => {
 
                 // TODO: 変な処理だがリファクタはまた別に行う
                 //       敵が存在するのなら プレイヤーが移動した分を移動させる
-                for(let k=0;k<enemies.length;k++) {
+                for(let k=0;k<enemies.length;k++)
                     enemies[k].adjustDispPos(adjustH); 
-                }
+                
 
                 //
                 for(let j=0;j<Def.STAR_MAX;j++) {
@@ -446,23 +459,9 @@ const sketch = (p: p5) => {
                     }
                 }
 
-                //
-                for(let j=0;j<Def.CLOUD_MAX;j++) {
-                    // 雲が存在するのなら
-                    if(cloudY[j] != Def.DATA_NONE) {
-
-                        if( (cloudX[j]&1)==1 ) {
-                            // Xが奇数なら普通に落ちる
-                            cloudY[j]+=adjustH;
-                        } else {
-                            // Xが偶数の場合は1.5倍で流れる
-                            cloudY[j]+=adjustH+(adjustH/2);
-                        }
-
-                        if(cloudY[j]>260) cloudY[j]=Def.DATA_NONE;
-
-                    }
-                }
+                for(let k=0;k<clouds.length;k++)
+                    clouds[k].adjustDispPos(adjustH); 
+                
 
                 // // ここをコメントアウトすると上に飛び去ってしまう
                 if( player.posY < Def.PLAY_MAX_DRAW_POS_Y)
@@ -471,11 +470,13 @@ const sketch = (p: p5) => {
             }
 
             // 当たり判定
-            for(let i=0; i<enemies.length; i++) {
-                if( enemies[i].hit(player) ) {
-                    Util.debug("!!!!! Enemy Hit !!!!!");
-                    scene.set(Scene.GAMEOVER);
-                    player.setGameover();
+            if(Util.isDebugHit == false) {
+                for(let i=0; i<enemies.length; i++) {
+                    if( enemies[i].hit(player) ) {
+                        Util.debug("!!!!! Enemy Hit !!!!!");
+                        scene.set(Scene.GAMEOVER);
+                        player.setGameover();
+                    }
                 }
             }
 
@@ -510,6 +511,9 @@ const sketch = (p: p5) => {
         player.countTime();
         for(let i=0;i<enemies.length;i++) {
             enemies[i].countTime();
+        }
+        for(let i=0;i<clouds.length;i++) {
+            clouds[i].countTime();
         }
         scene.counting();
 
@@ -562,17 +566,11 @@ const sketch = (p: p5) => {
         //     }
         // }
 
-        // // CLOUD
-        // if( appearAirLevel <= Def.AIR_LV_2 || appearAirLevel >= Def.AIR_LV_3 )
-        // {
-        //     // 青空-大気圏
-        //     for(i=0;i<Def.CLOUD_MAX;i++)// 雲
-        //     {
-        //         // 奥の雲なら出す
-        //         if(cloudZ[i] == 0)
-        //             g.drawImage(getImage(IMAGE.CLOUD),cloudX[i], cloudY[i]);
-        //     }
-        // }
+        // 雲
+        for(i=0; i<clouds.length; i++)
+            clouds[i].draw(p);
+
+
 
         // TODO:地面の描画
         i = player.high + 210;
