@@ -9,7 +9,6 @@ import {Util} from "./util";
 export class Enemy extends Obj{
 
     // status:number = 0;
-    enable:boolean = false;
     status:number = 0;
     type:number = 0;
     time:number = 0;
@@ -46,7 +45,8 @@ export class Enemy extends Obj{
      * 戻り値（boolean）で配置できたかを返す
      */
     add(type:number, isDebug=false) {
-    
+        let isAdd = false; 
+
         // Debugように色んな種類を出す
         if( Util.isDebugEnemyType ) {
             type = (Util.getRandInt() % Def.TYPE_ALL);
@@ -72,19 +72,19 @@ export class Enemy extends Obj{
                   this.initTypeBird();
                 break;
             }
+
+            this.status = Def.ST_PLAY;
+            isAdd = this.isEnable();
         }
 
-        this.status = Def.ST_PLAY;
 
-        return this.isEnable();
+        return isAdd;
     }
 
     // 敵としてゲームに存在しているか？
     isEnable():boolean {
-        this.enable =
-            (this.type != Def.DATA_NONE
-          && this.posY != Def.DATA_NONE);
-        return this.enable;
+        return ( this.type != Def.DATA_NONE
+              && this.posY != Def.DATA_NONE);
     }
 
     // 移動処理
@@ -134,7 +134,7 @@ export class Enemy extends Obj{
             else
                 img.drawImage(this.imgNo, this.posX, this.posY, true, r*-1);
 
-            if( Util.isDebugRect ) {
+            if( Util.isDebugRectObj ) {
                 let imgBuf = img.getImage(this.imgNo);
                 img.p.stroke(0,255,0,100);
                 img.p.noFill();
@@ -142,7 +142,7 @@ export class Enemy extends Obj{
                 img.p.noStroke();
             }
 
-            if( Util.isDebugHit ) {
+            if( Util.isDebugRectHit ) {
                 img.p.stroke(255,255,255,100);
                 img.p.noFill();
                 img.p.rect(
@@ -175,6 +175,10 @@ export class Enemy extends Obj{
         this.animations = [
             Img.ENEMY_UFO, Img.ENEMY_UFO, Img.ENEMY_UFO,
             Img.ENEMY_UFO1,Img.ENEMY_UFO1,Img.ENEMY_UFO1
+            Img.ENEMY_UFO, Img.ENEMY_UFO, Img.ENEMY_UFO,
+            Img.ENEMY_UFO1,Img.ENEMY_UFO1,Img.ENEMY_UFO1
+            Img.ENEMY_UFO, Img.ENEMY_UFO1,
+            Img.ENEMY_UFO, Img.ENEMY_UFO1
         ];
 
         if( Util.getRandInt()%2 == 0 )
@@ -189,9 +193,8 @@ export class Enemy extends Obj{
         this.posY = -40-(Util.getRandInt()%10);
         this.posX = Util.getRandInt() % Def.DISP_W;
         this.animations = [
-            Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI,
-            Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI,
-            Img.ENEMY_SHINOBI1,Img.ENEMY_SHINOBI1,Img.ENEMY_SHINOBI1
+            Img.ENEMY_SHINOBI1, Img.ENEMY_SHINOBI1, Img.ENEMY_SHINOBI1,
+            Img.ENEMY_SHINOBI,  Img.ENEMY_SHINOBI
         ];
 
         if( Util.getRandInt()%2 == 0 )
@@ -202,12 +205,12 @@ export class Enemy extends Obj{
     initTypeShuri() {
         this.type = Def.TYPE_SHURI;
         this.imgNo= Img.ENEMY_SHURIKEN;
-        this.spX   = (Util.getRandInt() % 4 ) * 3;
+        this.spX   = ((Util.getRandInt() % 4 )+1) * 3;
         this.posY = -40-(Util.getRandInt()%10);
         this.posX = Util.getRandInt() % Def.DISP_W;
         this.animations = [
             Img.ENEMY_SHURIKEN,
-            // Img.ENEMY_SHURIKEN1,
+            Img.ENEMY_SHURIKEN1,
         ];
 
         if( Util.getRandInt()%2 == 0 )

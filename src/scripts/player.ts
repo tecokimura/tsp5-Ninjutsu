@@ -70,7 +70,7 @@ export class Player extends Obj{
     // 合わせて、他のオブジェクトを調整する値を返す
     adjustHigh(MAX_POS_Y:number) :number {
         let aH = MAX_POS_Y - this.posY;
-        Util.debug("aH="+aH);
+        // Util.debug("aH="+aH);
 
         if( 0 < aH) {
             // カウンターストップ
@@ -118,7 +118,7 @@ export class Player extends Obj{
             img.drawImage(this.imgNo, this.posX, this.posY);
 
 
-            if( Util.isDebugRect ) {
+            if( Util.isDebugRectObj ) {
                 let imgBuf = img.getImage(this.imgNo);
                 img.p.stroke(0,127,255);
                 img.p.noFill();
@@ -126,7 +126,7 @@ export class Player extends Obj{
                 img.p.noStroke();
             }
 
-            if( Util.isDebugHit ) {
+            if( Util.isDebugRectHit ) {
                 img.p.stroke(170,225,250);
                 img.p.noFill();
                 img.p.rect(
