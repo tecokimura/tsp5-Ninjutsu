@@ -9,7 +9,7 @@ export class Def {
     
     static ENEMY_MAX:number = 15;
     static STAR_MAX:number  = 30;
-    static CLOUD_MAX:number = 5;
+    static CLOUD_MAX:number = 10;
     static ENEMY_MAX_SPEED:number = 5;
     
     static PLAY_INIT_POS_X:number = (this.DISP_W/2)+18;
@@ -131,11 +131,18 @@ export class Def {
     static P5_KEYCODE_DOWN:number  = 40;
     static P5_KEYCODE_A:number     = 65;
     static P5_KEYCODE_G:number     = 71;
+    static P5_KEYCODE_H:number     = 72;
     static P5_KEYCODE_O:number     = 79;
     static P5_KEYCODE_S:number     = 83;
     static P5_KEYCODE_T:number     = 84;
     static P5_KEYCODE_X:number     = 88;
     static P5_KEYCODE_Z:number     = 90;
+
+    static TYPE_FAR  = 0;
+    static TYPE_MID  = 1;
+    static TYPE_NEAR = 2;
+    static TYPE_MAX  = 3;
+
 
     // enum みたいに定義
     static TYPE_BIRD   = 0;

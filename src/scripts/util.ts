@@ -4,9 +4,10 @@ export class Util {
     static p5 = null;
     static isDebug :boolean = false;
     static isDebugLog :boolean = false;
-    static isDebugRect :boolean = false;
-    static isDebugInfo :boolean = false;
     static isDebugHit :boolean = false;
+    static isDebugRectObj :boolean = false;
+    static isDebugRectHit :boolean = false;
+    static isDebugInfo :boolean = false;
     static isDebugEnemyType :boolean = false;
 
     constructor() {
