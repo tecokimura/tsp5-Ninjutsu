@@ -83,7 +83,7 @@ const sketch = (p: p5) => {
         Util.isDebug = true;
         Util.isDebugLog = true;
         Util.isDebugInfo = true;
-        Util.isDebugHit = true;
+        Util.isDebugHit = false;
         Util.isDebugRectObj = true;
         Util.isDebugRectHit = true;
         Util.isDebugEnemyType = true;
@@ -150,27 +150,64 @@ const sketch = (p: p5) => {
             }
             else
             if( scene.is(Scene.READY)) {
+                // draw bg
                 drawBg();
+
+                // 雲
+                for(let i=0; i<clouds.length; i++) {
+                    clouds[i].drawBack(p);
+                }
+
                 drawReadyNinjutsu(scene.count());
+
+                // 雲
+                for(let i=0; i<clouds.length; i++) {
+                    clouds[i].drawFront(p);
+                }
 
             }
             else
             if( scene.is(Scene.PLAY)) {
+                // draw bg
                 drawBg();
+
+                // 雲
+                for(let i=0; i<clouds.length; i++) {
+                    clouds[i].drawBack(p);
+                }
+
+
                 drawEnemy();
 
                 player.draw(img, isPushKey(), isPushKeyNow(), isReleaseKeyNow());
                
                 
+                // 雲
+                for(let i=0; i<clouds.length; i++) {
+                    clouds[i].drawFront(p);
+                }
             }
             else
             if( scene.is(Scene.GAMEOVER)) {
+                // draw bg
                 drawBg();
+
+                // 雲
+                for(let i=0; i<clouds.length; i++) {
+                    clouds[i].drawBack(p);
+                }
+
                 drawEnemy();
                 
                 if( player.posY < Def.DISP_H ) {
                     player.drawCrush(img);
                 }
+
+                // 雲
+                for(let i=0; i<clouds.length; i++) {
+                    clouds[i].drawFront(p);
+                }
+
             }
 
 
@@ -319,19 +356,6 @@ const sketch = (p: p5) => {
     }
 
 
-    function moveCloudEnemy() {
-        // 雲の移動
-        for(let i=0; i<clouds.length; i++) {
-            clouds[i].move();
-        }
-
-        for(let i=0; i<enemies.length; i++) {
-            enemies[i].move();
-            enemies[i].updateImgNo();
-        }
-    }
-
-
     /**
      * 整数の乱数を取得する
      */
@@ -407,15 +431,26 @@ const sketch = (p: p5) => {
             }
         }
         else
-        if( scene.is(Scene.READY)) {
+        if( scene.is(Scene.READY) ) {
+            // for Test
             if(scene.count() > 40 ) {
                 scene.set(Scene.PLAY);
             }
         }
         else
-        if( scene.is(Scene.PLAY)) {
+        if( scene.is(Scene.PLAY) ) {
 
-            moveCloudEnemy();
+            // 雲の移動
+            for(let i=0; i<clouds.length; i++) {
+                clouds[i].move();
+            }
+
+            // 敵の移動
+            for(let i=0; i<enemies.length; i++) {
+                enemies[i].move();
+                enemies[i].updateImgNo();
+            }
+
 
             // キーを押しているかどうか
             if(player.high > 64) {
@@ -495,7 +530,17 @@ const sketch = (p: p5) => {
         if( scene.is(Scene.GAMEOVER)) {
             Util.debug("Scene.GAMEOVER");
 
-            moveCloudEnemy();
+            // 雲の移動
+            for(let i=0; i<clouds.length; i++) {
+                clouds[i].move();
+            }
+
+            // 敵の移動
+            for(let i=0; i<enemies.length; i++) {
+                enemies[i].move();
+                enemies[i].updateImgNo();
+            }
+
             // 
             player.moveInGameover(Def.DISP_H);
 
@@ -566,9 +611,6 @@ const sketch = (p: p5) => {
         //     }
         // }
 
-        // 雲
-        for(i=0; i<clouds.length; i++)
-            clouds[i].draw(p);
 
 
 

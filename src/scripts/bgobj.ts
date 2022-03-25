@@ -37,24 +37,44 @@ export class BgObj extends Obj{
      * 配列の空きを確認して敵を配置する
      * 戻り値（boolean）で配置できたかを返す
      */
-    add() {
+    add(type:number=Def.TYPE_ALL) {
         let isAdd = false;
         if(this.isEnable() == false) {
+
             // ランダムでサイズを決める
             this.init();
-            this.alpha = 30; // (0-255)
             this.width = Util.getRandInt(Def.DISP_W/2)+20;
             this.height= (Util.getRandInt() % Util.mathAbs(this.width/4));
 
             this.posY = 0 - (Util.getRandInt()%10) - this.height;
             this.posX = Util.mathAbs((Util.getRandInt() % (Def.DISP_W*2)) - (Def.DISP_W/2));
 
-            this.spX = Util.mathAbs(this.width/100);
-
             this.spVX = 0;
             this.spVY = 0;
 
             this.status = Def.ST_PLAY;
+
+            if(type == Def.TYPE_ALL) {
+                type = Util.getRandInt()%Def.TYPE_ALL;
+            }
+
+            switch (type) {
+              case Def.TYPE_NEAR:
+                  this.type = Def.TYPE_NEAR;
+                  this.alpha = 120; // (0-255)
+                  this.spX = Util.mathAbs(this.width/50);
+                  break;
+              case Def.TYPE_MID:
+                  this.type = Def.TYPE_MID;
+                  this.alpha = 80; // (0-255)
+                  this.spX = Util.mathAbs(this.width/75);
+                  break;
+              default:
+                  this.type = Def.TYPE_FAR;
+                  this.alpha = 40; // (0-255)
+                  this.spX = Util.mathAbs(this.width/100);
+                  break;
+            }
 
             isAdd = this.isEnable();
         }
@@ -98,12 +118,24 @@ export class BgObj extends Obj{
     }
 
 
-    draw(p5:p5) {
-        if( this.isEnable() ) {
+    drawBack(p5:p5) {
+        if( this.isEnable() && this.type != Def.TYPE_NEAR) {
+
             // drawCircle
             p5.angleMode(p5.DEGREES);
             // p5.fill(255,255,255, this.alpha);
-            p5.fill(230,230,230, this.alpha);
+            p5.fill(220,220,220, this.alpha);
+            p5.arc(this.posX+this.width/2, this.posY+this.height/2, this.width, this.height, 0, 360);
+        }
+    }
+
+    drawFront(p5:p5) {
+        if( this.isEnable() && this.type == Def.TYPE_NEAR) {
+
+            // drawCircle
+            p5.angleMode(p5.DEGREES);
+            // p5.fill(255,255,255, this.alpha);
+            p5.fill(240,240,240, this.alpha);
             p5.arc(this.posX+this.width/2, this.posY+this.height/2, this.width, this.height, 0, 360);
         }
     }
