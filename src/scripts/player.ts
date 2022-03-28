@@ -6,32 +6,22 @@ import {Img} from "./img";
 import {Util} from "./util";
 
 export class Player extends Obj{
-    // p:p5 = null;
-
-    // いつか使いそう
-    // enable:boolean = false;
-    // status:number = 0;
-    // type:number = 0;
 
     imgNo:number= 0;
    
     // 上昇している高さ
     high:number = 0;
 
-    constructor(p5: p5) {
+    constructor() {
         super();
-        // this.p = p5;
         this.init();
     }
 
     // データをリセットしたい時などの初期化
     init() {
-        this.time = 0;
-        // this.type = Def.DATA_NONE;
+        super.init();
         this.posX = Def.PLAY_INIT_POS_X;
         this.posY = Def.PLAY_INIT_POS_Y;
-        this.spX  = 0;
-        this.spY  = 0;
         this.imgNo= Def.DATA_NONE;
 
         this.high = 0;
@@ -90,7 +80,7 @@ export class Player extends Obj{
     }
 
     // 描画する画像番号を設定する
-    updateImgNo(isPushKey, isPushNow, isReleaseNow) {
+    updateImgNo(isPushKey:boolean, isPushNow:boolean, isReleaseNow:boolean) {
         // proc で決めたほうが良さそう
         if( isPushKey ) {
             // アニメーション切替中か降下中か
@@ -113,7 +103,7 @@ export class Player extends Obj{
 
 
     // Utilにimgを移すかはのちのち検討する
-    draw(img:p5.Image) {
+    draw(img:Img) {
         if (this.imgNo != Def.DATA_NONE) {
             img.drawImage(this.imgNo, this.posX, this.posY);
 
@@ -140,7 +130,7 @@ export class Player extends Obj{
         }
     }
 
-    drawCrush(img:p5.Image) {
+    drawCrush(img:Img) {
         img.drawImage(Img.NINJA_CRASH, this.posX, this.posY);
     }
 
