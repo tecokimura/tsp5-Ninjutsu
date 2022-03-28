@@ -20,12 +20,26 @@ export class Obj {
     hitOfsH :number = 0;
 
     constructor() {
-        // 変数定義で0初期化しているからここでする必要ない気がした
-        // for Debug
-        this.hitOfsX = 14;
-        this.hitOfsY = 10;
-        this.hitOfsW = 20;
-        this.hitOfsH = 8;
+        this.init();
+    }
+
+    init() {
+        this.time= 0;
+
+        this.posX = 0;
+        this.posY = 0;
+        this.spX  = 0;
+        this.spVX = 0;
+        this.spY  = 0;
+        this.spVY = 0;
+
+        this.width = 0;
+        this.height= 0;
+
+        this.hitOfsX= 0;
+        this.hitOfsY= 0;
+        this.hitOfsW= 0;
+        this.hitOfsH= 0;
     }
 
     countTime(add:number=1):number {
