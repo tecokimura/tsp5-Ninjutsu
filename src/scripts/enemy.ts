@@ -8,13 +8,9 @@ import {Util} from "./util";
 // TODO: 背景として動くcloud, starもあるので一個superclassがあったほうがいいかも
 export class Enemy extends Obj{
 
-    // status:number = 0;
     status:number = 0;
     type:number = 0;
     time:number = 0;
-    // posX:number = 0;
-    // posY:number = 0;
-    // spX:number  = 0;
     imgNo:number= 0;
 
     animations = new Array();
@@ -26,13 +22,10 @@ export class Enemy extends Obj{
 
     // データをリセットしたい時などの初期化
     init() {
+        super.init();
         this.status= Def.DATA_NONE;
         this.type  = Def.DATA_NONE;
-        this.time  = 0;
-        this.posX  = 0;
         this.posY  = Def.DATA_NONE;
-        this.spX   = 0;
-        this.spY   = 0;
         this.imgNo = 0;
         this.animations = new Array();
     }
@@ -92,7 +85,7 @@ export class Enemy extends Obj{
         if(this.isEnable()) {
             this.posX += this.spX;
             if( (this.posX <= (0-48) && this.spX < 0)
-            ||  (240 <= this.posX && 0 < this.spX) {
+            ||  (240 <= this.posX && 0 < this.spX) ) {
                 this.spX *= -1;
             }
 
@@ -123,7 +116,7 @@ export class Enemy extends Obj{
     }
 
     // Utilにimgを移すかはのちのち検討する
-    draw(img:p5.Image) {
+    draw(img:Img) {
         if( this.isEnable() ) {
             let r = 0;
             // 回転させる場合
@@ -158,14 +151,6 @@ export class Enemy extends Obj{
     }
 
 
-    countTime() {
-        if( this.isEnable() ) {
-            this.time++;
-        }
-    }
-
-
-
     initTypeUfo() {
         this.type = Def.TYPE_UFO;
         this.imgNo= Img.ENEMY_UFO;
@@ -174,9 +159,9 @@ export class Enemy extends Obj{
         this.posX = Util.getRandInt() % Def.DISP_W;
         this.animations = [
             Img.ENEMY_UFO, Img.ENEMY_UFO, Img.ENEMY_UFO,
-            Img.ENEMY_UFO1,Img.ENEMY_UFO1,Img.ENEMY_UFO1
+            Img.ENEMY_UFO1,Img.ENEMY_UFO1,Img.ENEMY_UFO1,
             Img.ENEMY_UFO, Img.ENEMY_UFO, Img.ENEMY_UFO,
-            Img.ENEMY_UFO1,Img.ENEMY_UFO1,Img.ENEMY_UFO1
+            Img.ENEMY_UFO1,Img.ENEMY_UFO1,Img.ENEMY_UFO1,
             Img.ENEMY_UFO, Img.ENEMY_UFO1,
             Img.ENEMY_UFO, Img.ENEMY_UFO1
         ];

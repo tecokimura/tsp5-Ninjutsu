@@ -4,35 +4,39 @@ import {Img} from "./img";
 import {Util} from "./util";
 import {Player} from "./player";
 import {Enemy} from "./enemy";
-import {BgObj} from "./bgobj";
+import {Cloud} from "./cloud";
+import {Star} from "./star";
 import {Scene} from "./scene";
 
+
+// for Debug
+Util.isDebug = true;
+Util.isDebugLog = true;
+Util.isDebugInfo = true;
+Util.isDebugHit = true;
+Util.isDebugRectObj = false;
+Util.isDebugRectHit = false;
+Util.isDebugEnemyType = true;
 
 let scene = null;
 let isDraw = false;
 let img = null;
-// let isDebug = true;
-// let isDebugLog = true;
-// let isDebugInfo= true;
 
 const sketch = (p: p5) => {
 
     // Player(Ninja) data
     let player = null;
 
-    let enemies: Array<Enemey>  = new Array(Def.ENEMY_MAX);
+    let enemies: Array<Enemy>  = new Array(Def.ENEMY_MAX);
     
     let appearAirLevel = 0;
 
     // 星
-    let starX: Array<number> = new Array(Def.STAR_MAX);    // 星x座標
-    let starY: Array<number> = new Array(Def.STAR_MAX);    // 星y座標
+    // let starX: Array<number> = new Array(Def.STAR_MAX);    // 星x座標
+    // let starY: Array<number> = new Array(Def.STAR_MAX);    // 星y座標
 
-    let clouds: Array<BgObj> = new Array(Def.CLOUD_MAX);
-    // let cloudX: Array<number>  = new Array(Def.CLOUD_MAX);    // 星x座標
-    // let cloudY: Array<number>  = new Array(Def.CLOUD_MAX);    // 星y座標
-    // let cloudZ: Array<number>  = new Array(Def.CLOUD_MAX);    // 星y座標
-    // let cloudSp: Array<number> = new Array(Def.CLOUD_MAX);    // 星y座標
+    let clouds: Array<Cloud> = new Array(Def.CLOUD_MAX);
+    let stars: Array<Star> = new Array(Def.STAR_MAX);
 
     let keyCodePre = Def.P5_KEYCODE_NONE;
     let keyCodeHistory: Array<number> = new Array(5);
@@ -80,20 +84,16 @@ const sketch = (p: p5) => {
 
         // Utilにp5を設定
         Util.setP5(p);
-        Util.isDebug = true;
-        Util.isDebugLog = true;
-        Util.isDebugInfo = true;
-        Util.isDebugHit = false;
-        Util.isDebugRectObj = true;
-        Util.isDebugRectHit = true;
-        Util.isDebugEnemyType = true;
 
         player = new Player();
         for(let i=0; i<enemies.length; i++)
             enemies[i] = new Enemy();
 
+        for(let i=0; i<stars.length; i++)
+            stars[i] = new Star();
+
         for(let i=0; i<clouds.length; i++)
-            clouds[i] = new BgObj();
+            clouds[i] = new Cloud();
 
         init();
         proc();
@@ -232,6 +232,8 @@ const sketch = (p: p5) => {
 
             let eL = 0;
             enemies.forEach((e) => { if(e.isEnable()) eL++; });
+            let sL = 0;
+            stars.forEach((s) => { if(s.isEnable()) sL++; });
             let cL = 0;
             clouds.forEach((c) => { if(c.isEnable()) cL++; });
 
@@ -246,6 +248,7 @@ const sketch = (p: p5) => {
             p.text('PT:'+player.time,    x, y+=addy);
             p.text('eA:'+appearAirLevel, x, y+=addy);
             p.text('eL:'+eL, x, y+=addy);
+            p.text('sL:'+sL, x, y+=addy);
             p.text('cL:'+cL, x, y+=addy);
         }
     }
@@ -282,15 +285,15 @@ const sketch = (p: p5) => {
     };
 
     function addEnemy() {
-
-
         if( appearAirLevel <= player.high ) {
             // 星出現
-            for(let i=0; i<Def.STAR_MAX; i++) {
-                if( starY[i] == Def.DATA_NONE && Def.AIR_LV_1 <= appearAirLevel) {
-                    starY[i] = -40-(getRandInt()%120);
-                    starX[i] = (getRandInt()%Def.DISP_W);
-                    break;
+            for(let i=0; i<stars.length; i++) {
+                // if( Def.AIR_LV_1 <= appearAirLevel)
+                {
+                    if( stars[i].add() ) {
+                        Util.debug("added stars");
+                        break;
+                    }
                 }
             }
 
@@ -302,7 +305,6 @@ const sketch = (p: p5) => {
                 }
             }
         }
-
 
 
         if( appearAirLevel <= player.high ) {
@@ -374,7 +376,9 @@ const sketch = (p: p5) => {
             enemies[i].init();
         }
 
-        for(let i=0; i<Def.STAR_MAX;   i++) starY[i]  = Def.DATA_NONE;
+        for(let i=0; i<stars.length; i++) {
+            stars[i].init();
+        }
 
         for(let i=0; i<clouds.length; i++) {
             clouds[i].init();
@@ -478,19 +482,13 @@ const sketch = (p: p5) => {
                 
 
                 //
-                for(let j=0;j<Def.STAR_MAX;j++) {
-                    // 星が存在するのなら
-                    if(starY[j] != Def.DATA_NONE) {
-
-                        if( (starX[j]&1)==1 ) {
-                            // Xが奇数なら普通に落ちる
-                            starY[j]+=adjustH;
-                        } else {
-                            // Xが偶数の場合は1.5倍で流れる
-                            starY[j]+=adjustH+(adjustH/2);
-                        }
-
-                        if(starY[j]>260) starY[j]=Def.DATA_NONE;
+                for(let j=0;j<stars.length;j++) {
+                    if( j%2 == 1 ) {
+                        // Xが奇数なら普通に落ちる
+                        stars[j].adjustDispPos(adjustH); 
+                    } else {
+                        // Xが偶数の場合は0.5倍で流れる
+                        stars[j].adjustDispPos(Util.mathAbs(adjustH/2)); 
                     }
                 }
 
@@ -600,16 +598,9 @@ const sketch = (p: p5) => {
             p.rect(0, 220-(i*20), Def.DISP_W, 20);
         }
 
-        // // STAR
-        // if( (appearAirLevel >= Def.AIR_LV_1 && appearAirLevel < Def.AIR_LV_3)
-        // ||   appearAirLevel >= Def.AIR_LV_4)    //大気圏-宇宙
-        // {
-        //     for(i=0;i<Def.STAR_MAX;i++)//星
-        //     {
-        //         g.setColor(Graphics.getColorOfRGB(252,231,134));
-        //         g.fillRect(starX[i],starY[i],2,2);
-        //     }
-        // }
+        for(let i=0; i<stars.length; i++) {
+            stars[i].drawBack(p);
+        }
 
 
 
