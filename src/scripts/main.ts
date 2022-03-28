@@ -6,6 +6,8 @@ import {Player} from "./player";
 import {Enemy} from "./enemy";
 import {Cloud} from "./cloud";
 import {Star} from "./star";
+import {Snow} from "./Snow";
+import {Rain} from "./rain";
 import {Scene} from "./scene";
 
 
@@ -31,12 +33,10 @@ const sketch = (p: p5) => {
     
     let appearAirLevel = 0;
 
-    // 星
-    // let starX: Array<number> = new Array(Def.STAR_MAX);    // 星x座標
-    // let starY: Array<number> = new Array(Def.STAR_MAX);    // 星y座標
-
     let clouds: Array<Cloud> = new Array(Def.CLOUD_MAX);
     let stars: Array<Star> = new Array(Def.STAR_MAX);
+    let rains: Array<Rain> = new Array(Def.RAIN_MAX); // 英語おかしいけど まぁいいか・・・
+    let snows: Array<Snow> = new Array(Def.SNOW_MAX);
 
     let keyCodePre = Def.P5_KEYCODE_NONE;
     let keyCodeHistory: Array<number> = new Array(5);
@@ -94,6 +94,12 @@ const sketch = (p: p5) => {
 
         for(let i=0; i<clouds.length; i++)
             clouds[i] = new Cloud();
+
+        for(let i=0; i<rains.length; i++)
+            rains[i] = new Rain();
+
+        for(let i=0; i<snows.length; i++)
+            snows[i] = new Snow();
 
         init();
         proc();
@@ -153,17 +159,9 @@ const sketch = (p: p5) => {
                 // draw bg
                 drawBg();
 
-                // 雲
-                for(let i=0; i<clouds.length; i++) {
-                    clouds[i].drawBack(p);
-                }
-
                 drawReadyNinjutsu(scene.count());
 
-                // 雲
-                for(let i=0; i<clouds.length; i++) {
-                    clouds[i].drawFront(p);
-                }
+                drawFg();
 
             }
             else
@@ -171,31 +169,17 @@ const sketch = (p: p5) => {
                 // draw bg
                 drawBg();
 
-                // 雲
-                for(let i=0; i<clouds.length; i++) {
-                    clouds[i].drawBack(p);
-                }
-
 
                 drawEnemy();
 
                 player.draw(img, isPushKey(), isPushKeyNow(), isReleaseKeyNow());
                
-                
-                // 雲
-                for(let i=0; i<clouds.length; i++) {
-                    clouds[i].drawFront(p);
-                }
+                drawFg();
             }
             else
             if( scene.is(Scene.GAMEOVER)) {
                 // draw bg
                 drawBg();
-
-                // 雲
-                for(let i=0; i<clouds.length; i++) {
-                    clouds[i].drawBack(p);
-                }
 
                 drawEnemy();
                 
@@ -203,10 +187,7 @@ const sketch = (p: p5) => {
                     player.drawCrush(img);
                 }
 
-                // 雲
-                for(let i=0; i<clouds.length; i++) {
-                    clouds[i].drawFront(p);
-                }
+                drawFg();
 
             }
 
@@ -230,12 +211,7 @@ const sketch = (p: p5) => {
             let y = 5;
             let addy = 12;
 
-            let eL = 0;
-            enemies.forEach((e) => { if(e.isEnable()) eL++; });
-            let sL = 0;
-            stars.forEach((s) => { if(s.isEnable()) sL++; });
-            let cL = 0;
-            clouds.forEach((c) => { if(c.isEnable()) cL++; });
+            let n = 0;
 
             p.fill(255,0,0);
             p.textSize(10);
@@ -247,9 +223,22 @@ const sketch = (p: p5) => {
             p.text('PH:'+player.high,    x, y+=addy);
             p.text('PT:'+player.time,    x, y+=addy);
             p.text('eA:'+appearAirLevel, x, y+=addy);
-            p.text('eL:'+eL, x, y+=addy);
-            p.text('sL:'+sL, x, y+=addy);
-            p.text('cL:'+cL, x, y+=addy);
+           
+            n = 0;
+            enemies.forEach((e) => { if(e.isEnable()) n++; });
+            p.text('en:'+n, x, y+=addy);
+            n = 0;
+            stars.forEach((s) => { if(s.isEnable()) n++; });
+            p.text('st:'+n, x, y+=addy);
+            n = 0;
+            clouds.forEach((c) => { if(c.isEnable()) n++; });
+            p.text('cl:'+n, x, y+=addy);
+            n = 0;
+            rains.forEach((r) => { if(r.isEnable()) n++; });
+            p.text('rn:'+n, x, y+=addy);
+            n = 0;
+            snows.forEach((s) => { if(s.isEnable()) n++; });
+            p.text('sn:'+n, x, y+=addy);
         }
     }
 
@@ -285,7 +274,7 @@ const sketch = (p: p5) => {
     };
 
     function addEnemy() {
-        if( appearAirLevel <= player.high ) {
+        if( scene.count()%5 == 0 ) {
             // 星出現
             for(let i=0; i<stars.length; i++) {
                 // if( Def.AIR_LV_1 <= appearAirLevel)
@@ -301,6 +290,22 @@ const sketch = (p: p5) => {
             for(let i=0; i<clouds.length; i++) {
                 if( clouds[i].add() ) {
                     // Util.debug("added cloud");
+                    break;
+                }
+            }
+
+            // 雨
+            for(let i=0; i<rains.length; i++) {
+                if( rains[i].add() ) {
+                    // Util.debug("added rain");
+                    break;
+                }
+            }
+
+            // ゆき
+            for(let i=0; i<snows.length; i++) {
+                if( snows[i].add() ) {
+                    // Util.debug("added snow");
                     break;
                 }
             }
@@ -372,17 +377,11 @@ const sketch = (p: p5) => {
 
         player.init();
 
-        for(let i=0; i<enemies.length; i++) {
-            enemies[i].init();
-        }
-
-        for(let i=0; i<stars.length; i++) {
-            stars[i].init();
-        }
-
-        for(let i=0; i<clouds.length; i++) {
-            clouds[i].init();
-        }
+        for(i=0; i<enemies.length; i++) { enemies[i].init(); }
+        for(i=0; i<stars.length; i++) { stars[i].init(); }
+        for(i=0; i<clouds.length; i++) { clouds[i].init(); }
+        for(i=0; i<rains.length; i++) { rains[i].init(); }
+        for(i=0; i<snows.length; i++) { snows[i].init(); }
 
         keyCodePre = Def.P5_KEYCODE_NONE;
         for(let i=0; i<keyCodeHistory.length;i++) {
@@ -445,12 +444,14 @@ const sketch = (p: p5) => {
         if( scene.is(Scene.PLAY) ) {
 
             // 雲の移動
-            for(let i=0; i<clouds.length; i++) {
-                clouds[i].move();
-            }
+            let i=0;
+            for(i=0; i<clouds.length; i++){ clouds[i].move(); }
+            for(i=0; i<stars.length; i++) { stars[i].move(); }
+            for(i=0; i<rains.length; i++) { rains[i].move(); }
+            for(i=0; i<snows.length; i++) { snows[i].move(); }
 
             // 敵の移動
-            for(let i=0; i<enemies.length; i++) {
+            for(i=0; i<enemies.length; i++) {
                 enemies[i].move();
                 enemies[i].updateImgNo();
             }
@@ -477,23 +478,13 @@ const sketch = (p: p5) => {
 
                 // TODO: 変な処理だがリファクタはまた別に行う
                 //       敵が存在するのなら プレイヤーが移動した分を移動させる
-                for(let k=0;k<enemies.length;k++)
-                    enemies[k].adjustDispPos(adjustH); 
-                
+                let k=0;
+                for(k=0;k<enemies.length;k++) { enemies[k].adjustDispPos(adjustH); }
+                for(k=0;k<clouds.length;k++) { clouds[k].adjustDispPos(adjustH); }
+                for(k=0;k<stars.length;k++) { stars[k].adjustDispPos(adjustH); }
+                for(k=0;k<rains.length;k++) { rains[k].adjustDispPos(adjustH); }
+                for(k=0;k<snows.length;k++) { snows[k].adjustDispPos(adjustH); }
 
-                //
-                for(let j=0;j<stars.length;j++) {
-                    if( j%2 == 1 ) {
-                        // Xが奇数なら普通に落ちる
-                        stars[j].adjustDispPos(adjustH); 
-                    } else {
-                        // Xが偶数の場合は0.5倍で流れる
-                        stars[j].adjustDispPos(Util.mathAbs(adjustH/2)); 
-                    }
-                }
-
-                for(let k=0;k<clouds.length;k++)
-                    clouds[k].adjustDispPos(adjustH); 
                 
 
                 // // ここをコメントアウトすると上に飛び去ってしまう
@@ -528,13 +519,14 @@ const sketch = (p: p5) => {
         if( scene.is(Scene.GAMEOVER)) {
             Util.debug("Scene.GAMEOVER");
 
-            // 雲の移動
-            for(let i=0; i<clouds.length; i++) {
-                clouds[i].move();
-            }
+            let i=0;
+            for(i=0; i<clouds.length; i++){ clouds[i].move(); }
+            for(i=0; i<stars.length; i++) { stars[i].move(); }
+            for(i=0; i<rains.length; i++) { rains[i].move(); }
+            for(i=0; i<snows.length; i++) { snows[i].move(); }
 
             // 敵の移動
-            for(let i=0; i<enemies.length; i++) {
+            for(i=0; i<enemies.length; i++) {
                 enemies[i].move();
                 enemies[i].updateImgNo();
             }
@@ -578,8 +570,7 @@ const sketch = (p: p5) => {
      * プログラムによるグラデーションの描画
      */
     function drawBg(isClear:boolean = true) {
-        let i;
-        let rgbs;
+        let i:number;
 
         p.noStroke();
 
@@ -593,16 +584,15 @@ const sketch = (p: p5) => {
         
         // 背景スクロール中
         for(i=0;i<12;i++) {
-            rgbs = Def.BG_COLOR_RGBs[Util.mathFloor(i+rgbi)];
+            let rgbs = Def.BG_COLOR_RGBs[Util.mathFloor(i+rgbi)];
             p.fill(rgbs[0],rgbs[1],rgbs[2]);
             p.rect(0, 220-(i*20), Def.DISP_W, 20);
         }
 
-        for(let i=0; i<stars.length; i++) {
-            stars[i].drawBack(p);
-        }
-
-
+        for(i=0; i<stars.length; i++) { stars[i].drawBack(p); }
+        for(i=0; i<clouds.length; i++){ clouds[i].drawBack(p); }
+        for(i=0; i<rains.length; i++) { rains[i].drawBack(p); }
+        for(i=0; i<snows.length; i++) { snows[i].drawBack(p); }
 
 
         // TODO:地面の描画
@@ -612,6 +602,16 @@ const sketch = (p: p5) => {
             p.fill(64,125,64);
             p.rect(0, i, Def.DISP_W, 30);
         }
+    }
+
+
+    function drawFg() {
+        let i=0;
+        for(i=0; i<stars.length; i++) { stars[i].drawFront(p); }
+        for(i=0; i<clouds.length; i++){ clouds[i].drawFront(p); }
+        for(i=0; i<rains.length; i++) { rains[i].drawFront(p); }
+        for(i=0; i<snows.length; i++) { snows[i].drawFront(p); }
+
     }
 
 
@@ -625,9 +625,6 @@ const sketch = (p: p5) => {
         }
     }
 
-    // 再ゲームするためのデータリセット
-    function resetDataPlay() {
-    }
 };
 
 new p5(sketch);

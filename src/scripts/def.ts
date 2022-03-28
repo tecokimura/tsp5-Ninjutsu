@@ -8,8 +8,10 @@ export class Def {
     static DISP_H:number = 240;
     
     static ENEMY_MAX:number = 15;
-    static STAR_MAX:number  = 30;
-    static CLOUD_MAX:number = 10;
+    static STAR_MAX:number  = 6;
+    static CLOUD_MAX:number = 20;
+    static RAIN_MAX:number  = 30;
+    static SNOW_MAX:number  = 30;
     static ENEMY_MAX_SPEED:number = 5;
     
     static PLAY_INIT_POS_X:number = (this.DISP_W/2)+18;
@@ -27,12 +29,6 @@ export class Def {
     static ST_OVER = -1;
     static ST_PLAY = 0;
 
-    static BIRD_ANIM:number  = 6;
-    static HELI_ANIM:number  = 2;
-    static STAR_ANIM:number  = 10;
-    static ANGEL_ANIM:number = 10;
-    static UFO_ANIM:number   = 6;
-    
     static AIR_LV_0:number   = 2000;
     static AIR_LV_1:number   = 4000;
     static AIR_LV_2:number   = 6000;

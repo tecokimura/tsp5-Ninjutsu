@@ -4,6 +4,7 @@ import {BgObj} from "./bgobj";
 import {Def} from "./def";
 import {Util} from "./util";
 
+// いずれ弓矢とか雷のほうが面白いかも
 export class Star extends BgObj{
 
     constructor() {
@@ -36,6 +37,7 @@ export class Star extends BgObj{
             this.height= this.width;
 
             this.status = Def.ST_PLAY;
+            this.type = Def.TYPE_FAR;
 
             isAdd = this.isEnable();
 
@@ -45,18 +47,19 @@ export class Star extends BgObj{
     }
 
     drawBack(p5:p5) {
-        // 黄色の違和感がすごい
-        // snow
-        p5.angleMode(p5.DEGREES);
-        p5.fill(250,250,0, this.alpha);
-        p5.arc(this.posX+this.width/2, this.posY+this.height/2, this.width, this.height, 0, 360);
-        
-        // rain
-        // p5.fill(0,0,255,100);
-        // p5.rect(this.posX+this.width/2, this.posY+this.height/2, this.width, this.height );
+        if( this.isEnable() && this.type != Def.TYPE_NEAR) {
+            p5.angleMode(p5.DEGREES);
+            p5.fill(250,250,0, this.alpha);
+            p5.arc(this.posX+this.width/2, this.posY+this.height/2, this.width, this.height, 0, 360);
+        }
     }
 
     drawFront(p5:p5) {
+        if( this.isEnable() && this.type == Def.TYPE_NEAR) {
+            p5.angleMode(p5.DEGREES);
+            p5.fill(250,250,0, this.alpha);
+            p5.arc(this.posX+this.width/2, this.posY+this.height/2, this.width, this.height, 0, 360);
+        }
     }
 
 }
