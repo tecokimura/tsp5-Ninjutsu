@@ -47,15 +47,20 @@ export class Obj {
         return this.time;
     }
 
+    getHitLeft() :number { return this.posX + this.hitOfsX; }
+    getHitRight():number { return this.posX + this.hitOfsX + this.hitOfsW; }
+    getHitTop()   :number { return this.posY + this.hitOfsY; }
+    getHitBottom() :number { return this.posY + this.hitOfsY + this.hitOfsH; }
+
     /**
      * 当たり判定をとる
      */
     hit(othr:Obj) :boolean {
         return (
-           this.posX + this.hitOfsX < othr.posX + othr.hitOfsX + othr.hitOfsW
-        && othr.posX + othr.hitOfsX < this.posX + this.hitOfsX + this.hitOfsW
-        && this.posY + this.hitOfsY < othr.posY + othr.hitOfsY + othr.hitOfsH 
-        && othr.posY + othr.hitOfsY < this.posY + this.hitOfsY + this.hitOfsH)
+           this.getHitLeft() < othr.getHitRight()
+        && othr.getHitLeft() < this.getHitRight()
+        && this.getHitTop()  < othr.getHitBottom()
+        && othr.getHitTop() < this.getHitBottom())
     }
 
 
@@ -64,5 +69,12 @@ export class Obj {
              +",hy="+(this.posY + this.hitOfsY)
              +",hw="+(this.posX + this.hitOfsX + this.hitOfsW)
              +",hh="+(this.posY + this.hitOfsY + this.hitOfsH);
+    }
+
+    getStringHit2() :string {
+        return "hx="+(this.getHitLeft())
+             +",hy="+(this.getHitTop())
+             +",hw="+(this.getHitRight() - this.getHitLeft())
+             +",hh="+(this.getHitBottom() - this.getHitTop());
     }
 }

@@ -13,7 +13,7 @@ export class Util {
     constructor() {
     }
 
-    static setP5(orgP5) { Util.p5 = orgP5; }
+    static setP5(orgP5:p5) { Util.p5 = orgP5; }
     static isP5():boolean { return (Util.p5 != null); }
 
     static getRandInt(size:number=10000) :number {

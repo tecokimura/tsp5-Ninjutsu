@@ -16,8 +16,8 @@ Util.isDebug = true;
 Util.isDebugLog = true;
 Util.isDebugInfo = true;
 Util.isDebugHit = true;
-Util.isDebugRectObj = false;
-Util.isDebugRectHit = false;
+Util.isDebugRectObj = true;
+Util.isDebugRectHit = true;
 Util.isDebugEnemyType = true;
 
 let scene = null;
@@ -205,7 +205,7 @@ const sketch = (p: p5) => {
 
     // Debug画面表示
     // Player情報などの表示
-    function drawDebugInfo(p) {
+    function drawDebugInfo(p:p5) {
         if(Util.isDebugInfo) {
             let x = 5;
             let y = 5;
@@ -219,8 +219,10 @@ const sketch = (p: p5) => {
             p.text('FR:'+scene.count(),  x, y+=addy);
             p.text('PX:'+player.posX,    x, y+=addy);
             p.text('PY:'+player.posY,    x, y+=addy);
-            p.text('PV:'+player.spVY,    x, y+=addy);
+            p.text('PV:'+player.spY,     x, y+=addy);
             p.text('PH:'+player.high,    x, y+=addy);
+            p.text('HR1:'+enemies[0].getStringHit(),    x, y+=addy);
+            p.text('HR2:'+enemies[0].getStringHit2(),   x, y+=addy);
             p.text('PT:'+player.time,    x, y+=addy);
             p.text('eA:'+appearAirLevel, x, y+=addy);
            
@@ -274,7 +276,7 @@ const sketch = (p: p5) => {
     };
 
     function addEnemy() {
-        if( scene.count()%5 == 0 ) {
+        if( scene.count()%2 == 0 ) {
             // 星出現
             for(let i=0; i<stars.length; i++) {
                 // if( Def.AIR_LV_1 <= appearAirLevel)

@@ -36,11 +36,11 @@ export class Player extends Obj{
     move(isKeyDown:boolean) {
 
         if( isKeyDown ) {
-            this.spVY--;
+            this.spY--;
         } else {
             // 最大速度でなければ速度をあげる
-            if(this.spVY < Def.PLAY_MAX_VY) {
-                this.spVY++;
+            if(this.spY < Def.PLAY_MAX_SP_Y) {
+                this.spY++;
             }
         }
 
@@ -48,10 +48,10 @@ export class Player extends Obj{
         // 一番上まで行ってたらそれ以上は移動させない
         if( this.high < 100 ) {
             this.posY += -4;
-            this.spVY  = 8;
+            this.spY  = 8;
         } else {
             // 速度分移動させる
-            this.posY -= Util.mathFloor(this.spVY/2);
+            this.posY -= Util.mathFloor(this.spY/2);
         }
 
     }
@@ -105,8 +105,8 @@ export class Player extends Obj{
     // Utilにimgを移すかはのちのち検討する
     draw(img:Img) {
         if (this.imgNo != Def.DATA_NONE) {
-            img.drawImage(this.imgNo, this.posX, this.posY);
 
+            img.drawImage(this.imgNo, this.posX, this.posY);
 
             if( Util.isDebugRectObj ) {
                 let imgBuf = img.getImage(this.imgNo);
@@ -120,32 +120,39 @@ export class Player extends Obj{
                 img.p.stroke(170,225,250);
                 img.p.noFill();
                 img.p.rect(
-                    this.posX+this.hitOfsX,
-                    this.posY+this.hitOfsY,
-                    this.hitOfsW,
-                    this.hitOfsH
+                    this.getHitLeft(),
+                    this.getHitTop(),
+                    this.getHitRight() - this.getHitLeft(),
+                    this.getHitBottom()- this.getHitTop()
                 );
                 img.p.noStroke();
             }
         }
     }
 
+    // 敵に当たった後の表示
     drawCrush(img:Img) {
         img.drawImage(Img.NINJA_CRASH, this.posX, this.posY);
     }
 
+    // いて！みたいにちょっと上に飛ばす(びっくりした感じを出す)
     setGameover() {
-        // いて！みたいにちょっと上に飛ばす(びっくりした感じを出す)
-        this.spVY *= 1.25;
+        this.spY *= 1.25;
     }
 
-
+    // ゲームオーバー中の移動
     moveInGameover(MAX_DISP_H:number) {
         if( this.posY < MAX_DISP_H) {
             // 上に飛びすぎてたので重力を重くする
-            this.spVY -= 2*2;
-            this.posY -= Util.mathFloor(this.spVY/2);
+            this.spY -= 2*2;
+            this.posY -= Util.mathFloor(this.spY/2);
         }
     }
+
+    // 速度を考慮したいのでOverideする
+    getHitLeft() :number { return this.posX + this.hitOfsX - (this.spX/2); }
+    getHitRight():number { return this.posX + this.hitOfsX + this.hitOfsW + (this.spX/2); }
+    getHitTop()   :number { return this.posY + this.hitOfsY - (this.spY/2); }
+    getHitBottom() :number { return this.posY + this.hitOfsY + this.hitOfsH + (this.spY/2); }
 
 }

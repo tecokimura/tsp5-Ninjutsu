@@ -17,7 +17,7 @@ export class Def {
     static PLAY_INIT_POS_X:number = (this.DISP_W/2)+18;
     static PLAY_INIT_POS_Y:number = this.DISP_W-64-12;
     
-    static PLAY_MAX_VY:number = 40;
+    static PLAY_MAX_SP_Y:number = 40;
     static PLAY_MAX_DRAW_POS_Y:number = 125;
 
     static BACK_SCR_STOP:number = 8300;

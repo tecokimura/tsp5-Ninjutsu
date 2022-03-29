@@ -37,8 +37,8 @@ export class Rain extends BgObj{
             this.posX = Util.getRandInt()%Def.DISP_W;
 
             // ランダムでサイズを決める
-            this.width = 2;
-            this.height= Util.getRandInt(80)+10;
+            this.width = 1;
+            this.height= Util.getRandInt(40)+10;
 
             this.status = Def.ST_PLAY;
 
