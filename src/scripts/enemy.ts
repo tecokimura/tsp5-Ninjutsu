@@ -48,6 +48,12 @@ export class Enemy extends Obj{
         if(this.isEnable() == false) {
             this.init();
 
+            // type 毎にも変わるかもしれないがとりあえずデフォルト値
+            this.hitOfsX = 14;
+            this.hitOfsY = 7;
+            this.hitOfsW = 20;
+            this.hitOfsH = 10;
+
             switch (type) {
               case Def.TYPE_UFO:
                   this.initTypeUfo();
@@ -135,14 +141,15 @@ export class Enemy extends Obj{
                 img.p.noStroke();
             }
 
-            if( Util.isDebugRectHit ) {
+            // if( Util.isDebugRectHit )
+            {
                 img.p.stroke(255,255,255,100);
                 img.p.noFill();
                 img.p.rect(
-                    this.posX+this.hitOfsX,
-                    this.posY+this.hitOfsY,
-                    this.hitOfsW,
-                    this.hitOfsH
+                    this.getHitLeft(),
+                    this.getHitTop(),
+                    this.getHitRight() - this.getHitLeft(), 10
+                    // this.getHitBottom()- this.getHitTop()
                 );
                 img.p.noStroke();
 
