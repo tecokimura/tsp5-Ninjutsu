@@ -40,7 +40,7 @@ export class Snow extends BgObj{
             // ランダムでサイズを決める
             this.width = Util.getRandInt(10)+2;
             this.height= this.width;
-            this.alpha = 100;
+            this.alpha = 160;
 
             this.status = Def.ST_PLAY;
 
@@ -54,7 +54,7 @@ export class Snow extends BgObj{
         // drawCircle
         if( this.isEnable() && this.type != Def.TYPE_NEAR) {
             p5.angleMode(p5.DEGREES);
-            p5.fill(200,200,200, this.alpha);
+            p5.fill(250,250,250, 220);
             p5.arc(this.posX+this.width/2, this.posY+this.height/2, this.width, this.height, 0, 360);
         }
     }
@@ -62,7 +62,7 @@ export class Snow extends BgObj{
     drawFront(p5:p5) {
         if( this.isEnable() && this.type == Def.TYPE_NEAR) {
             p5.angleMode(p5.DEGREES);
-            p5.fill(255,255,255, this.alpha*2);
+            p5.fill(255,255,255, 255);
             p5.arc(this.posX+this.width/2, this.posY+this.height/2, this.width, this.height, 0, 360);
         }
     }
