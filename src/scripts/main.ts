@@ -15,7 +15,7 @@ import {Scene} from "./scene";
 Util.isDebug = true;
 Util.isDebugLog = true;
 Util.isDebugInfo = true;
-Util.isDebugHit = true;
+Util.isDebugHit = false;
 Util.isDebugRectObj = true;
 Util.isDebugRectHit = true;
 Util.isDebugEnemyType = true;
@@ -189,6 +189,21 @@ const sketch = (p: p5) => {
 
                 drawFg();
 
+                // GAME OVER を出す
+                p.fill(40, 40, 40, 120);
+                p.rect(0, 60, Def.DISP_W, 140);
+
+                p.fill(255, 50, 50, 180);
+                p.textSize(32);
+                p.textAlign(p.CENTER, p.CENTER);
+                Util.textBold('G a M e',  Def.DISP_W/2, Def.DISP_H/2-25);
+                Util.textBold('O V e R',  Def.DISP_W/2, Def.DISP_H/2+25);
+                
+                if( 10 < scene.count()) {
+                    p.fill(200, 200, 255, 220);
+                    p.textSize(12);
+                    p.text('< push any key >',  Def.DISP_W/2, Def.DISP_H/2+60);
+                }
             }
 
 
@@ -215,6 +230,7 @@ const sketch = (p: p5) => {
 
             p.fill(255,0,0);
             p.textSize(10);
+            p.textAlign(p.LEFT, p.TOP);
             p.text('SC:'+scene.present,  x, y+=addy);
             p.text('FR:'+scene.count(),  x, y+=addy);
             p.text('PX:'+player.posX,    x, y+=addy);
@@ -461,11 +477,6 @@ const sketch = (p: p5) => {
 
             // キーを押しているかどうか
             if(player.high > 64) {
-                if( isPushKey(Def.P5_KEYCODE_O) ) {
-                    scene.set(Scene.GAMEOVER);
-                    player.setGameover();
-                }
-
                 if( isPushKey(Def.P5_KEYCODE_H) ) {
                     Util.debug("isPushKey(Def.P5_KEYCODE_H)");
                     player.high = 99999;
@@ -536,7 +547,7 @@ const sketch = (p: p5) => {
             // 
             player.moveInGameover(Def.DISP_H);
 
-            if( isPushKey(Def.P5_KEYCODE_T) ) {
+            if( 10 < scene.count() && isPushKey() ) {
                 // Data reset する
                 scene.set(Scene.TITLE);
                 init();
