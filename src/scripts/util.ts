@@ -16,6 +16,16 @@ export class Util {
     static setP5(orgP5:p5) { Util.p5 = orgP5; }
     static isP5():boolean { return (Util.p5 != null); }
 
+
+    static textBold(str:string, x:number, y:number) {
+        if( this.isP5() ) {
+            this.p5.text(str,x+1,y);
+            this.p5.text(str,x-1,y);
+            this.p5.text(str,x,y+1);
+            this.p5.text(str,x,y-1);
+        }
+    }
+
     static getRandInt(size:number=10000) :number {
         let ret = 0;
         if( Util.isP5() ) {
@@ -28,7 +38,6 @@ export class Util {
     static mathFloor(num:number) :number {
         return Util.p5.floor(num);
     }
-
     
     static mathAbs(num:number) :number {
         return Util.p5.abs(num);
