@@ -42,7 +42,7 @@ export class Enemy extends Obj{
 
         // Debugように色んな種類を出す
         if( Util.isDebugEnemyType ) {
-            type = (Util.getRandInt() % Def.TYPE_ALL);
+            type = (Util.getRandInt() % Def.TYPE_ENEMY_ALL);
         }
 
         if(this.isEnable() == false) {
@@ -55,17 +55,17 @@ export class Enemy extends Obj{
             this.hitOfsH = 10;
 
             switch (type) {
-              case Def.TYPE_UFO:
+              case Def.TYPE_ENEMY_UFO:
                   this.initTypeUfo();
                 break;
-              case Def.TYPE_SHINOBI:
+              case Def.TYPE_ENEMY_SHINOBI:
                   this.initTypeShinobi();
                 break;
-              case Def.TYPE_SHURI:
-                  this.initTypeShuri();
+              case Def.TYPE_ENEMY_DRONE:
+                  this.initTypeDrone();
                 break;
-              case Def.TYPE_KUNAI:
-                  this.initTypeKunai();
+              case Def.TYPE_ENEMY_SHURI:
+                  this.initTypeShuri();
                 break;
               default:
                   this.initTypeBird();
@@ -96,6 +96,14 @@ export class Enemy extends Obj{
             }
 
             this.posY += this.spY;
+
+            // UFO っぽい動きをさせる
+            if(this.type == Def.TYPE_ENEMY_UFO
+            && this.time%15 == 0) {
+                let n = Util.getRandInt();
+                if( n % 15 < 5 ) this.spX *= -1;
+                if( n % 15 < 2 ) this.spY *= -1;
+            }
         }
     }
 
@@ -159,9 +167,10 @@ export class Enemy extends Obj{
 
 
     initTypeUfo() {
-        this.type = Def.TYPE_UFO;
+        this.type = Def.TYPE_ENEMY_UFO;
         this.imgNo= Img.ENEMY_UFO;
         this.spX  = (Util.getRandInt() % 10 )+1;
+        this.spY  = (Util.getRandInt() % 8 ) - 4;
         this.posY = -40-(Util.getRandInt()%10);
         this.posX = Util.getRandInt() % Def.DISP_W;
         this.animations = [
@@ -179,14 +188,19 @@ export class Enemy extends Obj{
     }
 
     initTypeShinobi() {
-        this.type = Def.TYPE_SHINOBI;
+        this.type = Def.TYPE_ENEMY_SHINOBI;
         this.imgNo= Img.ENEMY_SHINOBI;
         this.spX  = (Util.getRandInt() % 8 )+1;
+        this.spY  = (Util.getRandInt() % 3 )+3;
         this.posY = -40-(Util.getRandInt()%10);
         this.posX = Util.getRandInt() % Def.DISP_W;
         this.animations = [
-            Img.ENEMY_SHINOBI1, Img.ENEMY_SHINOBI1, Img.ENEMY_SHINOBI1,
-            Img.ENEMY_SHINOBI,  Img.ENEMY_SHINOBI
+            Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI,
+            Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI,
+            Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI,
+            Img.ENEMY_SHINOBI1,Img.ENEMY_SHINOBI1,Img.ENEMY_SHINOBI1,
+            Img.ENEMY_SHINOBI1,Img.ENEMY_SHINOBI1,Img.ENEMY_SHINOBI1,
+            Img.ENEMY_SHINOBI1,Img.ENEMY_SHINOBI1,Img.ENEMY_SHINOBI1
         ];
 
         if( Util.getRandInt()%2 == 0 )
@@ -195,9 +209,9 @@ export class Enemy extends Obj{
     }
 
     initTypeShuri() {
-        this.type = Def.TYPE_SHURI;
+        this.type = Def.TYPE_ENEMY_SHURI;
         this.imgNo= Img.ENEMY_SHURIKEN;
-        this.spX   = ((Util.getRandInt() % 4 )+1) * 3;
+        this.spX   = (Util.getRandInt() % 4 )+1;
         this.posY = -40-(Util.getRandInt()%10);
         this.posX = Util.getRandInt() % Def.DISP_W;
         this.animations = [
@@ -210,15 +224,15 @@ export class Enemy extends Obj{
 
     }
 
-    initTypeKunai() {
-        this.type = Def.TYPE_KUNAI;
-        this.imgNo= Img.ENEMY_KUNAI;
-        this.spX   = (Util.getRandInt() % 4 )+1;
+    initTypeDrone() {
+        this.type = Def.TYPE_ENEMY_DRONE;
+        this.imgNo= Img.ENEMY_DRONE;
+        this.spX  = ((Util.getRandInt() % 3 )+1) * 2;
+        this.spY  = (Util.getRandInt() % 2) +1;
         this.posY = -40-(Util.getRandInt()%10);
         this.posX = Util.getRandInt() % Def.DISP_W;
         this.animations = [
-            Img.ENEMY_KUNAI, Img.ENEMY_KUNAI, Img.ENEMY_KUNAI,
-            Img.ENEMY_KUNAI1,Img.ENEMY_KUNAI1,Img.ENEMY_KUNAI1
+            Img.ENEMY_DRONE, Img.ENEMY_DRONE1
         ];
 
         if( Util.getRandInt()%2 == 0 )
@@ -227,7 +241,7 @@ export class Enemy extends Obj{
     }
 
     initTypeBird() {
-        this.type = Def.TYPE_BIRD;;
+        this.type = Def.TYPE_ENEMY_BIRD;;
         this.imgNo= Img.ENEMY_BIRD;
         this.spX   = (Util.getRandInt() % 2 )+1;
         this.posY = -40-(Util.getRandInt()%10);

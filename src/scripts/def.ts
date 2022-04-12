@@ -17,7 +17,7 @@ export class Def {
     static PLAY_INIT_POS_X:number = (this.DISP_W/2)+18;
     static PLAY_INIT_POS_Y:number = this.DISP_W-64-12;
     
-    static PLAY_MAX_SP_Y:number = 40;
+    static PLAY_MAX_SP_Y:number = 20;
     static PLAY_MAX_DRAW_POS_Y:number = 125;
 
     static BACK_SCR_STOP:number = 8300;
@@ -116,37 +116,36 @@ export class Def {
     // p5 keyCode
     // キーコード定義(p5にありそうだけど見つからなかったので独自に定義する)
     // https://keycode.info/
-    static P5_KEYCODE_NONE:number  = 0; // Original for No push
-    static P5_KEYCODE_ANY:number   = 1; // Original for any key
+    static P5_KEY_NONE:number  = 0; // Original for No push
+    static P5_KEY_ANY:number   = 1; // Original for any key
     // ------
-    static P5_KEYCODE_ENTER:number = 13;
-    static P5_KEYCODE_SPACE:number = 32;
-    static P5_KEYCODE_LEFT:number  = 37;
-    static P5_KEYCODE_UP:number    = 38;
-    static P5_KEYCODE_RIGHT:number = 39;
-    static P5_KEYCODE_DOWN:number  = 40;
-    static P5_KEYCODE_A:number     = 65;
-    static P5_KEYCODE_G:number     = 71;
-    static P5_KEYCODE_H:number     = 72;
-    static P5_KEYCODE_O:number     = 79;
-    static P5_KEYCODE_S:number     = 83;
-    static P5_KEYCODE_T:number     = 84;
-    static P5_KEYCODE_X:number     = 88;
-    static P5_KEYCODE_Z:number     = 90;
+    static P5_KEY_ENTER:number = 13;
+    static P5_KEY_SPACE:number = 32;
+    static P5_KEY_LEFT:number  = 37;
+    static P5_KEY_UP:number    = 38;
+    static P5_KEY_RIGHT:number = 39;
+    static P5_KEY_DOWN:number  = 40;
+    static P5_KEY_A:number     = 65;
+    static P5_KEY_G:number     = 71;
+    static P5_KEY_H:number     = 72;
+    static P5_KEY_O:number     = 79;
+    static P5_KEY_S:number     = 83;
+    static P5_KEY_T:number     = 84;
+    static P5_KEY_X:number     = 88;
+    static P5_KEY_Z:number     = 90;
 
-    static TYPE_FAR  = 0;
-    static TYPE_MID  = 1;
-    static TYPE_NEAR = 2;
-    static TYPE_MAX  = 3;
-
+    static TYPE_BG_FAR  = 0;
+    static TYPE_BG_MID  = 1;
+    static TYPE_BG_NEAR = 2;
+    static TYPE_BG_ALL  = 3;
 
     // enum みたいに定義
-    static TYPE_BIRD   = 0;
-    static TYPE_KUNAI  = 1;
-    static TYPE_SHURI  = 2;
-    static TYPE_SHINOBI= 3;
-    static TYPE_UFO    = 4;
-    static TYPE_ALL    = 5;
+    static TYPE_ENEMY_BIRD   = 0;
+    static TYPE_ENEMY_SHURI  = 1;
+    static TYPE_ENEMY_DRONE  = 2;
+    static TYPE_ENEMY_SHINOBI= 3;
+    static TYPE_ENEMY_UFO    = 4;
+    static TYPE_ENEMY_ALL    = 5;
 
     static SPEED_SP0 = 0;
     static SPEED_SP1 = 1;
