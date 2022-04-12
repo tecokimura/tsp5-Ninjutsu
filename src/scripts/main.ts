@@ -16,8 +16,8 @@ Util.isDebug = true;
 Util.isDebugLog = true;
 Util.isDebugInfo = true;
 Util.isDebugHit = false;
-Util.isDebugRectObj = true;
-Util.isDebugRectHit = true;
+Util.isDebugRectObj = false;
+Util.isDebugRectHit = false;
 Util.isDebugEnemyType = true;
 
 let scene = null;
@@ -33,23 +33,28 @@ const sketch = (p: p5) => {
     
     let appearAirLevel = 0;
 
+    // -s は英語がおかしいけど まぁいいか・・・
     let clouds: Array<Cloud> = new Array(Def.CLOUD_MAX);
     let stars: Array<Star> = new Array(Def.STAR_MAX);
-    let rains: Array<Rain> = new Array(Def.RAIN_MAX); // 英語おかしいけど まぁいいか・・・
+    let rains: Array<Rain> = new Array(Def.RAIN_MAX);
     let snows: Array<Snow> = new Array(Def.SNOW_MAX);
 
-    let keyCodePre = Def.P5_KEYCODE_NONE;
+    // keyCodeHistory
+    // 0,1,2,3.. と押された履歴を配列に記憶する
+    // [0] が一番直近に押されたキーコード
+    // [1] がその前に押されたキーコード
     let keyCodeHistory: Array<number> = new Array(5);
+    let keyCodePre = Def.P5_KEY_NONE;
 
 
     // p5のキーコードと変数を見て調べる
     // キーが押されていればtrue
     // if文１回で行けそうだけど見にくくなりそうなのでとりあえずこのままにしとく
-    function isPushKey(code:number=Def.P5_KEYCODE_ANY) {
-        let is = (keyCodeHistory[0] != Def.P5_KEYCODE_NONE);
+    function isPushKey(code:number=Def.P5_KEY_ANY) {
+        let is = (keyCodeHistory[0] != Def.P5_KEY_NONE);
         if( is ) {
             // キーが指定されている場合は調べて更新する
-            if (code != Def.P5_KEYCODE_ANY) {
+            if (code != Def.P5_KEY_ANY) {
                 is = (keyCodeHistory[0] == code);
             }
 
@@ -61,15 +66,15 @@ const sketch = (p: p5) => {
     // キーが今のフレームで押されたかを調べる
     // 履歴の前が押していなくて今が押していればtrue
     function isPushKeyNow() {
-        let is = (keyCodeHistory[0] != Def.P5_KEYCODE_NONE
-               && keyCodeHistory[1] == Def.P5_KEYCODE_NONE);
+        let is = (keyCodeHistory[0] != Def.P5_KEY_NONE
+               && keyCodeHistory[1] == Def.P5_KEY_NONE);
         if(is) Util.debug("isPushKeyNow:0="+keyCodeHistory[0]+",1="+keyCodeHistory[1]);
         return is;
     }
     
     function isReleaseKeyNow() {
-        let is = (keyCodeHistory[0] == Def.P5_KEYCODE_NONE
-               && keyCodeHistory[1] != Def.P5_KEYCODE_NONE);
+        let is = (keyCodeHistory[0] == Def.P5_KEY_NONE
+               && keyCodeHistory[1] != Def.P5_KEY_NONE);
         if(is) Util.debug("isReleaseKeyNow:0="+keyCodeHistory[0]+",1="+keyCodeHistory[1]);
         return is;
     }
@@ -123,7 +128,7 @@ const sketch = (p: p5) => {
     // 
     p.keyReleased = () => {
         Util.debug("keyReleased:"+p.keyCode);
-        keyCodePre = Def.P5_KEYCODE_NONE;
+        keyCodePre = Def.P5_KEY_NONE;
     }
 
     // Scene の状態に合わせて画面を描画する
@@ -336,35 +341,35 @@ const sketch = (p: p5) => {
                 for(let i=0; i<enemies.length; i++) {
                     if( enemies[i].isEnable() == false) {
                         if( appearAirLevel < Def.AIR_LV_0 ) {
-                            if( enemies[i].add(Def.TYPE_BIRD) ) {
+                            if( enemies[i].add(Def.TYPE_ENEMY_BIRD) ) {
                                 appearAirLevel += 70;
                             }
                         }
                         else
                         if( appearAirLevel < Def.AIR_LV_1 ) {
-                            if( enemies[i].add(Def.TYPE_KUNAI) ) {
+                            if( enemies[i].add(Def.TYPE_ENEMY_SHURI) ) {
                                 appearAirLevel += 50;
                             }
                         }
                         else
                         if( appearAirLevel < Def.AIR_LV_2 ) {
-                            if( enemies[i].add(Def.TYPE_SHURI) ) {
+                            if( enemies[i].add(Def.TYPE_ENEMY_DRONE) ) {
                                 appearAirLevel += 40;
                             }
                         }
                         else
                         if( appearAirLevel < Def.AIR_LV_3 ) {
-                            if( enemies[i].add(Def.TYPE_SHINOBI) ) {
+                            if( enemies[i].add(Def.TYPE_ENEMY_SHINOBI) ) {
                                 appearAirLevel += 30;
                             }
                         }
                         else
                         if( appearAirLevel < Def.AIR_LV_4 ) {
-                            if( enemies[i].add(Def.TYPE_UFO) ) {
+                            if( enemies[i].add(Def.TYPE_ENEMY_UFO) ) {
                                 appearAirLevel += 20;
                             }
                         } else {
-                            if( enemies[i].add(getRandInt()%Def.TYPE_ALL) ) {
+                            if( enemies[i].add(getRandInt()%Def.TYPE_ENEMY_ALL) ) {
                                 appearAirLevel += 10;
                             }
                         }
@@ -401,9 +406,9 @@ const sketch = (p: p5) => {
         for(i=0; i<rains.length; i++) { rains[i].init(); }
         for(i=0; i<snows.length; i++) { snows[i].init(); }
 
-        keyCodePre = Def.P5_KEYCODE_NONE;
+        keyCodePre = Def.P5_KEY_NONE;
         for(let i=0; i<keyCodeHistory.length;i++) {
-            keyCodeHistory[i] = Def.P5_KEYCODE_NONE;
+            keyCodeHistory[i] = Def.P5_KEY_NONE;
         }
     }
 
@@ -424,7 +429,7 @@ const sketch = (p: p5) => {
         }
 
         keyCodeHistory[0] = keyCodePre;
-        keyCodePre = Def.P5_KEYCODE_NONE;
+        keyCodePre = Def.P5_KEY_NONE;
 
         // SCENE
         if( scene.is(Scene.INIT) ) {
@@ -477,8 +482,8 @@ const sketch = (p: p5) => {
 
             // キーを押しているかどうか
             if(player.high > 64) {
-                if( isPushKey(Def.P5_KEYCODE_H) ) {
-                    Util.debug("isPushKey(Def.P5_KEYCODE_H)");
+                if( isPushKey(Def.P5_KEY_H) ) {
+                    Util.debug("isPushKey(Def.P5_KEY_H)");
                     player.high = 99999;
                 }
             }

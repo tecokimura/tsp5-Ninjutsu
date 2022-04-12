@@ -30,14 +30,14 @@ export class Img {
               r:number=0, transX=0, transY=0,
               a:number=100) {
 
-        // 画像サイズを図る
         let imgObj= this.getImage(index);
         let imgHarfW = imgObj.width/2;
         let imgHarfH = imgObj.height/2;
 
+        // 座標系を戻せるようにPUSHしておく
         this.p.push();
   
-        // まず中心位置に変更する
+        // まず座標を描画する画像の中心位置に変更する
         this.p.translate(x+imgHarfW, y+imgHarfH);
 
         // 反転描画
@@ -85,10 +85,10 @@ export class Img {
     static PNG_FNAMES:string[] = [
         'e1b1-bird1',
         'e1b2-bird2',
-        'e2k1-kunai1',
-        'e2k2-kunai2',
-        'e3s1-shuri1',
-        'e3s2-shuri2',
+        'e2s1-shuri1',
+        'e2s2-shuri2',
+        'e3d1-drone1',
+        'e3d2-drone2',
         'e4s1-shinobi1',
         'e4s2-shinobi2',
         'e5u1-ufo1',
@@ -109,10 +109,10 @@ export class Img {
     // 読み込み用配列にしてインデックスを別途定義する
     static ENEMY_BIRD:number        = 0; 
     static ENEMY_BIRD1:number       = 1;  
-    static ENEMY_KUNAI:number       = 2;  
-    static ENEMY_KUNAI1:number      = 3;  
-    static ENEMY_SHURIKEN:number    = 4;  
-    static ENEMY_SHURIKEN1:number   = 5;  
+    static ENEMY_SHURIKEN:number    = 2;  
+    static ENEMY_SHURIKEN1:number   = 3;  
+    static ENEMY_DRONE:number       = 4;  
+    static ENEMY_DRONE1:number      = 5;  
     static ENEMY_SHINOBI:number     = 6;  
     static ENEMY_SHINOBI1:number    = 7;  
     static ENEMY_UFO:number         = 8;  
