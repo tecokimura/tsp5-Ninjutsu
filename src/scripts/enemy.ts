@@ -149,15 +149,15 @@ export class Enemy extends Obj{
                 img.p.noStroke();
             }
 
-            // if( Util.isDebugRectHit )
+            if( Util.isDebugRectHit )
             {
-                img.p.stroke(255,255,255,100);
+                img.p.stroke(0,255,0,100);
                 img.p.noFill();
                 img.p.rect(
                     this.getHitLeft(),
                     this.getHitTop(),
-                    this.getHitRight() - this.getHitLeft(), 10
-                    // this.getHitBottom()- this.getHitTop()
+                    this.getHitRight() - this.getHitLeft(),
+                    this.getHitBottom()- this.getHitTop()
                 );
                 img.p.noStroke();
 
@@ -195,7 +195,6 @@ export class Enemy extends Obj{
         this.posY = -40-(Util.getRandInt()%10);
         this.posX = Util.getRandInt() % Def.DISP_W;
         this.animations = [
-            Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI,
             Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI,
             Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI,
             Img.ENEMY_SHINOBI1,Img.ENEMY_SHINOBI1,Img.ENEMY_SHINOBI1,
