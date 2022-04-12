@@ -17,7 +17,7 @@ Util.isDebugLog = true;
 Util.isDebugInfo = true;
 Util.isDebugHit = false;
 Util.isDebugRectObj = false;
-Util.isDebugRectHit = false;
+Util.isDebugRectHit = true;
 Util.isDebugEnemyType = true;
 
 let scene = null;
@@ -72,6 +72,9 @@ const sketch = (p: p5) => {
         return is;
     }
     
+    //
+    // 今キーを離したかを取得する
+    //
     function isReleaseKeyNow() {
         let is = (keyCodeHistory[0] == Def.P5_KEY_NONE
                && keyCodeHistory[1] != Def.P5_KEY_NONE);
@@ -82,14 +85,14 @@ const sketch = (p: p5) => {
     // p5 の初期設定
     p.setup = () => {
         p.createCanvas(Def.DISP_W, Def.DISP_H);
-        // 全部に反映されるので注意
+
+        // 以降、すべてに反映されるので注意
         p.angleMode(p.DEGREES);
 
-        scene = new Scene();
 
-        // Utilにp5を設定
         Util.setP5(p);
 
+        scene = new Scene();
         player = new Player();
         for(let i=0; i<enemies.length; i++)
             enemies[i] = new Enemy();
@@ -119,13 +122,11 @@ const sketch = (p: p5) => {
     };
 
 
-    // 
     p.keyPressed = () => {
         Util.debug("keyPressed:"+p.keyCode);
         keyCodePre = p.keyCode;
     }
 
-    // 
     p.keyReleased = () => {
         Util.debug("keyReleased:"+p.keyCode);
         keyCodePre = Def.P5_KEY_NONE;
@@ -183,7 +184,6 @@ const sketch = (p: p5) => {
             }
             else
             if( scene.is(Scene.GAMEOVER)) {
-                // draw bg
                 drawBg();
 
                 drawEnemy();
@@ -212,15 +212,11 @@ const sketch = (p: p5) => {
             }
 
 
-
             // for DEBUG
             if( Util.isDebugInfo ) {
                 drawDebugInfo(p);
             }
-
-            // Util.debug("in draw");
-        }
-        // draw()
+        } // draw()
     }
 
     // Debug画面表示
