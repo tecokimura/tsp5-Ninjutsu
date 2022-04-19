@@ -1,4 +1,5 @@
 import p5 from "p5";
+
 import {Def} from "./def";
 import {Img} from "./img";
 import {Util} from "./util";
@@ -17,7 +18,7 @@ Util.isDebugLog = true;
 Util.isDebugInfo = true;
 Util.isDebugHit = false;
 Util.isDebugRectObj = false;
-Util.isDebugRectHit = true;
+Util.isDebugRectHit = false;
 Util.isDebugEnemyType = true;
 
 let scene = null;
@@ -88,7 +89,7 @@ const sketch = (p: p5) => {
 
         // 以降、すべてに反映されるので注意
         p.angleMode(p.DEGREES);
-
+        p.textAlign(p.LEFT, p.BOTTOM);
 
         Util.setP5(p);
 
@@ -144,20 +145,28 @@ const sketch = (p: p5) => {
             }
             else
             if( scene.is(Scene.TITLE)) {
-                drawClear();
+                // drawClear();
 
-                // Test title
+                drawBg();
+
+                img.drawImage( Img.NINJA_STAND, Def.R_NINJA_POS_X, Def.R_NINJA_POS_Y );
+
+                drawFg(50,50,120,220);
+
                 p.fill(0,0,255);
                 p.textSize(24);
-                p.text('Ninjutsu!!', 50 ,82);
+                Util.textBold('N i n j u t s u', 50 ,82);
+
                 p.noFill();
                 p.stroke(0,0,255);
                 p.rect(30, 40, 170, 60);
                 p.noStroke();
 
-                p.fill(255,0,0);
                 p.textSize(16);
-                p.text('PUSH ENTER', 60 ,232);
+                p.fill(155,50,50,220);
+                p.text('PUSH ENTER', 60+1,232+1);
+                p.fill(255,0,0);
+                p.text('PUSH ENTER', 60,232);
 
             }
             else
@@ -195,6 +204,7 @@ const sketch = (p: p5) => {
                 drawFg();
 
                 // GAME OVER を出す
+                p.push();
                 p.fill(40, 40, 40, 120);
                 p.rect(0, 60, Def.DISP_W, 140);
 
@@ -209,6 +219,7 @@ const sketch = (p: p5) => {
                     p.textSize(12);
                     p.text('< push any key >',  Def.DISP_W/2, Def.DISP_H/2+60);
                 }
+                p.pop();
             }
 
 
@@ -231,7 +242,7 @@ const sketch = (p: p5) => {
 
             p.fill(255,0,0);
             p.textSize(10);
-            p.textAlign(p.LEFT, p.TOP);
+            p.textAlign(p.LEFT, p.BOTTOM);
             p.text('SC:'+scene.present,  x, y+=addy);
             p.text('FR:'+scene.count(),  x, y+=addy);
             p.text('PX:'+player.posX,    x, y+=addy);
@@ -441,6 +452,8 @@ const sketch = (p: p5) => {
             // TODO: 画像読み込みが完了しているかチェックする
             if( Util.isDebug ) {
                 scene.set(Scene.TITLE);
+                // :TODO 立っている位置より飛んでる画像が下にあるのでとりあえずの調整
+                player.posY -= 20;
             }
 
         }
@@ -448,7 +461,7 @@ const sketch = (p: p5) => {
         if( scene.is(Scene.TITLE)) {
             Util.debug("Scene.TITLE");
             // キーが押されているかを調べる
-            if( true || p.keyIsPressed === true) {
+            if( isPushKey(Def.P5_KEY_ENTER) === true) {
                 scene.set(Scene.READY);
             }
         }
@@ -603,29 +616,36 @@ const sketch = (p: p5) => {
             p.rect(0, 220-(i*20), Def.DISP_W, 20);
         }
 
+        // 最初の背景の描画
+        i = player.high + 0;
+        if( i < Def.DISP_H) {
+            img.drawImage(Img.BG_BG1, 0, i);
+        }
+
         for(i=0; i<stars.length; i++) { stars[i].drawBack(p); }
         for(i=0; i<clouds.length; i++){ clouds[i].drawBack(p); }
         for(i=0; i<rains.length; i++) { rains[i].drawBack(p); }
         for(i=0; i<snows.length; i++) { snows[i].drawBack(p); }
 
-
-        // TODO:地面の描画
-        i = player.high + 210;
-        if( i < 210+30) {
-            // とりあえず適当背景を描画する
-            p.fill(64,125,64);
-            p.rect(0, i, Def.DISP_W, 30);
-        }
     }
 
 
-    function drawFg() {
+    /**
+     * option: Filter color(r,g,b,a)
+     **/
+    function drawFg(r:number=-1, g:number=-1, b:number=-1, a:number=70) {
         let i=0;
+
         for(i=0; i<stars.length; i++) { stars[i].drawFront(p); }
         for(i=0; i<clouds.length; i++){ clouds[i].drawFront(p); }
         for(i=0; i<rains.length; i++) { rains[i].drawFront(p); }
         for(i=0; i<snows.length; i++) { snows[i].drawFront(p); }
 
+        // If there use filter on screen
+        if(r!=-1 && g != -1 && b != -1) {
+            p.fill(r,g,b,a);
+            p.rect(0,0,Def.DISP_W,Def.DISP_H);
+        }
     }
 
 
