@@ -145,29 +145,42 @@ const sketch = (p: p5) => {
             }
             else
             if( scene.is(Scene.TITLE)) {
-                // drawClear();
 
+                p.push()
                 drawBg();
 
                 img.drawImage( Img.NINJA_STAND, Def.R_NINJA_POS_X, Def.R_NINJA_POS_Y );
 
                 drawFg(50,50,120,220);
 
+                p.textAlign(p.CENTER, p.CENTER);
+
                 p.fill(0,0,255);
                 p.textSize(24);
-                Util.textBold('N i n j u t s u', 50 ,82);
+                Util.textBold('N i n j u t s u', Def.DISP_W/2, 90);
 
                 p.noFill();
-                p.stroke(0,0,255);
-                p.rect(30, 40, 170, 60);
+                p.stroke(100,100,200);
+                p.rect(30, 60, 180, 60);
+                p.stroke(0,0,200);
+                p.rect(30-1, 60-1, 180+2, 60+2);
+                p.rect(30+1, 60+1, 180-2, 60-2);
                 p.noStroke();
 
-                p.textSize(16);
-                p.fill(155,50,50,220);
-                p.text('PUSH ENTER', 60+1,232+1);
-                p.fill(255,0,0);
-                p.text('PUSH ENTER', 60,232);
+                if ( scene.count() % 20 > 2) {
+                    p.textSize(16);
+                    p.fill(155,50,50,220);
+                    p.text('PUSH ENTER', Def.DISP_W/2, 150+1);
+                    p.fill(255,0,0);
+                    p.text('PUSH ENTER', Def.DISP_W/2, 150);
+                }
 
+                // Like a movie
+                p.fill(0, 0, 0);
+                p.rect(0, 0, Def.DISP_W, 40);
+                p.rect(0, Def.DISP_H-40, Def.DISP_W, 40);
+
+                p.pop()
             }
             else
             if( scene.is(Scene.READY)) {
