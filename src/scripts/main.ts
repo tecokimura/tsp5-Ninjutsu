@@ -15,7 +15,7 @@ import {Scene} from "./scene";
 // for Debug
 Util.isDebug = true;
 Util.isDebugLog = true;
-Util.isDebugInfo = true;
+Util.isDebugInfo = false;
 Util.isDebugHit = false;
 Util.isDebugRectObj = false;
 Util.isDebugRectHit = false;
@@ -46,7 +46,6 @@ const sketch = (p: p5) => {
     // [1] がその前に押されたキーコード
     let keyCodeHistory: Array<number> = new Array(5);
     let keyCodePre = Def.P5_KEY_NONE;
-
 
     // p5のキーコードと変数を見て調べる
     // キーが押されていればtrue
@@ -151,18 +150,21 @@ const sketch = (p: p5) => {
 
                 img.drawImage( Img.NINJA_STAND, Def.R_NINJA_POS_X, Def.R_NINJA_POS_Y );
 
-                drawFg(50,50,120,220);
+                drawFg(Def.TITLE_FILTER_COLOR_R,
+                       Def.TITLE_FILTER_COLOR_G,
+                       Def.TITLE_FILTER_COLOR_B,
+                       Def.TITLE_FILTER_COLOR_A);
 
                 p.textAlign(p.CENTER, p.CENTER);
 
-                p.fill(0,0,255);
+                p.fill(200,200,240);
                 p.textSize(24);
                 Util.textBold('N i n j u t s u', Def.DISP_W/2, 90);
 
                 p.noFill();
                 p.stroke(100,100,200);
                 p.rect(30, 60, 180, 60);
-                p.stroke(0,0,200);
+                p.stroke(90,90,200);
                 p.rect(30-1, 60-1, 180+2, 60+2);
                 p.rect(30+1, 60+1, 180-2, 60-2);
                 p.noStroke();
@@ -171,7 +173,7 @@ const sketch = (p: p5) => {
                     p.textSize(16);
                     p.fill(155,50,50,220);
                     p.text('PUSH ENTER', Def.DISP_W/2, 150+1);
-                    p.fill(255,0,0);
+                    p.fill(230,100,100,250);
                     p.text('PUSH ENTER', Def.DISP_W/2, 150);
                 }
 
@@ -189,7 +191,15 @@ const sketch = (p: p5) => {
 
                 drawReadyNinjutsu(scene.count());
 
-                drawFg();
+                // :TODO
+                // -5 は適当です。PLAYになる時に0以下になるように調整する
+                let a = Def.TITLE_FILTER_COLOR_A+(scene.count()*-5)
+                if ( a < 0 ) a = 0;
+
+                drawFg(Def.TITLE_FILTER_COLOR_R,
+                       Def.TITLE_FILTER_COLOR_G,
+                       Def.TITLE_FILTER_COLOR_B,
+                       a);
 
             }
             else
@@ -199,7 +209,6 @@ const sketch = (p: p5) => {
 
 
                 drawEnemy();
-
                 player.draw(img, isPushKey(), isPushKeyNow(), isReleaseKeyNow());
                
                 drawFg();
@@ -473,8 +482,12 @@ const sketch = (p: p5) => {
         else
         if( scene.is(Scene.TITLE)) {
             Util.debug("Scene.TITLE");
-            // キーが押されているかを調べる
-            if( isPushKey(Def.P5_KEY_ENTER) === true) {
+            // キーが押されているかを調べてOn/Offを反転させる
+            if( isPushKey(Def.P5_KEY_I)) {
+                Util.isDebugInfo = !Util.isDebugInfo;
+            }
+            else
+            if( isPushKey(Def.P5_KEY_ENTER) ) {
                 scene.set(Scene.READY);
             }
         }

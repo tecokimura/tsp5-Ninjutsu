@@ -50,7 +50,12 @@ export class Def {
     static HIT_ENE_POS_Y0:number = 16;
     static HIT_ENE_POS_X1:number = 29;
     static HIT_ENE_POS_Y1:number = 18;
-    
+   
+    static TITLE_FILTER_COLOR_R:number = 63;
+    static TITLE_FILTER_COLOR_G:number = 63;
+    static TITLE_FILTER_COLOR_B:number = 63;
+    static TITLE_FILTER_COLOR_A:number = 230;
+
     static T_TITLE_POS_X:number			= 20;
     static T_TITLE_POS_Y:number			= 20;
     static T_BAL_POS_X:number			= 140;
@@ -128,6 +133,7 @@ export class Def {
     static P5_KEY_A:number     = 65;
     static P5_KEY_G:number     = 71;
     static P5_KEY_H:number     = 72;
+    static P5_KEY_I:number     = 73;
     static P5_KEY_O:number     = 79;
     static P5_KEY_S:number     = 83;
     static P5_KEY_T:number     = 84;
