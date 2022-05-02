@@ -38,6 +38,7 @@ const sketch = (p: p5) => {
     let enemies: Array<Enemy>  = new Array(Def.ENEMY_MAX);
     
     let appearAirLevel = 0;
+    let appearNextHigh = 0;
 
     // -s は英語がおかしいけど まぁいいか・・・
     let clouds: Array<Cloud> = new Array(Def.CLOUD_MAX);
@@ -379,17 +380,19 @@ const sketch = (p: p5) => {
         }
 
 
-        if( 500 < Camera.getHigh() ) {
+        if( 500 < Camera.getHigh() && appearNextHigh < Camera.getHigh()) {
             for(let i=0; i<enemies.length; i++) {
                 if( enemies[i].isEnable() == false) {
-                    if( enemies[i].add(Def.TYPE_ENEMY_BIRD, Util.isDebugEnemyType) ) {
-
+                    if( enemies[i].add(-1, Camera.getInLeft(), Camera.getInTop()-60) ) {
+                        Util.debug("add enemy");
+                        appearNextHigh = Camera.getHigh() + 50;
+                        break;
                     }
                 }
             }
         }
 
-
+        /*
         if( appearAirLevel <= player.high ) {
             if( Def.FIRST_ENEMY_POS <= player.high) {
                 // 敵出現
@@ -424,7 +427,7 @@ const sketch = (p: p5) => {
                                 appearAirLevel += 20;
                             }
                         } else {
-                            if( enemies[i].addRandType(Util.isDebugEnemyType) ) {
+                            if( enemies[i].add(-1) ) {
                                 appearAirLevel += 10;
                             }
                         }
@@ -438,6 +441,7 @@ const sketch = (p: p5) => {
                 appearAirLevel = player.high + 80;
             }
         }
+        */
     }
 
 
@@ -547,7 +551,7 @@ const sketch = (p: p5) => {
             }
 
             // キーを押しているかどうか
-            if( Camera.getInLeft() > 500 ) {
+            if( 500 < Camera.getHigh() ) {
                 if( isPushKey(Def.P5_KEY_H) ) {
                     player.high = 99999;
                 }
@@ -557,19 +561,19 @@ const sketch = (p: p5) => {
             Camera.move(player.getCenterX(), player.getCenterY());
             player.updateImgNo(isPushKey(), isPushKeyNow(), isReleaseKeyNow());
 
-            let adjustH = player.adjustHigh(Def.PLAY_MAX_DRAW_POS_Y);
-            if( 0 < adjustH) {
+            // let adjustH = player.adjustHigh(Def.PLAY_MAX_DRAW_POS_Y);
+            // if( 0 < adjustH) {
 
-                // TODO: 変な処理だがリファクタはまた別に行う
-                //       敵が存在するのなら プレイヤーが移動した分を移動させる
-                let k=0;
-                for(k=0;k<enemies.length;k++) { enemies[k].adjustDispPos(adjustH); }
-                for(k=0;k<clouds.length;k++) { clouds[k].adjustDispPos(adjustH); }
-                for(k=0;k<stars.length;k++) { stars[k].adjustDispPos(adjustH); }
-                for(k=0;k<rains.length;k++) { rains[k].adjustDispPos(adjustH); }
-                for(k=0;k<snows.length;k++) { snows[k].adjustDispPos(adjustH); }
+            //     // TODO: 変な処理だがリファクタはまた別に行う
+            //     //       敵が存在するのなら プレイヤーが移動した分を移動させる
+            //     let k=0;
+            //     for(k=0;k<enemies.length;k++) { enemies[k].adjustDispPos(adjustH); }
+            //     for(k=0;k<clouds.length;k++) { clouds[k].adjustDispPos(adjustH); }
+            //     for(k=0;k<stars.length;k++) { stars[k].adjustDispPos(adjustH); }
+            //     for(k=0;k<rains.length;k++) { rains[k].adjustDispPos(adjustH); }
+            //     for(k=0;k<snows.length;k++) { snows[k].adjustDispPos(adjustH); }
 
-            }
+            // }
 
             // 当たり判定
             if(Util.isDebugHit == false) {

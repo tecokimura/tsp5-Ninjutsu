@@ -4,6 +4,7 @@ import {Obj} from "./obj";
 import {Def} from "./def";
 import {Img} from "./img";
 import {Util} from "./util";
+import {Camera} from "./camera";
 
 // TODO: 背景として動くcloud, starもあるので一個superclassがあったほうがいいかも
 export class Enemy extends Obj{
@@ -30,23 +31,30 @@ export class Enemy extends Obj{
         this.animations = new Array();
     }
 
-    remove() { this.init(); }
+    remove() {
+        Util.debug("remove enemy");
+        this.init();
+    }
 
     // 
     /**
      * 配列の空きを確認して敵を配置する
      * 戻り値（boolean）で配置できたかを返す
      */
-    add(type:number, isDebug=false) {
+    add(type:number, x:number, y:number) {
         let isAdd = false; 
 
         // Debugように色んな種類を出す
-        if( Util.isDebug ) {
+        if( type == -1 ) {
             type = (Util.getRandInt() % Def.TYPE_ENEMY_ALL);
         }
 
         if(this.isEnable() == false) {
             this.init();
+
+            // 
+            this.posY = y + 100;
+            this.posX = x + Util.getRandInt() % Def.DISP_W;
 
             // type 毎にも変わるかもしれないがとりあえずデフォルト値
             this.hitOfsX = 14;
@@ -80,11 +88,6 @@ export class Enemy extends Obj{
         return isAdd;
     }
 
-    // TODO:Random の実装がちょっと変なので見直す
-    addRandType(isDebug = false) {
-        return this.add(Util.getRandInt()%Def.TYPE_ENEMY_ALL, isDebug);
-    }
-
     // 敵としてゲームに存在しているか？
     isEnable():boolean {
         return ( this.type != Def.DATA_NONE
@@ -109,18 +112,23 @@ export class Enemy extends Obj{
                 if( n % 15 < 5 ) this.spX *= -1;
                 if( n % 15 < 2 ) this.spY *= -1;
             }
+
+
+            if(this.posY < Camera.getInBottom()) {
+                this.remove();
+            }
         }
     }
 
     // 表示位置の調整と画面外にでた場合の削除処理
     // 本当は位置調整しないで描画したいがとりあえず
     adjustDispPos(pMoveY:number) {
-        if( this.isEnable() ) {
-            this.posY += pMoveY;
-            if(Def.DISP_H+20 < this.posY) {
-                this.remove();
-            }
-        }
+        // if( this.isEnable() ) {
+        //     this.posY += pMoveY;
+        //     if(Def.DISP_H+20 < this.posY) {
+        //         this.remove();
+        //     }
+        // }
     }
 
 
@@ -141,16 +149,26 @@ export class Enemy extends Obj{
             // 回転させる場合
             // r = (this.time*30) $ 360;
 
-            if( this.spX < 0)
-                img.drawImage(this.imgNo, this.posX, this.posY, false, r);
-            else
-                img.drawImage(this.imgNo, this.posX, this.posY, true, r*-1);
+            if( this.spX < 0) {
+                img.drawImage(this.imgNo,
+                    Camera.getInLeft() + this.posX,
+                    Camera.getInTop() - this.posY,
+                    false, r);
+            } else {
+                img.drawImage(this.imgNo,
+                    Camera.getInLeft() + this.posX,
+                    Camera.getInTop() - this.posY,
+                    true, r*-1);
+            }
 
             if( Util.isDebugRectObj ) {
                 let imgBuf = img.getImage(this.imgNo);
                 img.p.stroke(0,255,0,100);
                 img.p.noFill();
-                img.p.rect(this.posX, this.posY, imgBuf.width, imgBuf.height);
+                img.p.rect(
+                    Camera.getInLeft() + this.posX,
+                    Camera.getInTop() - this.posY,
+                    imgBuf.width, imgBuf.height);
                 img.p.noStroke();
             }
 
@@ -176,8 +194,6 @@ export class Enemy extends Obj{
         this.imgNo= Img.ENEMY_UFO;
         this.spX  = (Util.getRandInt() % 10 )+1;
         this.spY  = (Util.getRandInt() % 8 ) - 4;
-        this.posY = -40-(Util.getRandInt()%10);
-        this.posX = Util.getRandInt() % Def.DISP_W;
         this.animations = [
             Img.ENEMY_UFO, Img.ENEMY_UFO, Img.ENEMY_UFO,
             Img.ENEMY_UFO1,Img.ENEMY_UFO1,Img.ENEMY_UFO1,
@@ -197,8 +213,6 @@ export class Enemy extends Obj{
         this.imgNo= Img.ENEMY_SHINOBI;
         this.spX  = (Util.getRandInt() % 8 )+1;
         this.spY  = (Util.getRandInt() % 3 )+3;
-        this.posY = -40-(Util.getRandInt()%10);
-        this.posX = Util.getRandInt() % Def.DISP_W;
         this.animations = [
             Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI,
             Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI, Img.ENEMY_SHINOBI,
@@ -216,8 +230,6 @@ export class Enemy extends Obj{
         this.type = Def.TYPE_ENEMY_SHURI;
         this.imgNo= Img.ENEMY_SHURIKEN;
         this.spX   = (Util.getRandInt() % 4 )+1;
-        this.posY = -40-(Util.getRandInt()%10);
-        this.posX = Util.getRandInt() % Def.DISP_W;
         this.animations = [
             Img.ENEMY_SHURIKEN,
             Img.ENEMY_SHURIKEN1,
@@ -233,8 +245,6 @@ export class Enemy extends Obj{
         this.imgNo= Img.ENEMY_DRONE;
         this.spX  = ((Util.getRandInt() % 3 )+1) * 2;
         this.spY  = (Util.getRandInt() % 2) +1;
-        this.posY = -40-(Util.getRandInt()%10);
-        this.posX = Util.getRandInt() % Def.DISP_W;
         this.animations = [
             Img.ENEMY_DRONE, Img.ENEMY_DRONE1
         ];
@@ -248,8 +258,6 @@ export class Enemy extends Obj{
         this.type = Def.TYPE_ENEMY_BIRD;;
         this.imgNo= Img.ENEMY_BIRD;
         this.spX   = (Util.getRandInt() % 2 )+1;
-        this.posY = -40-(Util.getRandInt()%10);
-        this.posX = Util.getRandInt() % Def.DISP_W;
         this.animations = [
             Img.ENEMY_BIRD, Img.ENEMY_BIRD, Img.ENEMY_BIRD,
             Img.ENEMY_BIRD1,Img.ENEMY_BIRD1,Img.ENEMY_BIRD1,

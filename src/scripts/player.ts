@@ -1,3 +1,4 @@
+// 当たり判定の矩形に違和感がある
 import p5 from "p5";
 
 import {Obj} from "./obj";
@@ -27,9 +28,9 @@ export class Player extends Obj{
 
         this.high = 0;
 
-        this.hitOfsX = 2;
+        this.hitOfsX = 4;
         this.hitOfsY = 15;
-        this.hitOfsW = 28;
+        this.hitOfsW = 24;
         this.hitOfsH = 10;
     }
 
