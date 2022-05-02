@@ -41,7 +41,7 @@ export class Enemy extends Obj{
         let isAdd = false; 
 
         // Debugように色んな種類を出す
-        if( Util.isDebugEnemyType ) {
+        if( Util.isDebug ) {
             type = (Util.getRandInt() % Def.TYPE_ENEMY_ALL);
         }
 
@@ -78,6 +78,11 @@ export class Enemy extends Obj{
 
 
         return isAdd;
+    }
+
+    // TODO:Random の実装がちょっと変なので見直す
+    addRandType(isDebug = false) {
+        return this.add(Util.getRandInt()%Def.TYPE_ENEMY_ALL, isDebug);
     }
 
     // 敵としてゲームに存在しているか？

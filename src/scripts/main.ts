@@ -18,10 +18,10 @@ import {Stage} from "./stage";
 Util.isDebug = false;
 Util.isDebugLog = true;
 Util.isDebugInfo = false;
-Util.isDebugHit = false;
-Util.isDebugRectObj = false;
-Util.isDebugRectHit = false;
-Util.isDebugEnemyType = true;
+Util.isDebugHit = true;
+Util.isDebugRectObj = true;
+Util.isDebugRectHit = true;false
+Util.isDebugEnemyType = false;
 
 let scene = null;
 let isDraw = false;
@@ -214,6 +214,7 @@ const sketch = (p: p5) => {
 
 
                 drawEnemy();
+
                 player.draw(img, isPushKey(), isPushKeyNow(), isReleaseKeyNow());
                
                 drawFg();
@@ -272,6 +273,10 @@ const sketch = (p: p5) => {
             p.textAlign(p.LEFT, p.BOTTOM);
             p.text('SC:'+scene.present,  x, y+=addy);
             p.text('FR:'+scene.count(),  x, y+=addy);
+            p.text('CCX:'+Camera.centerX,    x, y+=addy);
+            p.text('CCY:'+Camera.centerY,    x, y+=addy);
+            p.text('CIL:'+Camera.getInLeft(),  x, y+=addy);
+            p.text('CIT:'+Camera.getInTop(),    x, y+=addy);
             p.text('PX:'+player.posX,    x, y+=addy);
             p.text('PY:'+player.posY,    x, y+=addy);
             p.text('PV:'+player.spY,     x, y+=addy);
@@ -375,40 +380,40 @@ const sketch = (p: p5) => {
                 for(let i=0; i<enemies.length; i++) {
                     if( enemies[i].isEnable() == false) {
                         if( appearAirLevel < Def.AIR_LV_0 ) {
-                            if( enemies[i].add(Def.TYPE_ENEMY_BIRD) ) {
+                            if( enemies[i].add(Def.TYPE_ENEMY_BIRD, Util.isDebugEnemyType) ) {
                                 appearAirLevel += 70;
                             }
                         }
                         else
                         if( appearAirLevel < Def.AIR_LV_1 ) {
-                            if( enemies[i].add(Def.TYPE_ENEMY_SHURI) ) {
+                            if( enemies[i].add(Def.TYPE_ENEMY_SHURI, Util.isDebugEnemyType) ) {
                                 appearAirLevel += 50;
                             }
                         }
                         else
                         if( appearAirLevel < Def.AIR_LV_2 ) {
-                            if( enemies[i].add(Def.TYPE_ENEMY_DRONE) ) {
+                            if( enemies[i].add(Def.TYPE_ENEMY_DRONE, Util.isDebugEnemyType) ) {
                                 appearAirLevel += 40;
                             }
                         }
                         else
                         if( appearAirLevel < Def.AIR_LV_3 ) {
-                            if( enemies[i].add(Def.TYPE_ENEMY_SHINOBI) ) {
+                            if( enemies[i].add(Def.TYPE_ENEMY_SHINOBI, Util.isDebugEnemyType) ) {
                                 appearAirLevel += 30;
                             }
                         }
                         else
                         if( appearAirLevel < Def.AIR_LV_4 ) {
-                            if( enemies[i].add(Def.TYPE_ENEMY_UFO) ) {
+                            if( enemies[i].add(Def.TYPE_ENEMY_UFO, Util.isDebugEnemyType) ) {
                                 appearAirLevel += 20;
                             }
                         } else {
-                            if( enemies[i].add(getRandInt()%Def.TYPE_ENEMY_ALL) ) {
+                            if( enemies[i].addRandType(Util.isDebugEnemyType) ) {
                                 appearAirLevel += 10;
                             }
                         }
 
-                        // Util.debug("added Enemy");
+                        // 重複して出ないように1回に1体出したら終了
                         break;
                     }
                 }
@@ -432,7 +437,7 @@ const sketch = (p: p5) => {
 
         appearAirLevel = 0;
 
-        Camera.init(Def.DISP_W, Def.DISP_H);
+        Camera.init(Def.DISP_W/2,Def.DISP_H/2,Def.DISP_W, Def.DISP_H);
         player.init();
 
         for(i=0; i<enemies.length; i++) { enemies[i].init(); }
@@ -447,6 +452,7 @@ const sketch = (p: p5) => {
         }
     }
 
+    // 
     function proc() {
         isDraw = false;
         // Util.debug("in proc");
@@ -480,8 +486,6 @@ const sketch = (p: p5) => {
             // TODO: 画像読み込みが完了しているかチェックする
             if( true ) {
                 scene.set(Scene.TITLE);
-                // :TODO 立っている位置より飛んでる画像が下にあるのでとりあえずの調整
-                player.posY -= 20;
             }
 
         }
@@ -521,6 +525,11 @@ const sketch = (p: p5) => {
             }
 
 
+            // for Debug
+            if( isPushKey(Def.P5_KEY_I)) {
+                Util.isDebugInfo = !Util.isDebugInfo;
+            }
+
             // キーを押しているかどうか
             if(player.high > 64) {
                 if( isPushKey(Def.P5_KEY_H) ) {
@@ -530,6 +539,7 @@ const sketch = (p: p5) => {
             }
            
             player.move(isPushKey());
+            Camera.move(player.getCenterX(), player.getCenterY());
             player.updateImgNo(isPushKey(), isPushKeyNow(), isReleaseKeyNow());
 
             let adjustH = player.adjustHigh(Def.PLAY_MAX_DRAW_POS_Y);
@@ -544,12 +554,6 @@ const sketch = (p: p5) => {
                 for(k=0;k<rains.length;k++) { rains[k].adjustDispPos(adjustH); }
                 for(k=0;k<snows.length;k++) { snows[k].adjustDispPos(adjustH); }
 
-                
-
-                // // ここをコメントアウトすると上に飛び去ってしまう
-                if( player.posY < Def.PLAY_MAX_DRAW_POS_Y)
-                    player.posY = Def.PLAY_MAX_DRAW_POS_Y;
-                
             }
 
             // 当たり判定
@@ -567,7 +571,7 @@ const sketch = (p: p5) => {
             addEnemy();
 
             // 画面下に切れた場合もゲームオーバー
-            if( player.checkOverUnder(Def.DISP_H) ) {
+            if( player.checkOverUnder(Camera.getInBottom()) ) {
                 // pyon_time = 0;
                 scene.set(Scene.GAMEOVER);
                 player.setGameover();
@@ -591,7 +595,7 @@ const sketch = (p: p5) => {
             }
 
             // 
-            player.moveInGameover(Def.DISP_H);
+            player.moveInGameover(Camera.getInBottom());
 
             if( 10 < scene.count() && isPushKey() ) {
                 // Data reset する
@@ -637,7 +641,7 @@ const sketch = (p: p5) => {
         if(isClear) drawClear();
 
         // TODO: あとでカメラ位置に変更する
-        appearAirLevel = 0;
+        // appearAirLevel = Camera.getInLeft();
         let rgbi = (appearAirLevel/170);
         if( Def.BG_COLOR_RGBs.length - 12 < rgbi ) {
             rgbi = Def.BG_COLOR_RGBs.length - 12;
@@ -651,8 +655,8 @@ const sketch = (p: p5) => {
         }
 
         // 最初の背景の描画
-        i = player.high + 0;
-        if( i < Def.DISP_H) {
+        i = Camera.getInLeft() + 0;
+        if( i <  Camera.getInBottom()) {
             img.drawImage(Img.BG_BG1, 0, i);
         }
 
@@ -661,12 +665,6 @@ const sketch = (p: p5) => {
         for(i=0; i<rains.length; i++) { rains[i].drawBack(p); }
         for(i=0; i<snows.length; i++) { snows[i].drawBack(p); }
 
-        // TODO:地面の描画, 見切れていないときだけ描画する
-        i = Camera.high + 210;
-        if( i < Camera.height) {
-            p.fill(64, 125, 64);
-            p.rect(0, i, Camera.width, 30);
-        }
     }
 
 

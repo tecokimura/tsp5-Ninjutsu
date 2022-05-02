@@ -14,11 +14,16 @@ export class Def {
     static SNOW_MAX:number  = 30;
     static ENEMY_MAX_SPEED:number = 5;
     
-    static PLAY_INIT_POS_X:number = (this.DISP_W/2)+18;
-    static PLAY_INIT_POS_Y:number = this.DISP_W-64-12;
+    static PLAY_INIT_POS_X:number = 120+18;
+    // static PLAY_INIT_POS_Y:number = 240-64-12;
+    static PLAY_INIT_POS_Y:number = 240-64-12;
     
-    static PLAY_MAX_SP_Y:number = 20;
+    static PLAY_MAX_SP_Y:number = 15;
     static PLAY_MAX_DRAW_POS_Y:number = 125;
+
+    static CAMERA_DISTANCE_PLAYER_Y = 100;
+    static CAMERA_SP_X = 0;
+    static CAMERA_SP_Y = 10;
 
     static BACK_SCR_STOP:number = 8300;
     
