@@ -1,3 +1,6 @@
+// TODO:背景スクロールを揃える
+// TODO:敵の動きを揃える
+
 import p5 from "p5";
 
 import {Def} from "./def";
@@ -271,20 +274,20 @@ const sketch = (p: p5) => {
             p.fill(255,0,0);
             p.textSize(10);
             p.textAlign(p.LEFT, p.BOTTOM);
-            p.text('SC:'+scene.present,  x, y+=addy);
-            p.text('FR:'+scene.count(),  x, y+=addy);
-            p.text('CCX:'+Camera.centerX,    x, y+=addy);
-            p.text('CCY:'+Camera.centerY,    x, y+=addy);
-            p.text('CIL:'+Camera.getInLeft(),  x, y+=addy);
-            p.text('CIT:'+Camera.getInTop(),    x, y+=addy);
-            p.text('PX:'+player.posX,    x, y+=addy);
-            p.text('PY:'+player.posY,    x, y+=addy);
-            p.text('PV:'+player.spY,     x, y+=addy);
-            p.text('PH:'+player.high,    x, y+=addy);
-            p.text('HR1:'+enemies[0].getStringHit(),    x, y+=addy);
-            p.text('HR2:'+enemies[0].getStringHit2(),   x, y+=addy);
-            p.text('PT:'+player.time,    x, y+=addy);
-            p.text('eA:'+appearAirLevel, x, y+=addy);
+            p.text('SceneNo:'+scene.present,  x, y+=addy);
+            p.text('count:'+scene.count(),  x, y+=addy);
+            p.text('Camara:CenX:'+Camera.centerX,    x, y+=addy);
+            p.text('CamarayCenY:'+Camera.centerY,    x, y+=addy);
+            p.text('Camera:Left:'+Camera.getInLeft(),  x, y+=addy);
+            p.text('Camera: Top:'+Camera.getInTop(),    x, y+=addy);
+            p.text('PlayerX:'+player.posX,    x, y+=addy);
+            p.text('PlayerY:'+player.posY,    x, y+=addy);
+            p.text('PlayerSpY:'+player.spY,     x, y+=addy);
+            p.text('PlayerHigh:'+player.high,    x, y+=addy);
+            p.text('enemies.hit1:'+enemies[0].getStringHit(),    x, y+=addy);
+            p.text('enemies.hit2:'+enemies[0].getStringHit2(),   x, y+=addy);
+            p.text('PlayerTime:'+player.time,    x, y+=addy);
+            p.text('appearAirLevel:'+appearAirLevel, x, y+=addy);
            
             n = 0;
             enemies.forEach((e) => { if(e.isEnable()) n++; });
