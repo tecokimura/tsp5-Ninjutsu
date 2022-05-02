@@ -147,6 +147,12 @@ export class Def {
     static TYPE_ENEMY_UFO    = 4;
     static TYPE_ENEMY_ALL    = 5;
 
+    static TYPE_BGOBJ_CLOUD = 0;
+    static TYPE_BGOBJ_STAR  = 1;
+    static TYPE_BGOBJ_RAIN  = 2;
+    static TYPE_BGOBJ_SNOW  = 3;
+    static TYPE_BGOBJ_ALL   = 4;
+
     static SPEED_SP0 = 0;
     static SPEED_SP1 = 1;
     static SPEED_SP2 = 2;
