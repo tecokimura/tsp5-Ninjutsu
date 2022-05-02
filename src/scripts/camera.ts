@@ -15,10 +15,10 @@ export class Camera {
     };
 
     // データをクリアする
-    static init() {
+    static init(w:number, h:number) {
         Camera.high  = 0;
-        Camera.width = Def.DISP_W;
-        Camera.height= Def.DISP_H;
+        Camera.width = w;
+        Camera.height= h;
     };
 
     static getWidth() :number { return Camera.width; }

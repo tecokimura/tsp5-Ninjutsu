@@ -9,12 +9,14 @@ import {Star} from "./star";
 import {Snow} from "./Snow";
 import {Rain} from "./rain";
 import {Scene} from "./scene";
+import {Camera} from "./camera";
+import {Stage} from "./stage";
 
 
 // for Debug
-Util.isDebug = true;
+Util.isDebug = false;
 Util.isDebugLog = true;
-Util.isDebugInfo = true;
+Util.isDebugInfo = false;
 Util.isDebugHit = false;
 Util.isDebugRectObj = false;
 Util.isDebugRectHit = true;
@@ -144,6 +146,7 @@ const sketch = (p: p5) => {
             }
             else
             if( scene.is(Scene.TITLE)) {
+                // 移動しないのでとりあえずカメラを無視して描画する
                 drawClear();
 
                 // Test title
@@ -162,6 +165,9 @@ const sketch = (p: p5) => {
             }
             else
             if( scene.is(Scene.READY)) {
+
+                // Camera on
+
                 // draw bg
                 drawBg();
 
@@ -394,6 +400,7 @@ const sketch = (p: p5) => {
 
         appearAirLevel = 0;
 
+        Camera.init(Def.DISP_W, Def.DISP_H);
         player.init();
 
         for(i=0; i<enemies.length; i++) { enemies[i].init(); }
@@ -439,7 +446,7 @@ const sketch = (p: p5) => {
             Util.debug("Scene.LOADING");
 
             // TODO: 画像読み込みが完了しているかチェックする
-            if( Util.isDebug ) {
+            if( true ) {
                 scene.set(Scene.TITLE);
             }
 
@@ -448,7 +455,7 @@ const sketch = (p: p5) => {
         if( scene.is(Scene.TITLE)) {
             Util.debug("Scene.TITLE");
             // キーが押されているかを調べる
-            if( true || p.keyIsPressed === true) {
+            if( p.keyIsPressed === true) {
                 scene.set(Scene.READY);
             }
         }
@@ -591,6 +598,8 @@ const sketch = (p: p5) => {
         // 描画クリア
         if(isClear) drawClear();
 
+        // TODO: あとでカメラ位置に変更する
+        appearAirLevel = 0;
         let rgbi = (appearAirLevel/170);
         if( Def.BG_COLOR_RGBs.length - 12 < rgbi ) {
             rgbi = Def.BG_COLOR_RGBs.length - 12;
@@ -609,12 +618,11 @@ const sketch = (p: p5) => {
         for(i=0; i<snows.length; i++) { snows[i].drawBack(p); }
 
 
-        // TODO:地面の描画
-        i = player.high + 210;
-        if( i < 210+30) {
-            // とりあえず適当背景を描画する
-            p.fill(64,125,64);
-            p.rect(0, i, Def.DISP_W, 30);
+        // TODO:地面の描画, 見切れていないときだけ描画する
+        i = Camera.high + 210;
+        if( i < Camera.height) {
+            p.fill(64, 125, 64);
+            p.rect(0, i, Camera.width, 30);
         }
     }
 
