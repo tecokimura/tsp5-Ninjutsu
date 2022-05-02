@@ -1,6 +1,9 @@
 import {Def} from "./def";
 import {Util} from "./util";
 
+// X は0から右に行くにつれて増える
+// Y は0が一番下で上に上がるにつれて増えるように調整している
+// TODO: あとで図解する
 export class Camera {
 
     static centerX = 0;
@@ -64,8 +67,8 @@ export class Camera {
                     if(move < Camera.spY * -1) {
                         move = Camera.spY * -1;
                     }
-                    
-                    // move = 0;
+                    //カメラはゲームの仕様上、降りない
+                    move = 0;
                 } else {
                     if(Camera.spY < move) {
                         move = Camera.spY;
@@ -85,8 +88,9 @@ export class Camera {
 
     // 映る範囲の一番下
     static getInLeft() :number { return Camera.centerX - Camera.getWidthHalf(); }
-    static getInTop() :number { return Camera.centerY - Camera.getHeightHalf(); }
-    static getInRight() :number { return Camera.centerX + Camera.getWidthHalf(); }
-    static getInBottom() :number { return Camera.centerY + Camera.getHeightHalf(); }
+    static getInTop() :number { return Camera.centerY + Camera.getHeightHalf(); }
+    static getInRight() :number { return Camera.getInLeft() + Camera.getWidth(); }
+    static getInBottom() :number { return Camera.getInTop() - Camera.getHeight(); }
 
+    static getHigh() :number { return Camera.getInBottom(); }
 }

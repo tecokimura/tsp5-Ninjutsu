@@ -279,7 +279,9 @@ const sketch = (p: p5) => {
             p.text('Camara:CenX:'+Camera.centerX,    x, y+=addy);
             p.text('CamarayCenY:'+Camera.centerY,    x, y+=addy);
             p.text('Camera:Left:'+Camera.getInLeft(),  x, y+=addy);
+            p.text('Camera:Rigt:'+Camera.getInRight(),  x, y+=addy);
             p.text('Camera: Top:'+Camera.getInTop(),    x, y+=addy);
+            p.text('Camera:Btom:'+Camera.getInBottom(),    x, y+=addy);
             p.text('PlayerX:'+player.posX,    x, y+=addy);
             p.text('PlayerY:'+player.posY,    x, y+=addy);
             p.text('PlayerSpY:'+player.spY,     x, y+=addy);
@@ -341,7 +343,7 @@ const sketch = (p: p5) => {
     function addEnemy() {
         if( scene.count()%2 == 0 ) {
             // 星出現
-            for(let i=0; i<stars.length; i++) {
+            for(let i=1000; i<stars.length; i++) {
                 // if( Def.AIR_LV_1 <= appearAirLevel)
                 {
                     if( stars[i].add() ) {
@@ -352,7 +354,7 @@ const sketch = (p: p5) => {
             }
 
             // 雲出現
-            for(let i=0; i<clouds.length; i++) {
+            for(let i=1000; i<clouds.length; i++) {
                 if( clouds[i].add() ) {
                     // Util.debug("added cloud");
                     break;
@@ -360,7 +362,7 @@ const sketch = (p: p5) => {
             }
 
             // 雨
-            for(let i=0; i<rains.length; i++) {
+            for(let i=1000; i<rains.length; i++) {
                 if( rains[i].add() ) {
                     // Util.debug("added rain");
                     break;
@@ -368,10 +370,21 @@ const sketch = (p: p5) => {
             }
 
             // ゆき
-            for(let i=0; i<snows.length; i++) {
+            for(let i=1000; i<snows.length; i++) {
                 if( snows[i].add() ) {
                     // Util.debug("added snow");
                     break;
+                }
+            }
+        }
+
+
+        if( 500 < Camera.getHigh() ) {
+            for(let i=0; i<enemies.length; i++) {
+                if( enemies[i].isEnable() == false) {
+                    if( enemies[i].add(Def.TYPE_ENEMY_BIRD, Util.isDebugEnemyType) ) {
+
+                    }
                 }
             }
         }
@@ -534,9 +547,8 @@ const sketch = (p: p5) => {
             }
 
             // キーを押しているかどうか
-            if(player.high > 64) {
+            if( Camera.getInLeft() > 500 ) {
                 if( isPushKey(Def.P5_KEY_H) ) {
-                    Util.debug("isPushKey(Def.P5_KEY_H)");
                     player.high = 99999;
                 }
             }
@@ -643,9 +655,9 @@ const sketch = (p: p5) => {
         // 描画クリア
         if(isClear) drawClear();
 
-        // TODO: あとでカメラ位置に変更する
-        // appearAirLevel = Camera.getInLeft();
-        let rgbi = (appearAirLevel/170);
+        // TODO: あとでカメラ位置に変更する(割り算適当)
+
+        let rgbi = (Camera.getHigh()/120);
         if( Def.BG_COLOR_RGBs.length - 12 < rgbi ) {
             rgbi = Def.BG_COLOR_RGBs.length - 12;
         }
@@ -658,8 +670,8 @@ const sketch = (p: p5) => {
         }
 
         // 最初の背景の描画
-        i = Camera.getInLeft() + 0;
-        if( i <  Camera.getInBottom()) {
+        i = Camera.getHigh();
+        if( i < 240) { // 画像サイズを超えてないとき
             img.drawImage(Img.BG_BG1, 0, i);
         }
 

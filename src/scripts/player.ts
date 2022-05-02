@@ -49,7 +49,7 @@ export class Player extends Obj{
         }
 
         // 速度分移動させる
-        this.posY -= Util.mathFloor(this.spY/2);
+        this.posY += Util.mathFloor(this.spY/2);
 
     }
 
@@ -76,8 +76,8 @@ export class Player extends Obj{
     }
 
     // 下を超えてないか調べる
-    checkOverUnder(MAX_DISP_Y:number):boolean {
-        return (MAX_DISP_Y <= this.posY);
+    checkOverUnder(MIN_Y:number):boolean {
+        return (this.posY < MIN_Y);
     }
 
     // 描画する画像番号を設定する
@@ -109,16 +109,16 @@ export class Player extends Obj{
 
             img.drawImage(
                 this.imgNo,
-                this.posX - Camera.getInLeft() ,
-                this.posY - Camera.getInTop());
+                Camera.getInLeft() + this.posX,
+                Camera.getInTop() - this.posY);
 
             if( Util.isDebugRectObj ) {
                 let imgBuf = img.getImage(this.imgNo);
                 img.p.stroke(0, 127, 255);
                 img.p.noFill();
                 img.p.rect(
-                    this.posX - Camera.getInLeft(),
-                    this.posY - Camera.getInTop(),
+                    Camera.getInLeft() + this.posX,
+                    Camera.getInTop() - this.posY,
                     imgBuf.width, imgBuf.height);
                 img.p.noStroke();
             }
@@ -127,8 +127,8 @@ export class Player extends Obj{
                 img.p.stroke(170,225,250);
                 img.p.noFill();
                 img.p.rect(
-                    this.getHitLeft() - Camera.getInLeft(),
-                    this.getHitTop() - Camera.getInTop(),
+                    Camera.getInLeft() + this.getHitLeft(),
+                    Camera.getInTop() - this.getHitTop(),
                     this.getHitRight() - this.getHitLeft(),
                     this.getHitBottom()- this.getHitTop()
                 );
@@ -140,8 +140,8 @@ export class Player extends Obj{
     // 敵に当たった後の表示
     drawCrush(img:Img) {
         img.drawImage(Img.NINJA_CRASH,
-            this.posX - Camera.getInLeft(),
-            this.posY - Camera.getInRight());
+            Camera.getInLeft() + this.posX,
+            Camera.getInRight() - this.posY);
     }
 
     // いて！みたいにちょっと上に飛ばす(びっくりした感じを出す)

@@ -16,7 +16,7 @@ export class Def {
     
     static PLAY_INIT_POS_X:number = 120+18;
     // static PLAY_INIT_POS_Y:number = 240-64-12;
-    static PLAY_INIT_POS_Y:number = 240-64-12;
+    static PLAY_INIT_POS_Y:number = 64+12;
     
     static PLAY_MAX_SP_Y:number = 15;
     static PLAY_MAX_DRAW_POS_Y:number = 125;
