@@ -1,4 +1,5 @@
 import p5 from "p5";
+
 import {Def} from "./def";
 import {Img} from "./img";
 import {Util} from "./util";
@@ -19,7 +20,7 @@ Util.isDebugLog = true;
 Util.isDebugInfo = false;
 Util.isDebugHit = false;
 Util.isDebugRectObj = false;
-Util.isDebugRectHit = true;
+Util.isDebugRectHit = false;
 Util.isDebugEnemyType = true;
 
 let scene = null;
@@ -47,7 +48,6 @@ const sketch = (p: p5) => {
     // [1] がその前に押されたキーコード
     let keyCodeHistory: Array<number> = new Array(5);
     let keyCodePre = Def.P5_KEY_NONE;
-
 
     // p5のキーコードと変数を見て調べる
     // キーが押されていればtrue
@@ -90,7 +90,7 @@ const sketch = (p: p5) => {
 
         // 以降、すべてに反映されるので注意
         p.angleMode(p.DEGREES);
-
+        p.textAlign(p.LEFT, p.BOTTOM);
 
         Util.setP5(p);
 
@@ -146,22 +146,45 @@ const sketch = (p: p5) => {
             }
             else
             if( scene.is(Scene.TITLE)) {
-                // 移動しないのでとりあえずカメラを無視して描画する
-                drawClear();
 
-                // Test title
-                p.fill(0,0,255);
+                p.push()
+                drawBg();
+
+                img.drawImage( Img.NINJA_STAND, Def.R_NINJA_POS_X, Def.R_NINJA_POS_Y );
+
+                drawFg(Def.TITLE_FILTER_COLOR_R,
+                       Def.TITLE_FILTER_COLOR_G,
+                       Def.TITLE_FILTER_COLOR_B,
+                       Def.TITLE_FILTER_COLOR_A);
+
+                p.textAlign(p.CENTER, p.CENTER);
+
+                p.fill(200,200,240);
                 p.textSize(24);
-                p.text('Ninjutsu!!', 50 ,82);
+                Util.textBold('N i n j u t s u', Def.DISP_W/2, 90);
+
                 p.noFill();
-                p.stroke(0,0,255);
-                p.rect(30, 40, 170, 60);
+                p.stroke(100,100,200);
+                p.rect(30, 60, 180, 60);
+                p.stroke(90,90,200);
+                p.rect(30-1, 60-1, 180+2, 60+2);
+                p.rect(30+1, 60+1, 180-2, 60-2);
                 p.noStroke();
 
-                p.fill(255,0,0);
-                p.textSize(16);
-                p.text('PUSH ENTER', 60 ,232);
+                if ( scene.count() % 20 > 2) {
+                    p.textSize(16);
+                    p.fill(155,50,50,220);
+                    p.text('PUSH ENTER', Def.DISP_W/2, 150+1);
+                    p.fill(230,100,100,250);
+                    p.text('PUSH ENTER', Def.DISP_W/2, 150);
+                }
 
+                // Like a movie
+                p.fill(0, 0, 0);
+                p.rect(0, 0, Def.DISP_W, 40);
+                p.rect(0, Def.DISP_H-40, Def.DISP_W, 40);
+
+                p.pop()
             }
             else
             if( scene.is(Scene.READY)) {
@@ -173,7 +196,15 @@ const sketch = (p: p5) => {
 
                 drawReadyNinjutsu(scene.count());
 
-                drawFg();
+                // :TODO
+                // -5 は適当です。PLAYになる時に0以下になるように調整する
+                let a = Def.TITLE_FILTER_COLOR_A+(scene.count()*-5)
+                if ( a < 0 ) a = 0;
+
+                drawFg(Def.TITLE_FILTER_COLOR_R,
+                       Def.TITLE_FILTER_COLOR_G,
+                       Def.TITLE_FILTER_COLOR_B,
+                       a);
 
             }
             else
@@ -183,7 +214,6 @@ const sketch = (p: p5) => {
 
 
                 drawEnemy();
-
                 player.draw(img, isPushKey(), isPushKeyNow(), isReleaseKeyNow());
                
                 drawFg();
@@ -201,6 +231,7 @@ const sketch = (p: p5) => {
                 drawFg();
 
                 // GAME OVER を出す
+                p.push();
                 p.fill(40, 40, 40, 120);
                 p.rect(0, 60, Def.DISP_W, 140);
 
@@ -215,6 +246,7 @@ const sketch = (p: p5) => {
                     p.textSize(12);
                     p.text('< push any key >',  Def.DISP_W/2, Def.DISP_H/2+60);
                 }
+                p.pop();
             }
 
 
@@ -237,7 +269,7 @@ const sketch = (p: p5) => {
 
             p.fill(255,0,0);
             p.textSize(10);
-            p.textAlign(p.LEFT, p.TOP);
+            p.textAlign(p.LEFT, p.BOTTOM);
             p.text('SC:'+scene.present,  x, y+=addy);
             p.text('FR:'+scene.count(),  x, y+=addy);
             p.text('PX:'+player.posX,    x, y+=addy);
@@ -448,14 +480,20 @@ const sketch = (p: p5) => {
             // TODO: 画像読み込みが完了しているかチェックする
             if( true ) {
                 scene.set(Scene.TITLE);
+                // :TODO 立っている位置より飛んでる画像が下にあるのでとりあえずの調整
+                player.posY -= 20;
             }
 
         }
         else
         if( scene.is(Scene.TITLE)) {
             Util.debug("Scene.TITLE");
-            // キーが押されているかを調べる
-            if( p.keyIsPressed === true) {
+            // キーが押されているかを調べてOn/Offを反転させる
+            if( isPushKey(Def.P5_KEY_I)) {
+                Util.isDebugInfo = !Util.isDebugInfo;
+            }
+            else
+            if( isPushKey(Def.P5_KEY_ENTER) ) {
                 scene.set(Scene.READY);
             }
         }
@@ -612,11 +650,16 @@ const sketch = (p: p5) => {
             p.rect(0, 220-(i*20), Def.DISP_W, 20);
         }
 
+        // 最初の背景の描画
+        i = player.high + 0;
+        if( i < Def.DISP_H) {
+            img.drawImage(Img.BG_BG1, 0, i);
+        }
+
         for(i=0; i<stars.length; i++) { stars[i].drawBack(p); }
         for(i=0; i<clouds.length; i++){ clouds[i].drawBack(p); }
         for(i=0; i<rains.length; i++) { rains[i].drawBack(p); }
         for(i=0; i<snows.length; i++) { snows[i].drawBack(p); }
-
 
         // TODO:地面の描画, 見切れていないときだけ描画する
         i = Camera.high + 210;
@@ -627,13 +670,22 @@ const sketch = (p: p5) => {
     }
 
 
-    function drawFg() {
+    /**
+     * option: Filter color(r,g,b,a)
+     **/
+    function drawFg(r:number=-1, g:number=-1, b:number=-1, a:number=70) {
         let i=0;
+
         for(i=0; i<stars.length; i++) { stars[i].drawFront(p); }
         for(i=0; i<clouds.length; i++){ clouds[i].drawFront(p); }
         for(i=0; i<rains.length; i++) { rains[i].drawFront(p); }
         for(i=0; i<snows.length; i++) { snows[i].drawFront(p); }
 
+        // If there use filter on screen
+        if(r!=-1 && g != -1 && b != -1) {
+            p.fill(r,g,b,a);
+            p.rect(0,0,Def.DISP_W,Def.DISP_H);
+        }
     }
 
 

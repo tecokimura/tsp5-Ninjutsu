@@ -1,5 +1,6 @@
 import p5 from "p5";
 
+// :TODO typeに設定する
 //@ts-ignore
 import DIST_IMG_PNGS from "../images/*.png";
 
@@ -70,7 +71,7 @@ export class Img {
     }
 
     drawImageFlipH(index:number, x:number, y:number, a:number) {
-        this.drawImage(index, x, y:
+        this.drawImage(index, x, y,
                   true, 
                   0, 0, 0,
                   100);
@@ -83,27 +84,30 @@ export class Img {
     // ls -1 src/images | sed -e 's/.png$//'
     // を貼れるように並べる
     static PNG_FNAMES:string[] = [
-        'e1b1-bird1',
-        'e1b2-bird2',
-        'e2s1-shuri1',
-        'e2s2-shuri2',
-        'e3d1-drone1',
-        'e3d2-drone2',
-        'e4s1-shinobi1',
-        'e4s2-shinobi2',
-        'e5u1-ufo1',
-        'e5u2-ufo2',
-        'n00s1-ninja-stand',
-        'n10j1-ninja-jutsu-base',
-        'n10j2-ninja-jutsu-gu',
-        'n10j3-ninja-jtsutu-choki',
-        'n10j4-ninja-jutsu-pa',
-        'n20f1-ninja-fly1',
-        'n20f2-ninja-fly2',
-        'n20f3-ninja-fly3',
-        'n30c1-ninja-crash',
-        'n40d1-ninja-down1',
-        'n40d2-ninja-down2'
+        'enemy-bird1',
+        'enemy-bird2',
+        'enemy-shuri1',
+        'enemy-shuri2',
+        'enemy-drone1',
+        'enemy-drone2',
+        'enemy-shinobi1',
+        'enemy-shinobi2',
+        'enemy-ufo1',
+        'enemy-ufo2',
+
+        'ninja-stand',
+        'ninja-jutsu-base',
+        'ninja-jutsu-gu',
+        'ninja-jtsutu-choki',
+        'ninja-jutsu-pa',
+        'ninja-fly1',
+        'ninja-fly2',
+        'ninja-fly3',
+        'ninja-crash',
+        'ninja-down1',
+        'ninja-down2',
+
+        'bg-bg1'
     ]
 
     // 読み込み用配列にしてインデックスを別途定義する
@@ -117,6 +121,7 @@ export class Img {
     static ENEMY_SHINOBI1:number    = 7;  
     static ENEMY_UFO:number         = 8;  
     static ENEMY_UFO1:number        = 9;  
+
     static NINJA_STAND:number       = 10; 
     static NINJA_JUTSU_BASE:number  = 11; 
     static NINJA_JUTSU_GU:number    = 12; 
@@ -128,7 +133,10 @@ export class Img {
     static NINJA_CRASH:number       = 18; 
     static NINJA_DOWN:number        = 19; 
     static NINJA_DOWN2:number       = 20; 
-    static IMAGE_MAX:number         = 21;
+
+    static BG_BG1:number            = 21; 
+
+    static IMAGE_MAX:number         = 22;
     //===========================
 
 }
