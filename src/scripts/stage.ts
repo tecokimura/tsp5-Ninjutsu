@@ -31,12 +31,12 @@ export class Stage {
      * @constructor
      */
     constructor(n: number) {
-        this.clear();
+        this.init();
         this.num = n;
     };
 
     // データをクリアする
-    clear() {
+    init() {
         this.num = 1;
         this.frame = 0;
         this.isScreenColorFilter = false;
