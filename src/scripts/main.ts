@@ -1,6 +1,3 @@
-// TODO:背景スクロールを揃える
-// TODO:敵の動きを揃える
-
 import p5 from "p5";
 
 import {Def} from "./def";
@@ -21,9 +18,9 @@ import {Stage} from "./stage";
 Util.isDebug = false;
 Util.isDebugLog = true;
 Util.isDebugInfo = false;
-Util.isDebugHit = true;
+Util.isDebugHit = false;
 Util.isDebugRectObj = true;
-Util.isDebugRectHit = true;false
+Util.isDebugRectHit = true;
 Util.isDebugEnemyType = false;
 
 let scene = null;
@@ -380,6 +377,7 @@ const sketch = (p: p5) => {
         }
 
 
+        // とりあえず500 だけど定数に置き換える
         if( 500 < Camera.getHigh() && appearNextHigh < Camera.getHigh()) {
             for(let i=0; i<enemies.length; i++) {
                 if( enemies[i].isEnable() == false) {
@@ -578,8 +576,8 @@ const sketch = (p: p5) => {
             // 当たり判定
             if(Util.isDebugHit == false) {
                 for(let i=0; i<enemies.length; i++) {
-                    if( enemies[i].hit(player) ) {
-                        Util.debug("!!!!! Enemy Hit !!!!!");
+                    if( enemies[i].hitC(player, Camera.getInLeft(), Camera.getInTop() )) {
+                        Util.debug("!!!!! Enemy HitC !!!!!");
                         scene.set(Scene.GAMEOVER);
                         player.setGameover();
                     }

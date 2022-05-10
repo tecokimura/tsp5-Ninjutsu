@@ -28,9 +28,9 @@ export class Player extends Obj{
 
         this.high = 0;
 
-        this.hitOfsX = 4;
-        this.hitOfsY = 15;
-        this.hitOfsW = 24;
+        this.hitOfsX = 6;
+        this.hitOfsY = 20;
+        this.hitOfsW = 20;
         this.hitOfsH = 10;
     }
 
@@ -125,11 +125,11 @@ export class Player extends Obj{
             }
 
             if( Util.isDebugRectHit ) {
-                img.p.stroke(170,225,250);
+                img.p.stroke(255,0,0,255);
                 img.p.noFill();
                 img.p.rect(
-                    Camera.getInLeft() + this.getHitLeft(),
-                    Camera.getInTop() - this.getHitTop(),
+                    this.getHitLeftC(Camera.getInLeft()),
+                    this.getHitTopC(Camera.getInTop()),
                     this.getHitRight() - this.getHitLeft(),
                     this.getHitBottom()- this.getHitTop()
                 );
@@ -164,6 +164,13 @@ export class Player extends Obj{
     getHitRight():number { return this.posX + this.hitOfsX + this.hitOfsW + (this.spX/2); }
     getHitTop()   :number { return this.posY + this.hitOfsY - (this.spY/2); }
     getHitBottom() :number { return this.posY + this.hitOfsY + this.hitOfsH + (this.spY/2); }
+
+    // get Hit Xxx with Camera
+    // カメラの基準値が左下（横軸は同じ）
+    getHitLeftC(cameraX: number) :number { return (cameraX + this.posX) + this.hitOfsX - (this.spX/2); }
+    getHitRightC(cameraX: number):number { return (cameraX + this.posX) + this.hitOfsX + this.hitOfsW + (this.spX/2); }
+    getHitTopC(cameraY: number)   :number { return (cameraY - this.posY) + this.hitOfsY - (this.spY/2); }
+    getHitBottomC(cameraY: number) :number { return (cameraY - this.posY) + this.hitOfsY + this.hitOfsH + (this.spY/2); }
 
     // 真ん中の取得 当たり判定の真ん中がだいたい真ん中だろう
     getCenterX() :number { return this.posX + this.hitOfsX + (this.hitOfsW/2)}

@@ -172,13 +172,12 @@ export class Enemy extends Obj{
                 img.p.noStroke();
             }
 
-            if( Util.isDebugRectHit )
-            {
-                img.p.stroke(0,255,0,100);
+            if( Util.isDebugRectHit ) {
+                img.p.stroke(255,0,0,255);
                 img.p.noFill();
                 img.p.rect(
-                    this.getHitLeft(),
-                    this.getHitTop(),
+                    this.getHitLeftC(Camera.getInLeft()),
+                    this.getHitTopC(Camera.getInTop()),
                     this.getHitRight() - this.getHitLeft(),
                     this.getHitBottom()- this.getHitTop()
                 );
