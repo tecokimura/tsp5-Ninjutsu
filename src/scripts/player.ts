@@ -1,4 +1,3 @@
-// 当たり判定の矩形に違和感がある
 import p5 from "p5";
 
 import {Obj} from "./obj";
@@ -142,20 +141,23 @@ export class Player extends Obj{
     drawCrush(img:Img) {
         img.drawImage(Img.NINJA_CRASH,
             Camera.getInLeft() + this.posX,
-            Camera.getInRight() - this.posY);
+            Camera.getInTop() - this.posY);
     }
 
     // いて！みたいにちょっと上に飛ばす(びっくりした感じを出す)
     setGameover() {
-        this.spY *= 1.25;
+        // TODO:仮当
+        this.spY *= 2;
+        if(10 < this.spY) this.spY = 10;
     }
 
     // ゲームオーバー中の移動
-    moveInGameover(MAX_DISP_H:number) {
-        if( this.posY < MAX_DISP_H) {
+    moveInGameover(cBottom:number) {
+        if( cBottom < this.posY ) {
+            // TODO:仮当
             // 上に飛びすぎてたので重力を重くする
-            this.spY  -= 2*2;
-            this.posY -= Util.mathFloor(this.spY/2);
+            this.spY  += -4;
+            this.posY += Util.mathFloor(this.spY/2);
         }
     }
 

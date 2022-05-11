@@ -1,3 +1,4 @@
+// TODO: BgObj の調整,カメラ対応
 import p5 from "p5";
 
 import {Def} from "./def";
@@ -33,7 +34,8 @@ const sketch = (p: p5) => {
     let player = null;
 
     let enemies: Array<Enemy>  = new Array(Def.ENEMY_MAX);
-    
+    let stages: Array<Stage> = new Array();
+
     let appearAirLevel = 0;
     let appearNextHigh = 0;
 
@@ -160,7 +162,7 @@ const sketch = (p: p5) => {
 
                 p.textAlign(p.CENTER, p.CENTER);
 
-                p.fill(200,200,240);
+                p.fill(50,50,60);
                 p.textSize(24);
                 Util.textBold('N i n j u t s u', Def.DISP_W/2, 90);
 
@@ -225,8 +227,9 @@ const sketch = (p: p5) => {
                 drawBg();
 
                 drawEnemy();
-                
-                if( player.posY < Def.DISP_H ) {
+               
+                // まだカメラに写っているのなら
+                if( Camera.getInBottom() < player.posY) {
                     player.drawCrush(img);
                 }
 
