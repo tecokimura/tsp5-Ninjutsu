@@ -1,4 +1,5 @@
 // TODO: BgObj の調整,カメラ対応
+// BgObjのObject化をもっとやる
 import p5 from "p5";
 
 import {Def} from "./def";
@@ -279,10 +280,8 @@ const sketch = (p: p5) => {
             p.text('count:'+scene.count(),  x, y+=addy);
             p.text('Camara:CenX:'+Camera.centerX,    x, y+=addy);
             p.text('CamarayCenY:'+Camera.centerY,    x, y+=addy);
-            p.text('Camera:Left:'+Camera.getInLeft(),  x, y+=addy);
-            p.text('Camera:Rigt:'+Camera.getInRight(),  x, y+=addy);
-            p.text('Camera: Top:'+Camera.getInTop(),    x, y+=addy);
-            p.text('Camera:Btom:'+Camera.getInBottom(),    x, y+=addy);
+            p.text('Camera L:'+Camera.getInLeft()+' R:'+Camera.getInRight(), x, y+=addy);
+            p.text('Camera T:'+Camera.getInTop() +' B:'+Camera.getInBottom(), x, y+=addy);
             p.text('PlayerX:'+player.posX,    x, y+=addy);
             p.text('PlayerY:'+player.posY,    x, y+=addy);
             p.text('PlayerSpY:'+player.spY,     x, y+=addy);
@@ -291,22 +290,22 @@ const sketch = (p: p5) => {
             p.text('enemies.hit2:'+enemies[0].getStringHit2(),   x, y+=addy);
             p.text('PlayerTime:'+player.time,    x, y+=addy);
             p.text('appearAirLevel:'+appearAirLevel, x, y+=addy);
-           
+            
             n = 0;
             enemies.forEach((e) => { if(e.isEnable()) n++; });
-            p.text('en:'+n, x, y+=addy);
+            p.text('enemies:'+n, x, y+=addy);
             n = 0;
             stars.forEach((s) => { if(s.isEnable()) n++; });
-            p.text('st:'+n, x, y+=addy);
+            p.text('stars:'+n, x, y+=addy);
             n = 0;
             clouds.forEach((c) => { if(c.isEnable()) n++; });
-            p.text('cl:'+n, x, y+=addy);
+            p.text('clouds:'+n, x, y+=addy);
             n = 0;
             rains.forEach((r) => { if(r.isEnable()) n++; });
-            p.text('rn:'+n, x, y+=addy);
+            p.text('rains:'+n, x, y+=addy);
             n = 0;
             snows.forEach((s) => { if(s.isEnable()) n++; });
-            p.text('sn:'+n, x, y+=addy);
+            p.text('snows:'+n, x, y+=addy);
         }
     }
 
@@ -347,7 +346,7 @@ const sketch = (p: p5) => {
             for(let i=1000; i<stars.length; i++) {
                 // if( Def.AIR_LV_1 <= appearAirLevel)
                 {
-                    if( stars[i].add() ) {
+                    if( stars[i].add(Def.TYPE_BG_ALL, Camera.getInLeft(), Camera.getInTop()) ) {
                         Util.debug("added stars");
                         break;
                     }
@@ -356,7 +355,7 @@ const sketch = (p: p5) => {
 
             // 雲出現
             for(let i=1000; i<clouds.length; i++) {
-                if( clouds[i].add() ) {
+                if( clouds[i].add(Def.TYPE_BG_ALL, Camera.getInLeft(), Camera.getInTop()) ) {
                     // Util.debug("added cloud");
                     break;
                 }
@@ -364,16 +363,16 @@ const sketch = (p: p5) => {
 
             // 雨
             for(let i=1000; i<rains.length; i++) {
-                if( rains[i].add() ) {
-                    // Util.debug("added rain");
+                if( rains[i].add(Def.TYPE_BG_ALL, Camera.getInLeft(), Camera.getInTop()) ) {
+                    Util.debug("added rain");
                     break;
                 }
             }
 
             // ゆき
-            for(let i=1000; i<snows.length; i++) {
-                if( snows[i].add() ) {
-                    // Util.debug("added snow");
+            for(let i=0; i<snows.length; i++) {
+                if( snows[i].add(Def.TYPE_BG_ALL, Camera.getInLeft(), Camera.getInTop()) ) {
+                    Util.debug("added snow");
                     break;
                 }
             }
@@ -675,15 +674,15 @@ const sketch = (p: p5) => {
         }
 
         // 最初の背景の描画
-        i = Camera.getHigh();
-        if( i < 240) { // 画像サイズを超えてないとき
+        i = Camera.getHigh()-120;
+        if( i < 320) { // 画像サイズを超えてないとき
             img.drawImage(Img.BG_BG1, 0, i);
         }
 
-        for(i=0; i<stars.length; i++) { stars[i].drawBack(p); }
-        for(i=0; i<clouds.length; i++){ clouds[i].drawBack(p); }
-        for(i=0; i<rains.length; i++) { rains[i].drawBack(p); }
-        for(i=0; i<snows.length; i++) { snows[i].drawBack(p); }
+        for(i=0; i<stars.length; i++) { stars[i].drawBack(p, Camera.getInLeft(), Camera.getInTop()); }
+        for(i=0; i<clouds.length; i++){ clouds[i].drawBack(p, Camera.getInLeft(), Camera.getInTop()); }
+        for(i=0; i<rains.length; i++) { rains[i].drawBack(p, Camera.getInLeft(), Camera.getInTop()); }
+        for(i=0; i<snows.length; i++) { snows[i].drawBack(p, Camera.getInLeft(), Camera.getInTop()); }
 
     }
 
@@ -694,10 +693,10 @@ const sketch = (p: p5) => {
     function drawFg(r:number=-1, g:number=-1, b:number=-1, a:number=70) {
         let i=0;
 
-        for(i=0; i<stars.length; i++) { stars[i].drawFront(p); }
-        for(i=0; i<clouds.length; i++){ clouds[i].drawFront(p); }
-        for(i=0; i<rains.length; i++) { rains[i].drawFront(p); }
-        for(i=0; i<snows.length; i++) { snows[i].drawFront(p); }
+        for(i=0; i<stars.length; i++) { stars[i].drawFront(p, Camera.getInLeft(), Camera.getInTop()); }
+        for(i=0; i<clouds.length; i++){ clouds[i].drawFront(p, Camera.getInLeft(), Camera.getInTop()); }
+        for(i=0; i<rains.length; i++) { rains[i].drawFront(p, Camera.getInLeft(), Camera.getInTop()); }
+        for(i=0; i<snows.length; i++) { snows[i].drawFront(p, Camera.getInLeft(), Camera.getInTop()); }
 
         // If there use filter on screen
         if(r!=-1 && g != -1 && b != -1) {

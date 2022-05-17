@@ -145,10 +145,9 @@ export class Def {
     static P5_KEY_X:number     = 88;
     static P5_KEY_Z:number     = 90;
 
-    static TYPE_BG_FAR  = 0;
-    static TYPE_BG_MID  = 1;
-    static TYPE_BG_NEAR = 2;
-    static TYPE_BG_ALL  = 3;
+    static TYPE_BG_NEAR = 0;
+    static TYPE_BG_FAR  = 1;
+    static TYPE_BG_ALL  = 2;
 
     // enum みたいに定義
     static TYPE_ENEMY_BIRD   = 0;

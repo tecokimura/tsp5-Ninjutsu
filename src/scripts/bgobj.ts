@@ -2,6 +2,7 @@ import p5 from "p5";
 
 import {Obj} from "./obj";
 import {Def} from "./def";
+import {Camera} from "./camera";
 
 // 背景として動くcloud, star
 export abstract class BgObj extends Obj{
@@ -53,14 +54,21 @@ export abstract class BgObj extends Obj{
             this.spX += this.spVX;
             this.spY += this.spVY;
 
-            if( (this.posX <= (0-this.width) && this.spX < 0)
-            ||  (Def.DISP_W+this.width <= this.posX && 0 < this.spX) ) {
+            if(this.posY < Camera.getInBottom()) {
                 this.remove();
                 // Util.debug("Cloud.move.remove");
             }
         }
 
+        if(this.isEnable()) {
+            this.afterMove();
+        }
+
         return this.isEnable();
+    }
+
+    // 移動後の処理
+    afterMove() {
     }
 
     // 表示位置の調整と画面外にでた場合の削除処理

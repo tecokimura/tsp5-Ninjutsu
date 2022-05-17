@@ -52,7 +52,7 @@ export class Enemy extends Obj{
         if(this.isEnable() == false) {
             this.init();
 
-            // 
+            // 少し上に位置させてパッと出ないようにする
             this.posY = y + 100;
             this.posX = x + Util.getRandInt() % Def.DISP_W;
 
@@ -98,8 +98,8 @@ export class Enemy extends Obj{
     move() {
         if(this.isEnable()) {
             this.posX += this.spX;
-            if( (this.posX <= (0-48) && this.spX < 0)
-            ||  (240 <= this.posX && 0 < this.spX) ) {
+            if( (this.posX <= (Camera.getInLeft()-48) && this.spX < 0)
+            ||  (Camera.getInRight() <= this.posX && 0 < this.spX) ) {
                 this.spX *= -1;
             }
 
@@ -112,7 +112,6 @@ export class Enemy extends Obj{
                 if( n % 15 < 5 ) this.spX *= -1;
                 if( n % 15 < 2 ) this.spY *= -1;
             }
-
 
             if(this.posY < Camera.getInBottom()) {
                 this.remove();

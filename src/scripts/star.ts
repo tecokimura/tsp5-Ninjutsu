@@ -25,12 +25,12 @@ export class Star extends BgObj{
      * 配列の空きを確認して敵を配置する
      * 戻り値（boolean）で配置できたかを返す
      */
-    add(type:number=Def.TYPE_ALL) {
+    add(type:number=Def.TYPE_BG_ALL, cX:number, cY:number) {
         let isAdd = false;
         if(this.isEnable() == false) {
             this.init();
-            this.posY = -40-(Util.getRandInt()%120);
-            this.posX = Util.getRandInt()%Def.DISP_W;
+            this.posY = cY + 40+(Util.getRandInt()%120);
+            this.posX = cX + Util.getRandInt()%Def.DISP_W;
 
             // ランダムでサイズを決める
             this.width = Util.getRandInt(4)+2;
@@ -46,19 +46,25 @@ export class Star extends BgObj{
         return isAdd;
     }
 
-    drawBack(p5:p5) {
+    drawBack(p5:p5, cX:number, cY:number) {
         if( this.isEnable() && this.type != Def.TYPE_NEAR) {
             p5.angleMode(p5.DEGREES);
             p5.fill(250,250,0, this.alpha);
-            p5.arc(this.posX+this.width/2, this.posY+this.height/2, this.width, this.height, 0, 360);
+            p5.arc(
+                cX + this.posX+this.width/2,
+                cY - this.posY-this.height/2,
+                this.width, this.height, 0, 360);
         }
     }
 
-    drawFront(p5:p5) {
+    drawFront(p5:p5, cX:number, cY:number) {
         if( this.isEnable() && this.type == Def.TYPE_NEAR) {
             p5.angleMode(p5.DEGREES);
             p5.fill(250,250,0, this.alpha);
-            p5.arc(this.posX+this.width/2, this.posY+this.height/2, this.width, this.height, 0, 360);
+            p5.arc(
+                cX + this.posX+this.width/2,
+                cY - this.posY-this.height/2,
+                this.width, this.height, 0, 360);
         }
     }
 

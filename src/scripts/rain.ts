@@ -24,17 +24,17 @@ export class Rain extends BgObj{
      * 配列の空きを確認して敵を配置する
      * 戻り値（boolean）で配置できたかを返す
      */
-    add(type:number=Def.TYPE_ALL) {
+    add(type:number=Def.TYPE_BG_ALL, cX:number, cY:number) {
         let isAdd = false;
         if(this.isEnable() == false) {
 
-            if(type == Def.TYPE_ALL) {
-                type = Util.getRandInt()%Def.TYPE_ALL;
+            if(type == Def.TYPE_BG_ALL) {
+                type = Util.getRandInt()%Def.TYPE_BG_ALL;
             }
 
             this.init();
-            this.posY = -40-(Util.getRandInt()%120);
-            this.posX = Util.getRandInt()%Def.DISP_W;
+            this.posY = cY + 40+(Util.getRandInt()%120);
+            this.posX = cX + Util.getRandInt() % Def.DISP_W;
 
             // ランダムでサイズを決める
             this.width = 1;
@@ -43,7 +43,7 @@ export class Rain extends BgObj{
             this.status = Def.ST_PLAY;
 
             this.alpha = Util.getRandInt(100)+30;
-            this.spY = Util.getRandInt()%20+10;
+            this.spY -= (Util.getRandInt()%20)+10;
 
             isAdd = this.isEnable();
 
@@ -52,17 +52,23 @@ export class Rain extends BgObj{
         return isAdd;
     }
 
-    drawBack(p5:p5) {
+    drawBack(p5:p5, cX:number, cY:number) {
         if( this.isEnable() && this.type != Def.TYPE_NEAR) {
             p5.fill(0,98,160, this.alpha);
-            p5.rect(this.posX+this.width/2, this.posY+this.height/2, this.width, this.height );
+            p5.rect(
+                cX + this.posX+this.width/2,
+                cY - this.posY+this.height/2,
+                this.width, this.height );
         }
     }
 
-    drawFront(p5:p5) {
+    drawFront(p5:p5, cX:number, cY:number) {
         if( this.isEnable() && this.type == Def.TYPE_NEAR) {
             p5.fill(51,153,204, this.alpha);
-            p5.rect(this.posX+this.width/2, this.posY+this.height/2, this.width, this.height );
+            p5.rect(
+                cX + this.posX+this.width/2,
+                cY - this.posY+this.height/2,
+                this.width, this.height );
         }
     }
 

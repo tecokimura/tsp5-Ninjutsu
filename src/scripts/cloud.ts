@@ -24,17 +24,17 @@ export class Cloud extends BgObj{
      * 配列の空きを確認して敵を配置する
      * 戻り値（boolean）で配置できたかを返す
      */
-    add(type:number=Def.TYPE_BG_ALL) {
+    add(type:number=Def.TYPE_BG_ALL, cX:number, cY:number) {
         let isAdd = false;
         if(this.isEnable() == false) {
 
-            // ランダムでサイズを決める
+            // ランダムでサイズを決める とりあえず適当ステージができたら頑張る
             this.init();
             this.width = Util.getRandInt(Def.DISP_W/2)+20;
-            this.height= (Util.getRandInt() % Util.mathAbs(this.width/4));
+            this.height= 2+Util.mathAbs((Util.getRandInt()%this.width/4));
 
-            this.posY = 0 - (Util.getRandInt()%10) - this.height;
-            this.posX = Util.mathAbs((Util.getRandInt() % (Def.DISP_W*2)) - (Def.DISP_W/2));
+            this.posY = cY + (Util.getRandInt()%10*2) + this.height;
+            this.posX = cX + Util.mathAbs((Util.getRandInt() % (Def.DISP_W*2)) - (Def.DISP_W/2));
 
             this.status = Def.ST_PLAY;
 
@@ -75,25 +75,31 @@ export class Cloud extends BgObj{
         return isAdd;
     }
 
-    drawBack(p5:p5) {
+    drawBack(p5:p5, cX:number, cY:number) {
         if( this.isEnable() && this.type != Def.TYPE_BG_NEAR) {
 
             // drawCircle
             p5.angleMode(p5.DEGREES);
             // p5.fill(255,255,255, this.alpha);
             p5.fill(220,220,220, this.alpha);
-            p5.arc(this.posX+this.width/2, this.posY+this.height/2, this.width, this.height, 0, 360);
+            p5.arc(
+                cX + this.posX+this.width/2,
+                cY - this.posY+this.height/2,
+                this.width, this.height, 0, 360);
         }
     }
 
-    drawFront(p5:p5) {
+    drawFront(p5:p5, cX:number, cY:number) {
         if( this.isEnable() && this.type == Def.TYPE_BG_NEAR) {
 
             // drawCircle
             p5.angleMode(p5.DEGREES);
             // p5.fill(255,255,255, this.alpha);
             p5.fill(240,240,240, this.alpha);
-            p5.arc(this.posX+this.width/2, this.posY+this.height/2, this.width, this.height, 0, 360);
+            p5.arc(
+                cX + this.posX+this.width/2,
+                cY - this.posY+this.height/2,
+                this.width, this.height, 0, 360);
         }
     }
 
