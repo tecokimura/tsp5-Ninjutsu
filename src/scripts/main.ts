@@ -1,4 +1,7 @@
 // Objの生成、管理の仕方を見直す
+// makeBg とかで一括登録できるようにする
+// 配列もひとつでいいかも
+// とりあえずからの関数だけ作っておく
 import p5 from "p5";
 
 import {Def} from "./def";
@@ -701,6 +704,9 @@ const sketch = (p: p5) => {
         }
     }
 
+    // 作業中：種別を渡して作成する
+    function makeBg(type:number) {
+    }
 };
 
 new p5(sketch);
