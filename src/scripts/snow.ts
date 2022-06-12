@@ -19,37 +19,15 @@ export class Snow extends BgObj{
         this.posY  = Def.DATA_NONE;
     }
 
-    // 
-    /**
-     * 配列の空きを確認して敵を配置する
-     * 戻り値（boolean）で配置できたかを返す
-     */
-    add(type:number=Def.TYPE_BG_ALL, cX:number, cY:number) {
-        let isAdd = false;
-        if(this.isEnable() == false) {
-            this.init();
-            this.type = type;
-            this.posY = cY + 40+(Util.getRandInt()%120);
-            this.posX = cX + Util.getRandInt()%Def.DISP_W;
-            this.spX = 0;
-            this.spY = (Util.getRandInt()%3+1) * -1;
+    afterAdd() :void {
+        this.spX = 0;
+        this.spY = (Util.getRandInt()%3+1) * -1;
 
-            if(this.type == Def.TYPE_BG_ALL) {
-                this.type = Util.getRandInt()%Def.TYPE_BG_ALL;
-            }
+        // ランダムでサイズを決める
+        this.width = Util.getRandInt(10)+2;
+        this.height= this.width;
+        this.alpha = 160;
 
-            // ランダムでサイズを決める
-            this.width = Util.getRandInt(10)+2;
-            this.height= this.width;
-            this.alpha = 160;
-
-            this.status = Def.ST_PLAY;
-
-            isAdd = this.isEnable();
-            // Util.debug("snow type="+this.type);
-        }
-
-        return isAdd;
     }
 
     drawBack(p5:p5, cX:number, cY:number) {

@@ -11,45 +11,13 @@ export class Rain extends BgObj{
         this.init();
     }
 
-    // データをリセットしたい時などの初期化
-    init() {
-        super.init();
-        this.status= Def.DATA_NONE;
-        this.type  = Def.DATA_NONE;
-        this.posY  = Def.DATA_NONE;
-    }
+    afterAdd() :void {
+        // ランダムでサイズを決める
+        this.width = 1;
+        this.height= Util.getRandInt(40)+10;
 
-    // 
-    /**
-     * 配列の空きを確認して敵を配置する
-     * 戻り値（boolean）で配置できたかを返す
-     */
-    add(type:number=Def.TYPE_BG_ALL, cX:number, cY:number) {
-        let isAdd = false;
-        if(this.isEnable() == false) {
-
-            if(type == Def.TYPE_BG_ALL) {
-                type = Util.getRandInt()%Def.TYPE_BG_ALL;
-            }
-
-            this.init();
-            this.posY = cY + 40+(Util.getRandInt()%120);
-            this.posX = cX + Util.getRandInt() % Def.DISP_W;
-
-            // ランダムでサイズを決める
-            this.width = 1;
-            this.height= Util.getRandInt(40)+10;
-
-            this.status = Def.ST_PLAY;
-
-            this.alpha = Util.getRandInt(100)+30;
-            this.spY -= (Util.getRandInt()%20)+10;
-
-            isAdd = this.isEnable();
-
-        }
-
-        return isAdd;
+        this.alpha = Util.getRandInt(100)+30;
+        this.spY -= (Util.getRandInt()%20)+10;
     }
 
     drawBack(p5:p5, cX:number, cY:number) {

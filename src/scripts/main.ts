@@ -1,5 +1,4 @@
-// TODO: BgObj の調整,カメラ対応
-// BgObjのObject化をもっとやる
+// Objの生成、管理の仕方を見直す
 import p5 from "p5";
 
 import {Def} from "./def";
@@ -46,7 +45,7 @@ const sketch = (p: p5) => {
     let rains: Array<Rain> = new Array(Def.RAIN_MAX);
     let snows: Array<Snow> = new Array(Def.SNOW_MAX);
 
-    // keyCodeHistory
+    // keyCodeHistory 
     // 0,1,2,3.. と押された履歴を配列に記憶する
     // [0] が一番直近に押されたキーコード
     // [1] がその前に押されたキーコード
@@ -370,7 +369,7 @@ const sketch = (p: p5) => {
             }
 
             // ゆき
-            for(let i=0; i<snows.length; i++) {
+            for(let i=1000; i<snows.length; i++) {
                 if( snows[i].add(Def.TYPE_BG_ALL, Camera.getInLeft(), Camera.getInTop()) ) {
                     Util.debug("added snow");
                     break;
@@ -560,20 +559,6 @@ const sketch = (p: p5) => {
             player.move(isPushKey());
             Camera.move(player.getCenterX(), player.getCenterY());
             player.updateImgNo(isPushKey(), isPushKeyNow(), isReleaseKeyNow());
-
-            // let adjustH = player.adjustHigh(Def.PLAY_MAX_DRAW_POS_Y);
-            // if( 0 < adjustH) {
-
-            //     // TODO: 変な処理だがリファクタはまた別に行う
-            //     //       敵が存在するのなら プレイヤーが移動した分を移動させる
-            //     let k=0;
-            //     for(k=0;k<enemies.length;k++) { enemies[k].adjustDispPos(adjustH); }
-            //     for(k=0;k<clouds.length;k++) { clouds[k].adjustDispPos(adjustH); }
-            //     for(k=0;k<stars.length;k++) { stars[k].adjustDispPos(adjustH); }
-            //     for(k=0;k<rains.length;k++) { rains[k].adjustDispPos(adjustH); }
-            //     for(k=0;k<snows.length;k++) { snows[k].adjustDispPos(adjustH); }
-
-            // }
 
             // 当たり判定
             if(Util.isDebugHit == false) {

@@ -11,69 +11,40 @@ export class Cloud extends BgObj{
         this.init();
     }
 
-    // データをリセットしたい時などの初期化
-    init() {
-        super.init();
-        this.status= Def.DATA_NONE;
-        this.type  = Def.DATA_NONE;
-        this.posY  = Def.DATA_NONE;
-    }
+    // 画面に追加して位置などの設定
+    afterAdd() :void {
+        this.width = Util.getRandInt(Def.DISP_W/2)+20;
+        this.height= 2+Util.mathAbs((Util.getRandInt()%this.width/4));
 
-    // 
-    /**
-     * 配列の空きを確認して敵を配置する
-     * 戻り値（boolean）で配置できたかを返す
-     */
-    add(type:number=Def.TYPE_BG_ALL, cX:number, cY:number) {
-        let isAdd = false;
-        if(this.isEnable() == false) {
+        /// 必要か要相談
+        // this.posY = cY + (Util.getRandInt()%10*2) + this.height;
+        // this.posX = cX + Util.mathAbs((Util.getRandInt() % (Def.DISP_W*2)) - (Def.DISP_W/2));
+        
+        switch (this.type) {
+          case Def.TYPE_BG_NEAR:
+              // 適当に透明度と調整
+              if(3 < Util.getRandInt()%10) {
+                  this.alpha = 200; // (0-255)
+              } else {
+                  this.alpha = 120; // (0-255)
+              }
+              this.spX = Util.mathAbs(this.width/50);
 
-            // ランダムでサイズを決める とりあえず適当ステージができたら頑張る
-            this.init();
-            this.width = Util.getRandInt(Def.DISP_W/2)+20;
-            this.height= 2+Util.mathAbs((Util.getRandInt()%this.width/4));
-
-            this.posY = cY + (Util.getRandInt()%10*2) + this.height;
-            this.posX = cX + Util.mathAbs((Util.getRandInt() % (Def.DISP_W*2)) - (Def.DISP_W/2));
-
-            this.status = Def.ST_PLAY;
-
-            if(type == Def.TYPE_BG_ALL) {
-                type = Util.getRandInt()%Def.TYPE_BG_ALL;
-            }
-
-            switch (type) {
-              case Def.TYPE_BG_NEAR:
-                  this.type = Def.TYPE_BG_NEAR;
-
-                  // 適当に透明度と調整
-                  if(3 < Util.getRandInt()%10) {
-                      this.alpha = 200; // (0-255)
-                  } else {
-                      this.alpha = 120; // (0-255)
-                  }
-                  this.spX = Util.mathAbs(this.width/50);
-
-                  this.width -= Util.getRandInt()%24;
-                  this.height += Util.getRandInt()%24;
-                  break;
-              case Def.TYPE_BG_MID:
-                  this.type = Def.TYPE_BG_MID;
-                  this.alpha = 80; // (0-255)
-                  this.spX = Util.mathAbs(this.width/75);
-                  break;
-              default:
-                  this.type = Def.TYPE_BG_FAR;
-                  this.alpha = 40; // (0-255)
-                  this.spX = Util.mathAbs(this.width/100);
-                  break;
-            }
-
-            isAdd = this.isEnable();
+              this.width -= Util.getRandInt()%24;
+              this.height += Util.getRandInt()%24;
+              break;
+          case Def.TYPE_BG_MID:
+              this.alpha = 80; // (0-255)
+              this.spX = Util.mathAbs(this.width/75);
+              break;
+          default:
+              this.alpha = 40; // (0-255)
+              this.spX = Util.mathAbs(this.width/100);
+              break;
         }
 
-        return isAdd;
     }
+
 
     drawBack(p5:p5, cX:number, cY:number) {
         if( this.isEnable() && this.type != Def.TYPE_BG_NEAR) {
