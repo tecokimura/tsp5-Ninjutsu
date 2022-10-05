@@ -47,10 +47,18 @@ export class Obj {
         return this.time;
     }
 
+    // 座標起点が左上
     getHitLeft() :number { return this.posX + this.hitOfsX; }
     getHitRight():number { return this.posX + this.hitOfsX + this.hitOfsW; }
     getHitTop()   :number { return this.posY + this.hitOfsY; }
     getHitBottom() :number { return this.posY + this.hitOfsY + this.hitOfsH; }
+
+    // get Hit Xxx with Camera
+    // カメラの基準値が左下（横軸は同じ）
+    getHitLeftC(cameraX: number) :number { return (cameraX + this.posX) + this.hitOfsX; }
+    getHitRightC(cameraX: number):number { return (cameraX + this.posX) + this.hitOfsX + this.hitOfsW; }
+    getHitTopC(cameraY: number)   :number { return (cameraY - this.posY) + this.hitOfsY; }
+    getHitBottomC(cameraY: number) :number { return (cameraY - this.posY) + this.hitOfsY + this.hitOfsH; }
 
     /**
      * 当たり判定をとる
@@ -63,6 +71,18 @@ export class Obj {
         && othr.getHitTop() < this.getHitBottom())
     }
 
+
+    /**
+     * 当たり判定をとる
+     * カメラ位置考慮版
+     */
+    hitC(othr:Obj, cameraX:number, cameraY:number) :boolean {
+        return (
+           this.getHitLeftC(cameraX) < othr.getHitRightC(cameraX)
+        && othr.getHitLeftC(cameraX) < this.getHitRightC(cameraX)
+        && this.getHitTopC(cameraY)  < othr.getHitBottomC(cameraY)
+        && othr.getHitTopC(cameraY) < this.getHitBottomC(cameraY))
+    }
 
     getStringHit() :string {
         return "hx="+(this.posX + this.hitOfsX)

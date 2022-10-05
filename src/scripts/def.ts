@@ -14,11 +14,16 @@ export class Def {
     static SNOW_MAX:number  = 30;
     static ENEMY_MAX_SPEED:number = 5;
     
-    static PLAY_INIT_POS_X:number = (this.DISP_W/2)+18;
-    static PLAY_INIT_POS_Y:number = this.DISP_W-64-12;
+    static PLAY_INIT_POS_X:number = 120+18;
+    // static PLAY_INIT_POS_Y:number = 240-64-12;
+    static PLAY_INIT_POS_Y:number = 64+12;
     
-    static PLAY_MAX_SP_Y:number = 20;
+    static PLAY_MAX_SP_Y:number = 15;
     static PLAY_MAX_DRAW_POS_Y:number = 125;
+
+    static CAMERA_DISTANCE_PLAYER_Y = 100;
+    static CAMERA_SP_X = 0;
+    static CAMERA_SP_Y = 10;
 
     static BACK_SCR_STOP:number = 8300;
     
@@ -50,7 +55,12 @@ export class Def {
     static HIT_ENE_POS_Y0:number = 16;
     static HIT_ENE_POS_X1:number = 29;
     static HIT_ENE_POS_Y1:number = 18;
-    
+   
+    static TITLE_FILTER_COLOR_R:number = 63;
+    static TITLE_FILTER_COLOR_G:number = 63;
+    static TITLE_FILTER_COLOR_B:number = 63;
+    static TITLE_FILTER_COLOR_A:number = 230;
+
     static T_TITLE_POS_X:number			= 20;
     static T_TITLE_POS_Y:number			= 20;
     static T_BAL_POS_X:number			= 140;
@@ -128,16 +138,16 @@ export class Def {
     static P5_KEY_A:number     = 65;
     static P5_KEY_G:number     = 71;
     static P5_KEY_H:number     = 72;
+    static P5_KEY_I:number     = 73;
     static P5_KEY_O:number     = 79;
     static P5_KEY_S:number     = 83;
     static P5_KEY_T:number     = 84;
     static P5_KEY_X:number     = 88;
     static P5_KEY_Z:number     = 90;
 
-    static TYPE_BG_FAR  = 0;
-    static TYPE_BG_MID  = 1;
-    static TYPE_BG_NEAR = 2;
-    static TYPE_BG_ALL  = 3;
+    static TYPE_BG_NEAR = 0;
+    static TYPE_BG_FAR  = 1;
+    static TYPE_BG_ALL  = 2;
 
     // enum みたいに定義
     static TYPE_ENEMY_BIRD   = 0;
@@ -146,6 +156,12 @@ export class Def {
     static TYPE_ENEMY_SHINOBI= 3;
     static TYPE_ENEMY_UFO    = 4;
     static TYPE_ENEMY_ALL    = 5;
+
+    static TYPE_BGOBJ_CLOUD = 0;
+    static TYPE_BGOBJ_STAR  = 1;
+    static TYPE_BGOBJ_RAIN  = 2;
+    static TYPE_BGOBJ_SNOW  = 3;
+    static TYPE_BGOBJ_ALL   = 4;
 
     static SPEED_SP0 = 0;
     static SPEED_SP1 = 1;

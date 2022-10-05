@@ -4,6 +4,7 @@ import {Obj} from "./obj";
 import {Def} from "./def";
 import {Img} from "./img";
 import {Util} from "./util";
+import {Camera} from "./camera";
 
 export class Player extends Obj{
 
@@ -26,9 +27,9 @@ export class Player extends Obj{
 
         this.high = 0;
 
-        this.hitOfsX = 2;
-        this.hitOfsY = 15;
-        this.hitOfsW = 28;
+        this.hitOfsX = 6;
+        this.hitOfsY = 20;
+        this.hitOfsW = 20;
         this.hitOfsH = 10;
     }
 
@@ -36,29 +37,28 @@ export class Player extends Obj{
     move(isKeyDown:boolean) {
 
         if( isKeyDown ) {
-            this.spY--;
+            this.spY --;
         } else {
+
+            this.spY++;
+
             // 最大速度でなければ速度をあげる
-            if(this.spY < Def.PLAY_MAX_SP_Y) {
-                this.spY++;
+            if(Def.PLAY_MAX_SP_Y < this.spY) {
+                this.spY = Def.PLAY_MAX_SP_Y
             }
         }
 
-        // 画面の上に見切れないように対応
-        // 一番上まで行ってたらそれ以上は移動させない
-        if( this.high < 100 ) {
-            this.posY += -4;
-            this.spY  = 8;
-        } else {
-            // 速度分移動させる
-            this.posY -= Util.mathFloor(this.spY/2);
-        }
+        // 速度分移動させる
+        this.posY += Util.mathFloor(this.spY/2);
 
     }
 
     // 上に上昇しすぎないように描画位置の調整
     // 合わせて、他のオブジェクトを調整する値を返す
     adjustHigh(MAX_POS_Y:number) :number {
+       return MAX_POS_Y;
+        /*
+         * この謎実装がいらなくなるはず
         let aH = MAX_POS_Y - this.posY;
         // Util.debug("aH="+aH);
 
@@ -72,11 +72,12 @@ export class Player extends Obj{
         }
 
         return aH;
+        */
     }
 
     // 下を超えてないか調べる
-    checkOverUnder(MAX_DISP_Y:number):boolean {
-        return (MAX_DISP_Y <= this.posY);
+    checkOverUnder(MIN_Y:number):boolean {
+        return (this.posY < MIN_Y);
     }
 
     // 描画する画像番号を設定する
@@ -106,22 +107,28 @@ export class Player extends Obj{
     draw(img:Img) {
         if (this.imgNo != Def.DATA_NONE) {
 
-            img.drawImage(this.imgNo, this.posX, this.posY);
+            img.drawImage(
+                this.imgNo,
+                Camera.getInLeft() + this.posX,
+                Camera.getInTop() - this.posY);
 
             if( Util.isDebugRectObj ) {
                 let imgBuf = img.getImage(this.imgNo);
-                img.p.stroke(0,127,255);
+                img.p.stroke(0, 127, 255);
                 img.p.noFill();
-                img.p.rect(this.posX, this.posY, imgBuf.width, imgBuf.height);
+                img.p.rect(
+                    Camera.getInLeft() + this.posX,
+                    Camera.getInTop() - this.posY,
+                    imgBuf.width, imgBuf.height);
                 img.p.noStroke();
             }
 
             if( Util.isDebugRectHit ) {
-                img.p.stroke(170,225,250);
+                img.p.stroke(255,0,0,255);
                 img.p.noFill();
                 img.p.rect(
-                    this.getHitLeft(),
-                    this.getHitTop(),
+                    this.getHitLeftC(Camera.getInLeft()),
+                    this.getHitTopC(Camera.getInTop()),
                     this.getHitRight() - this.getHitLeft(),
                     this.getHitBottom()- this.getHitTop()
                 );
@@ -132,20 +139,25 @@ export class Player extends Obj{
 
     // 敵に当たった後の表示
     drawCrush(img:Img) {
-        img.drawImage(Img.NINJA_CRASH, this.posX, this.posY);
+        img.drawImage(Img.NINJA_CRASH,
+            Camera.getInLeft() + this.posX,
+            Camera.getInTop() - this.posY);
     }
 
     // いて！みたいにちょっと上に飛ばす(びっくりした感じを出す)
     setGameover() {
-        this.spY *= 1.25;
+        // TODO:仮当
+        this.spY *= 2;
+        if(10 < this.spY) this.spY = 10;
     }
 
     // ゲームオーバー中の移動
-    moveInGameover(MAX_DISP_H:number) {
-        if( this.posY < MAX_DISP_H) {
+    moveInGameover(cBottom:number) {
+        if( cBottom < this.posY ) {
+            // TODO:仮当
             // 上に飛びすぎてたので重力を重くする
-            this.spY -= 2*2;
-            this.posY -= Util.mathFloor(this.spY/2);
+            this.spY  += -4;
+            this.posY += Util.mathFloor(this.spY/2);
         }
     }
 
@@ -154,5 +166,16 @@ export class Player extends Obj{
     getHitRight():number { return this.posX + this.hitOfsX + this.hitOfsW + (this.spX/2); }
     getHitTop()   :number { return this.posY + this.hitOfsY - (this.spY/2); }
     getHitBottom() :number { return this.posY + this.hitOfsY + this.hitOfsH + (this.spY/2); }
+
+    // get Hit Xxx with Camera
+    // カメラの基準値が左下（横軸は同じ）
+    getHitLeftC(cameraX: number) :number { return (cameraX + this.posX) + this.hitOfsX - (this.spX/2); }
+    getHitRightC(cameraX: number):number { return (cameraX + this.posX) + this.hitOfsX + this.hitOfsW + (this.spX/2); }
+    getHitTopC(cameraY: number)   :number { return (cameraY - this.posY) + this.hitOfsY - (this.spY/2); }
+    getHitBottomC(cameraY: number) :number { return (cameraY - this.posY) + this.hitOfsY + this.hitOfsH + (this.spY/2); }
+
+    // 真ん中の取得 当たり判定の真ん中がだいたい真ん中だろう
+    getCenterX() :number { return this.posX + this.hitOfsX + (this.hitOfsW/2)}
+    getCenterY() :number { return this.posY + this.hitOfsY + (this.hitOfsH/2)}
 
 }
