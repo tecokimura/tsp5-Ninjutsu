@@ -7,7 +7,6 @@ import { Camera } from "./camera";
 
 // 背景として動くcloud, star など
 export abstract class BgObj extends Obj {
-
     status: number = 0;
     type: number = 0;
     time: number = 0;
@@ -20,7 +19,6 @@ export abstract class BgObj extends Obj {
         this.init();
     }
 
-    // データをリセットしたい時などの初期化
     init() {
         super.init();
         this.status = Def.DATA_NONE;
@@ -29,9 +27,11 @@ export abstract class BgObj extends Obj {
         this.alpha = 255;
     }
 
-    remove() { this.init(); }
+    // 初期化をする事で削除になる
+    remove() {
+        this.init();
+    }
 
-    // 
     /**
      * 配列の空きを確認して敵を配置する
      * 戻り値（boolean）で配置できたかを返す
@@ -53,7 +53,7 @@ export abstract class BgObj extends Obj {
             Util.debug("set type=" + this.type);
 
             this.posY = cY + 40 + (Util.getRandInt() % 120); // Yが大きいほど高い（上）
-            this.posX = cX + Util.getRandInt() % Def.DISP_W;
+            this.posX = cX + (Util.getRandInt() % Def.DISP_W);
 
             this.status = Def.ST_PLAY;
 
@@ -61,7 +61,6 @@ export abstract class BgObj extends Obj {
             this.afterAdd();
 
             isAdd = this.isEnable();
-
         }
 
         return isAdd;
@@ -71,11 +70,9 @@ export abstract class BgObj extends Obj {
 
     // 敵としてゲームに存在しているか？
     isEnable(): boolean {
-        return (this.status != Def.DATA_NONE
-            && this.posY != Def.DATA_NONE);
+        return this.status != Def.DATA_NONE && this.posY != Def.DATA_NONE;
     }
 
-    // 移動処理
     move(): boolean {
         if (this.isEnable()) {
             this.posX += this.spX;
@@ -99,11 +96,10 @@ export abstract class BgObj extends Obj {
 
     // 移動後の処理
     // これいる？ UFOようだったかも
-    afterMove() {
-    }
+    afterMove() {}
 
     // 表示位置の調整と画面外にでた場合の削除処理
-    // 本当は位置調整しないで描画したいがとりあえず
+    // 本当は位置調整しないで描画できるのが理想
     adjustDispPos(pMoveY: number) {
         if (this.isEnable()) {
             this.posY += pMoveY;

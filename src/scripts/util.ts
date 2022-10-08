@@ -1,5 +1,6 @@
 import p5 from "p5";
 
+// VSCode で開いたら赤アンダーバーばっかりなので要修正
 export class Util {
     static p5 = null;
     static isDebug: boolean = false;
@@ -10,12 +11,14 @@ export class Util {
     static isDebugInfo: boolean = false;
     static isDebugEnemyType: boolean = false;
 
-    constructor() {
+    constructor() {}
+
+    static setP5(orgP5: p5) {
+        this.p5 = orgP5;
     }
-
-    static setP5(orgP5: p5) { this.p5 = orgP5; }
-    static isP5(): boolean { return (Util.p5 != null); }
-
+    static isP5(): boolean {
+        return Util.p5 != null;
+    }
 
     static textBold(str: string, x: number, y: number) {
         if (this.isP5()) {

@@ -1,11 +1,9 @@
-
 /**
  * ステージを管理するためのクラス
  * ステージ内での難しさや表現を設定する。
  * 配列でステージ数を保存しておくか生成するイメージ
  */
 export class Stage {
-
     num = 0;
     isClear = false;
     isScreenColorFilter = false;
@@ -33,7 +31,7 @@ export class Stage {
     constructor(n: number) {
         this.init();
         this.num = n;
-    };
+    }
 
     // データをクリアする
     init() {
@@ -44,7 +42,7 @@ export class Stage {
         this.colorFilterG = 0;
         this.colorFilterB = 0;
         this.colorFilterA = 0;
-    };
+    }
 
     // ステージ情報にタイプが存在するかチェックする
     isEnemyType(type: number) {
@@ -76,4 +74,3 @@ export class Stage {
         this.frame += num;
     }
 }
-

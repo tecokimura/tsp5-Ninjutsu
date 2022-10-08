@@ -1,4 +1,3 @@
-
 /**
  * シーンを管理するためのクラス
  */
@@ -21,29 +20,29 @@ export class Scene {
      */
     constructor() {
         this.clear(Scene.INIT);
-    };
+    }
 
     // データをクリアする
     clear(next: number) {
         this.history = [];
         this.frame = 0;
         this.present = next;
-    };
+    }
 
     // シーンを切り替える
     set(next: number) {
         // PUSH/POPできるのか調べる
-        // this.history = 
+        // this.history =
         this.present = next;
         this.frame = 0;
     }
 
     // 現在のSceneを調べる
     is(check: number) {
-        return (this.present == check);
+        return this.present == check;
     }
 
-    // 
+    //
     count(): number {
         return this.frame;
     }
@@ -52,4 +51,3 @@ export class Scene {
         this.frame += num;
     }
 }
-

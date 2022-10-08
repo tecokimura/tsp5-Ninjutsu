@@ -1,11 +1,10 @@
 import { Def } from "./def";
 import { Util } from "./util";
 
-// X は0から右に行くにつれて増える
-// Y は0が一番下で上に上がるにつれて増えるように調整している
+// X は左を0として右に行くにつれて数値が増える
+// Y は一番下を0として上に上がるにつれて増えるように調整している
 // TODO: あとで図解する
 export class Camera {
-
     static centerX = 0;
     static centerY = 0;
 
@@ -19,8 +18,7 @@ export class Camera {
     /**
      * @constructor
      */
-    constructor() {
-    };
+    constructor() {}
 
     // データをクリアする
     static init(cs: number, cy: number, w: number, h: number) {
@@ -30,7 +28,7 @@ export class Camera {
         Camera.spY = Def.CAMERA_SP_Y;
         Camera.width = w;
         Camera.height = h;
-    };
+    }
 
     // 中心位置を揃えるX,Y
     static move(targetCX: number, targetCY: number) {
@@ -42,7 +40,7 @@ export class Camera {
             if (Camera.spX < 0) {
                 Camera.centerX = targetCX;
             } else {
-                let move = targetCX - Camera.centerX
+                let move = targetCX - Camera.centerX;
                 if (move < 0) {
                     if (move < Camera.spX * -1) {
                         move = Camera.spX * -1;
@@ -62,7 +60,7 @@ export class Camera {
             if (Camera.spY < 0) {
                 Camera.centerY = targetCY;
             } else {
-                let move = targetCY - Camera.centerY
+                let move = targetCY - Camera.centerY;
                 if (move < 0) {
                     if (move < Camera.spY * -1) {
                         move = Camera.spY * -1;
@@ -73,7 +71,6 @@ export class Camera {
                     if (Camera.spY < move) {
                         move = Camera.spY;
                     }
-
                 }
 
                 Camera.centerY += move;
@@ -81,16 +78,34 @@ export class Camera {
         }
     }
 
-    static getWidth(): number { return Camera.width; }
-    static getWidthHalf(): number { return Util.mathFloor(Camera.width / 2); }
-    static getHeight(): number { return Camera.height; }
-    static getHeightHalf(): number { return Util.mathFloor(Camera.height / 2); }
+    static getWidth(): number {
+        return Camera.width;
+    }
+    static getWidthHalf(): number {
+        return Util.mathFloor(Camera.width / 2);
+    }
+    static getHeight(): number {
+        return Camera.height;
+    }
+    static getHeightHalf(): number {
+        return Util.mathFloor(Camera.height / 2);
+    }
 
     // 映る範囲の一番下
-    static getInLeft(): number { return Camera.centerX - Camera.getWidthHalf(); }
-    static getInTop(): number { return Camera.centerY + Camera.getHeightHalf(); }
-    static getInRight(): number { return Camera.getInLeft() + Camera.getWidth(); }
-    static getInBottom(): number { return Camera.getInTop() - Camera.getHeight(); }
+    static getInLeft(): number {
+        return Camera.centerX - Camera.getWidthHalf();
+    }
+    static getInTop(): number {
+        return Camera.centerY + Camera.getHeightHalf();
+    }
+    static getInRight(): number {
+        return Camera.getInLeft() + Camera.getWidth();
+    }
+    static getInBottom(): number {
+        return Camera.getInTop() - Camera.getHeight();
+    }
 
-    static getHigh(): number { return Camera.getInBottom(); }
+    static getHigh(): number {
+        return Camera.getInBottom();
+    }
 }

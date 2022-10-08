@@ -5,7 +5,6 @@ import { Def } from "./def";
 import { Util } from "./util";
 
 export class Rain extends BgObj {
-
     constructor() {
         super();
         this.init();
@@ -26,7 +25,9 @@ export class Rain extends BgObj {
             p5.rect(
                 cX + this.posX + this.width / 2,
                 cY - this.posY + this.height / 2,
-                this.width, this.height);
+                this.width,
+                this.height
+            );
         }
     }
 
@@ -36,8 +37,9 @@ export class Rain extends BgObj {
             p5.rect(
                 cX + this.posX + this.width / 2,
                 cY - this.posY + this.height / 2,
-                this.width, this.height);
+                this.width,
+                this.height
+            );
         }
     }
-
 }

@@ -5,7 +5,6 @@ import { Def } from "./def";
 import { Util } from "./util";
 
 export class Snow extends BgObj {
-
     constructor() {
         super();
         this.init();
@@ -21,13 +20,12 @@ export class Snow extends BgObj {
 
     afterAdd(): void {
         this.spX = 0;
-        this.spY = (Util.getRandInt() % 3 + 1) * -1;
+        this.spY = ((Util.getRandInt() % 3) + 1) * -1;
 
         // ランダムでサイズを決める
         this.width = Util.getRandInt(10) + 2;
         this.height = this.width;
         this.alpha = 160;
-
     }
 
     drawBack(p5: p5, cX: number, cY: number) {
@@ -38,7 +36,11 @@ export class Snow extends BgObj {
             p5.arc(
                 cX + this.posX + this.width / 2,
                 cY - (this.posY + this.height / 2),
-                this.width, this.height, 0, 360);
+                this.width,
+                this.height,
+                0,
+                360
+            );
         }
     }
 
@@ -49,7 +51,11 @@ export class Snow extends BgObj {
             p5.arc(
                 cX + (this.posX + this.width / 2),
                 cY - (this.posY + this.height / 2),
-                this.width, this.height, 0, 360);
+                this.width,
+                this.height,
+                0,
+                360
+            );
         }
     }
 }

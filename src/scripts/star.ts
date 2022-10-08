@@ -6,7 +6,6 @@ import { Util } from "./util";
 
 // いずれ弓矢とか雷のほうが面白いかも
 export class Star extends BgObj {
-
     constructor() {
         super();
         this.init();
@@ -20,7 +19,6 @@ export class Star extends BgObj {
         this.type = Def.TYPE_BG_NEAR;
     }
 
-
     drawBack(p5: p5, cX: number, cY: number) {
         if (this.isEnable() && this.type != Def.TYPE_BG_NEAR) {
             p5.angleMode(p5.DEGREES);
@@ -28,7 +26,11 @@ export class Star extends BgObj {
             p5.arc(
                 cX + this.posX + this.width / 2,
                 cY - this.posY - this.height / 2,
-                this.width, this.height, 0, 360);
+                this.width,
+                this.height,
+                0,
+                360
+            );
         }
     }
 
@@ -39,7 +41,11 @@ export class Star extends BgObj {
             p5.arc(
                 cX + this.posX + this.width / 2,
                 cY - this.posY - this.height / 2,
-                this.width, this.height, 0, 360);
+                this.width,
+                this.height,
+                0,
+                360
+            );
         }
     }
 }
