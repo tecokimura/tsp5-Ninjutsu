@@ -19,13 +19,13 @@ export class Stage {
 
     // 出す敵の種類
     // Def.TYPE_ENEMY_XXX
-    enemyTypes :number[] = [];
+    enemyTypes: number[] = [];
 
     // 画面に出す演出の種類
     // Def.TYPE_ENEMY_XXX
-    bgobjTypes :number[] = [];
+    bgobjTypes: number[] = [];
 
-    frame :number = 0;
+    frame: number = 0;
 
     /**
      * @constructor
@@ -47,9 +47,9 @@ export class Stage {
     };
 
     // ステージ情報にタイプが存在するかチェックする
-    isEnemyType(type :number) {
-        for(let i=0; i< this.enemyTypes.length; i++) {
-            if(this.enemyTypes[i] == type) {
+    isEnemyType(type: number) {
+        for (let i = 0; i < this.enemyTypes.length; i++) {
+            if (this.enemyTypes[i] == type) {
                 return true;
             }
         }
@@ -58,9 +58,9 @@ export class Stage {
     }
 
     // ステージ情報にタイプが存在するかチェックする
-    isBgobjType(type :number) {
-        for(let i=0; i< this.bgobjTypes.length; i++) {
-            if(this.bgobjTypes[i] == type) {
+    isBgobjType(type: number) {
+        for (let i = 0; i < this.bgobjTypes.length; i++) {
+            if (this.bgobjTypes[i] == type) {
                 return true;
             }
         }
@@ -68,12 +68,11 @@ export class Stage {
         return false;
     }
 
-    // 
-    count():number {
+    count(): number {
         return this.frame;
     }
 
-    counting(num:number=1) {
+    counting(num: number = 1) {
         this.frame += num;
     }
 }

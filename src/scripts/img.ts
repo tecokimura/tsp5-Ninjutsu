@@ -5,7 +5,7 @@ import p5 from "p5";
 import DIST_IMG_PNGS from "../images/*.png";
 
 export class Img {
-    p:p5 = null;
+    p:p5;
     images:p5.Image[] = new Array(Img.IMAGE_MAX);
 
     constructor(p5: p5) {
