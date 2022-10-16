@@ -1,3 +1,4 @@
+// TODO: テストを作る
 // 仮実装 先にPositionをやる
 export class Speed {
     x: number = 0;
