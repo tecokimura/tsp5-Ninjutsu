@@ -16,7 +16,6 @@ import { Snow } from "./Snow";
 import { Rain } from "./rain";
 import { Scene } from "./scene";
 import { Camera } from "./camera";
-import { Stage } from "./stage";
 
 // for Debug
 Util.isDebug = false;
