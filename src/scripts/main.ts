@@ -36,7 +36,6 @@ const sketch = (p: p5) => {
     let player: Player = new Player();
 
     let enemies: Array<Enemy> = new Array(Def.ENEMY_MAX);
-    let stages: Array<Stage> = new Array();
 
     let appearAirLevel = 0;
     let appearNextHigh = 0;
