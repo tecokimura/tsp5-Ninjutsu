@@ -1,3 +1,4 @@
+// TODO: テストを作る
 // Player.ts, Enemy.ts, BgObj.ts をみて必要そうなものを実装する
 export class Position {
     private x: number = 0;
