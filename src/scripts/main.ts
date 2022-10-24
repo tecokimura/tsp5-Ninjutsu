@@ -3,6 +3,7 @@
 // XX makeBg とかで一括登録できるようにする
 // XX 配列もひとつでいいかも
 // XX とりあえずからの関数だけ作っておく
+
 import p5 from "p5";
 
 import { Def } from "./def";
