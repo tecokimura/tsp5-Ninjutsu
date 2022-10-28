@@ -1,4 +1,6 @@
 // TODO: テストを作る
+import { Position } from "./Position"
+
 export class Collision {
   private x: number = 0
   private y: number = 0
@@ -40,6 +42,11 @@ export class Collision {
   }
   getHitBottom(): number {
     return this.y + this.height
+  }
+
+  resetPosition(pos: Position) {
+    this.x = pos.getX()
+    this.y = pos.getY()
   }
 
   resetX(x: number) {

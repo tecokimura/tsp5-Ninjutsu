@@ -4,7 +4,7 @@ export class Position {
   private x: number = 0
   private y: number = 0
 
-  constructor(x: number, y: number) {
+  constructor(x: number = 0, y: number = 0) {
     this.init(x, y)
   }
 
