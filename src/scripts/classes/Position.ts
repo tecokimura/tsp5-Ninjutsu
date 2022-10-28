@@ -4,21 +4,23 @@ export class Position {
     private x: number = 0;
     private y: number = 0;
 
-    constructor(x, y) {
+    constructor(x: number, y :number) {
         this.init(x, y);
     }
 
-    init(x, y) {
-        this.x = x;
-        this.y = y;
+    init(x :number, y :number) {
+        this.resetX(x);
+        this.resetY(y);
     }
 
-    // 意味がないから本を確認する
-    setX(x: number) {
+    getX() :number { return this.x; }
+    getY() :number { return this.y; }
+
+    resetX(x: number) {
         this.x = x;
     }
 
-    setY(y: number) {
+    resetY(y: number) {
         this.y = y;
     }
 
