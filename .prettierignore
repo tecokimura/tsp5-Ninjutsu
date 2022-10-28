@@ -1,0 +1,12 @@
+.next/
+node_module
+build/
+*.html
+*.md
+*.json
+.DS_Store
+.cache
+.parcel-cache
+dist
+node_modules
+.vscode

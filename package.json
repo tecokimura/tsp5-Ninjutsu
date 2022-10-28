@@ -1,14 +1,16 @@
 {
     "private": true,
     "scripts": {
+        "prettier": "prettier --write src/**/*.ts src/**/**/*.ts __tests__/**/*.ts",
         "help": "parcel help",
         "help-build": "parcel help build",
         "version": "parcel --version",
         "test": "jest",
         "dev": "parcel src/index.html",
-        "build": "parcel build --dist-dir dist src/index.html"
+        "build": "parcel build src/index.html"
     },
     "devDependencies": {
+        "prettier": "^2.3.0",
         "jest": "^29.2.1",
         "@types/jest": "^23.3.10",
         "ts-jest": "^29.0.3",
