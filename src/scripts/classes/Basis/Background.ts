@@ -1,10 +1,11 @@
-import { Position } from "../Position"
-import { Speed } from "../Speed"
-import { Size } from "../Size"
+import { Position } from "./Position"
+import { Speed } from "./Speed"
+import { Size } from "./Size"
+import { Status } from "./Status"
 
 // status, type, alpha time のクラス化検討する
-export abstract class Base {
-  protected status: number = 0
+export abstract class Background {
+  protected status: number = Status.NONE
   protected type: number = 0
   protected time: number = 0
   protected alpha: number = 255
