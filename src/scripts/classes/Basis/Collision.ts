@@ -8,14 +8,14 @@ export class Collision {
   private height: number = 0
 
   constructor(x: number, y: number, w: number, h: number) {
-    this.init(x, y, w, h)
+    this.reset(x, y, w, h)
   }
 
-  init(x: number, y: number, w: number, h: number) {
+  reset(x: number, y: number, w: number, h: number) {
     this.x = x
     this.y = y
-    this.width = w
-    this.height = h
+    this.resetWidth(w)
+    this.resetHeight(h)
   }
 
   getX(): number {

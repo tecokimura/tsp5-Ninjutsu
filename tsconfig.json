@@ -16,7 +16,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*", "__tests__/classes"],
+  "include": ["src/**/*"],
   "exclude": ["dist", "node_modules"],
   "compileOnSave": false
 }

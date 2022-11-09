@@ -3,12 +3,12 @@ export class Speed {
   y: number = 0
 
   constructor(x: number = 0, y: number = 0) {
-    this.init(x, y)
+    this.reset(x, y)
   }
 
-  init(x: number, y: number) {
-    this.x = x
-    this.y = y
+  reset(x: number = 0, y: number = 0) {
+    this.resetX(x)
+    this.resetY(y)
   }
 
   resetX(x: number) {

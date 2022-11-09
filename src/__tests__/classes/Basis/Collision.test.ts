@@ -1,6 +1,4 @@
-import { Collision } from "../../src/scripts/classes/Collision"
-import { Position } from "../../src/scripts/classes/Position"
-import { Speed } from "../../src/scripts/classes/Speed"
+import { Collision } from "../../../scripts/classes/Basis/Collision"
 
 test("Constructor", () => {
   const init_x: number = 10

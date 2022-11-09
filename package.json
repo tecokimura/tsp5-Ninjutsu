@@ -1,13 +1,16 @@
 {
     "private": true,
     "scripts": {
+        "test": "run-s test:*",
+        "test:prettier": "prettier --write src/**/*.ts src/**/**/*.ts",
+        "test:jest": "jest",
         "dev": "run-s dev:*",
-        "dev:prettier": "prettier --write src/**/*.ts src/**/**/*.ts __tests__/**/*.ts",
-        "dev:test": "jest",
+        "dev:prettier": "prettier --write src/**/*.ts src/**/**/*.ts",
+        "dev:jest": "jest",
         "dev:parcel": "parcel src/index.html",
         "build": "run-s build:*",
-        "build:prettier": "prettier --write src/**/*.ts src/**/**/*.ts __tests__/**/*.ts",
-        "build:test": "jest",
+        "build:prettier": "prettier --write src/**/*.ts src/**/**/*.ts",
+        "build:jest": "jest",
         "build:build": "parcel build src/index.html",
         "ver": "run-s ver:*",
         "ver:prettier": "prettier --version",
@@ -53,8 +56,8 @@
             "^.+\\.(ts|tsx)$": "ts-jest"
         },
         "testMatch": [
-            "**/__tests__/*.+(ts|tsx|js)",
-            "**/__tests__/**/*.+(ts|tsx|js)"
+            "**/__tests__/**/*.[jt]s?(x)",
+            "**/__tests__/**/**/*.[jt]s?(x)"
         ]
     }
 }

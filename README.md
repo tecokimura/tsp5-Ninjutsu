@@ -26,8 +26,8 @@ Have you nice day :)
 
 # Require (I'm writing...)
 [node.js](https://nodejs.org/)
-> node -v > v8.17.0  
-> npm -v > 6.9.0   
+> node -v > v16.14.0  
+> npm -v > 8.3.1   
   
 # Install
 ```
@@ -36,7 +36,14 @@ Have you nice day :)
 
 # Build & run
 ```
+// for run test
+npm run test  
+
+// for run develop
 npm run dev  
+
+// for build
+npm run build  
 ```
 
 # Let's play

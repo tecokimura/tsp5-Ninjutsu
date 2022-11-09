@@ -5,10 +5,10 @@ export class Position {
   private y: number = 0
 
   constructor(x: number = 0, y: number = 0) {
-    this.init(x, y)
+    this.reset(x, y)
   }
 
-  init(x: number, y: number) {
+  reset(x: number = 0, y: number = 0) {
     this.resetX(x)
     this.resetY(y)
   }
