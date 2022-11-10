@@ -13,6 +13,10 @@ export class Position {
         this.resetY(y)
     }
 
+    isEnable(): boolean {
+        return this.y == -99999
+    }
+
     getX(): number {
         return this.x
     }
