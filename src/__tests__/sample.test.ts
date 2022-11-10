@@ -1,7 +1,7 @@
 test("basic", () => {
-  expect("John").toBe("John")
+    expect("John").toBe("John")
 })
 
 test("Failed", () => {
-  expect("Hello ").toBe("Hello ")
+    expect("Hello ").toBe("Hello ")
 })
