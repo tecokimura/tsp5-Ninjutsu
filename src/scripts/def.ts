@@ -18,7 +18,7 @@ export class Def {
     static PLAY_INIT_POS_X: number = 120 + 18
     static PLAY_INIT_POS_Y: number = 64 + 12
 
-    static PLAY_MAX_SP_Y: number = 15
+    static PLAY_MAX_SP_Y: number = 20
     static PLAY_MAX_DRAW_POS_Y: number = 125
 
     static CAMERA_DISTANCE_PLAYER_Y = 100
@@ -34,12 +34,12 @@ export class Def {
     static ST_OVER = -1
     static ST_PLAY = 0
 
-    static AIR_LV_0: number = 2000
-    static AIR_LV_1: number = 4000
-    static AIR_LV_2: number = 6000
-    static AIR_LV_3: number = 8000
-    static AIR_LV_4: number = 10000
-    static AIR_LV_5: number = 12000
+    static AIR_LV_1: number = 500
+    static AIR_LV_2: number = 2500
+    static AIR_LV_3: number = 3500
+    static AIR_LV_4: number = 6000
+    static AIR_LV_5: number = 10000
+    static AIR_LV_6: number = 15000
 
     static FIRST_ENEMY_POS: number = 50
 

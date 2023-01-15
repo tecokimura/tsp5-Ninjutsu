@@ -36,13 +36,26 @@ Have you nice day :)
 
 # Build & run
 ```
-// for run test
+
+// Show version
+npm run ver  
+
+// prettier
+// コードの整形
+npm run pre
+
+// jest
+// テストの実行
+npm run jest
+
+// test
+// コード整形とテストの実行
 npm run test  
 
-// for run develop
+// run Develop
 npm run dev  
 
-// for build
+// run Release
 npm run build  
 ```
 

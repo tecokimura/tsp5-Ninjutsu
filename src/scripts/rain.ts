@@ -16,7 +16,7 @@ export class Rain extends BgObj {
         this.height = Util.getRandInt(40) + 10
 
         this.alpha = Util.getRandInt(100) + 30
-        this.spY -= (Util.getRandInt() % 20) + 10
+        this.spY -= (Util.getRandInt() % 20) + 15
     }
 
     drawBack(p5: p5, cX: number, cY: number) {

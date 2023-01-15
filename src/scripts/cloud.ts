@@ -12,8 +12,9 @@ export class Cloud extends BgObj {
 
     // 画面に追加して位置などの設定
     afterAdd(): void {
-        this.width = Util.getRandInt(Def.DISP_W / 2) + 20
-        this.height = 2 + Util.mathAbs((Util.getRandInt() % this.width) / 4)
+        this.width = Util.getRandInt(Def.DISP_W/5*4) + 20
+        // this.height = 2 + Util.mathAbs((Util.getRandInt() % (this.width/4)))
+        this.height = 2 + Util.mathAbs((Util.getRandInt() % (this.width/4)))
 
         switch (this.type) {
             case Def.TYPE_BG_NEAR:
@@ -25,8 +26,6 @@ export class Cloud extends BgObj {
                 }
                 this.spX = Util.mathAbs(this.width / 50)
 
-                this.width -= Util.getRandInt() % 24
-                this.height += Util.getRandInt() % 24
                 break
             case Def.TYPE_BG_FAR:
             default: // (0-255)
@@ -34,6 +33,9 @@ export class Cloud extends BgObj {
                 this.spX = Util.mathAbs(this.width / 85)
                 break
         }
+
+        if (Util.getRandInt() % 2 == 0) this.spX *= -1
+
     }
 
     drawBack(p5: p5, cX: number, cY: number) {

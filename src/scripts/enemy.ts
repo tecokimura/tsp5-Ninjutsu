@@ -44,7 +44,7 @@ export class Enemy extends Obj {
         let isAdd = false
 
         // Debugように色んな種類を出す
-        if (type == -1) {
+        if (type == -1 || type == Def.TYPE_ENEMY_ALL) {
             type = Util.getRandInt() % Def.TYPE_ENEMY_ALL
         }
 
@@ -107,8 +107,8 @@ export class Enemy extends Obj {
             // UFO っぽい動きをさせる
             if (this.type == Def.TYPE_ENEMY_UFO && this.time % 15 == 0) {
                 let n = Util.getRandInt()
-                if (n % 15 < 5) this.spX *= -1
-                if (n % 15 < 2) this.spY *= -1
+                if (n % 20 < 3) this.spX *= -1
+                if (n % 15 < 1) this.spY *= -1
             }
 
             if (this.posY < Camera.getInBottom()) {
@@ -163,7 +163,7 @@ export class Enemy extends Obj {
                 )
             }
 
-            if (Util.isDebugRectObj) {
+            if (Util.isDebugDispRectObj) {
                 let imgBuf = img.getImage(this.imgNo)
                 img.p.stroke(0, 255, 0, 100)
                 img.p.noFill()
@@ -176,7 +176,7 @@ export class Enemy extends Obj {
                 img.p.noStroke()
             }
 
-            if (Util.isDebugRectHit) {
+            if (Util.isDebugDispRectHit) {
                 img.p.stroke(255, 0, 0, 255)
                 img.p.noFill()
                 img.p.rect(
@@ -193,8 +193,8 @@ export class Enemy extends Obj {
     initTypeUfo() {
         this.type = Def.TYPE_ENEMY_UFO
         this.imgNo = Img.ENEMY_UFO
-        this.spX = (Util.getRandInt() % 10) + 1
-        this.spY = (Util.getRandInt() % 8) - 4
+        this.spX = (Util.getRandInt() % 10) + 5
+        this.spY = (Util.getRandInt() % 4) - 2
         this.animations = [
             Img.ENEMY_UFO,
             Img.ENEMY_UFO,

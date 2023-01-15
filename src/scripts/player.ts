@@ -94,7 +94,7 @@ export class Player extends Obj {
             } else {
                 // アニメーションでゆらゆらさせる
                 this.imgNo =
-                    Util.mathFloor((this.time % 20) / 5) %
+                    Util.mathFloor((this.time % 20) / 4) %
                     Def.NINJA_FLY_ANIM.length
                 this.imgNo = Def.NINJA_FLY_ANIM[this.imgNo]
             }
@@ -110,7 +110,7 @@ export class Player extends Obj {
                 Camera.getInTop() - this.posY
             )
 
-            if (Util.isDebugRectObj) {
+            if (Util.isDebugDispRectObj) {
                 let imgBuf = img.getImage(this.imgNo)
                 img.p.stroke(0, 127, 255)
                 img.p.noFill()
@@ -123,7 +123,7 @@ export class Player extends Obj {
                 img.p.noStroke()
             }
 
-            if (Util.isDebugRectHit) {
+            if (Util.isDebugDispRectHit) {
                 img.p.stroke(255, 0, 0, 255)
                 img.p.noFill()
                 img.p.rect(

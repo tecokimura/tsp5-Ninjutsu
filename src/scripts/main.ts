@@ -1,9 +1,3 @@
-// 実装がいまいちなのでリファクタする、クラスを整える
-// XX Objの生成、管理の仕方を見直す
-// XX makeBg とかで一括登録できるようにする
-// XX 配列もひとつでいいかも
-// XX とりあえずからの関数だけ作っておく
-
 import p5 from "p5"
 
 import { Def } from "./def"
@@ -13,19 +7,18 @@ import { Player } from "./player"
 import { Enemy } from "./enemy"
 import { Cloud } from "./cloud"
 import { Star } from "./star"
-import { Snow } from "./Snow"
+import { Snow } from "./snow"
 import { Rain } from "./rain"
 import { Scene } from "./scene"
 import { Camera } from "./camera"
 
 // for Debug
-Util.isDebug = false
+Util.isDebug = true
 Util.isDebugLog = true
-Util.isDebugInfo = false
-Util.isDebugHit = false
-Util.isDebugRectObj = true
-Util.isDebugRectHit = true
-Util.isDebugEnemyType = false
+Util.isDebugDispInfo = false
+Util.isDebugNotHit = true
+Util.isDebugDispRectObj = false
+Util.isDebugDispRectHit = false
 
 let scene: Scene = new Scene()
 let isDraw = false
@@ -156,12 +149,6 @@ const sketch = (p: p5) => {
                 p.push()
                 drawBg()
 
-                img.drawImage(
-                    Img.NINJA_STAND,
-                    Def.R_NINJA_POS_X,
-                    Def.R_NINJA_POS_Y
-                )
-
                 drawFg(
                     Def.TITLE_FILTER_COLOR_R,
                     Def.TITLE_FILTER_COLOR_G,
@@ -261,7 +248,7 @@ const sketch = (p: p5) => {
             }
 
             // for DEBUG
-            if (Util.isDebugInfo) {
+            if (Util.isDebugDispInfo) {
                 drawDebugInfo(p)
             }
         } // draw()
@@ -270,7 +257,7 @@ const sketch = (p: p5) => {
     // Debug画面表示
     // Player情報などの表示
     function drawDebugInfo(p: p5) {
-        if (Util.isDebugInfo) {
+        if (Util.isDebugDispInfo) {
             let x = 5
             let y = 5
             let addy = 12
@@ -363,12 +350,66 @@ const sketch = (p: p5) => {
         }, time)
     }
 
-    function addEnemy() {
-        if (scene.count() % 2 == 0) {
-            // 星出現
-            for (let i = 1000; i < stars.length; i++) {
-                // if( Def.AIR_LV_1 <= appearAirLevel)
-                {
+    // TODO:調整
+    function addEnemy(playerHigh: number = 0) {
+            // 雲出現
+        if (Def.AIR_LV_1 <= playerHigh && playerHigh <= Def.AIR_LV_3) {
+            if (scene.count() % 10 == 0) {
+                for (let i = 0; i < clouds.length; i++) {
+                    if (
+                        clouds[i].add(
+                            Def.TYPE_BG_ALL,
+                            Camera.getInLeft(),
+                            Camera.getInTop()
+                        )
+                    ) {
+                        Util.debug("added cloud")
+                        break
+                    }
+                }
+            }
+        }
+
+        if (scene.count() % 3 == 0) {
+            // 雨
+            if (Def.AIR_LV_2 <= playerHigh && playerHigh <= Def.AIR_LV_4) {
+                for (let i = 0; i < rains.length; i++) {
+                    if (
+                        rains[i].add(
+                            Def.TYPE_BG_ALL,
+                            Camera.getInLeft(),
+                            Camera.getInTop()
+                        )
+                    ) {
+                        Util.debug("added rain")
+                        break
+                    }
+                }
+            }
+        }
+
+        if (scene.count() % 5 == 0) {
+            // 雪
+            if (Def.AIR_LV_4 <= playerHigh && playerHigh <= Def.AIR_LV_5) {
+                for (let i = 0; i < snows.length; i++) {
+                    if (
+                        snows[i].add(
+                            Def.TYPE_BG_ALL,
+                            Camera.getInLeft(),
+                            Camera.getInTop()
+                        )
+                    ) {
+                        Util.debug("added snow")
+                        break
+                    }
+                }
+            }
+        }
+
+        if (scene.count() % 10 == 0) {
+            if (Def.AIR_LV_5 <= playerHigh && playerHigh <= Def.AIR_LV_6) {
+                // 星出現
+                for (let i = 0; i < stars.length; i++) {
                     if (
                         stars[i].add(
                             Def.TYPE_BG_ALL,
@@ -381,67 +422,58 @@ const sketch = (p: p5) => {
                     }
                 }
             }
-
-            // 雲出現
-            for (let i = 1000; i < clouds.length; i++) {
-                if (
-                    clouds[i].add(
-                        Def.TYPE_BG_ALL,
-                        Camera.getInLeft(),
-                        Camera.getInTop()
-                    )
-                ) {
-                    // Util.debug("added cloud");
-                    break
-                }
-            }
-
-            // 雨
-            for (let i = 1000; i < rains.length; i++) {
-                if (
-                    rains[i].add(
-                        Def.TYPE_BG_ALL,
-                        Camera.getInLeft(),
-                        Camera.getInTop()
-                    )
-                ) {
-                    Util.debug("added rain")
-                    break
-                }
-            }
-
-            // ゆき
-            for (let i = 1000; i < snows.length; i++) {
-                if (
-                    snows[i].add(
-                        Def.TYPE_BG_ALL,
-                        Camera.getInLeft(),
-                        Camera.getInTop()
-                    )
-                ) {
-                    Util.debug("added snow")
-                    break
-                }
-            }
         }
 
-        // とりあえず500 だけど定数に置き換える
-        if (500 < Camera.getHigh() && appearNextHigh < Camera.getHigh()) {
+
+        // 次に的を出すタイミング
+        let addNextHigh = 80;
+
+        if (
+            Def.AIR_LV_1 < Camera.getHigh() &&
+            appearNextHigh < Camera.getHigh()
+        ) {
             for (let i = 0; i < enemies.length; i++) {
                 if (enemies[i].isEnable() == false) {
+                    let addEnemyType = 0;
+                    if(Def.AIR_LV_1 < playerHigh) {
+                        if(playerHigh < Def.AIR_LV_2) {
+                            addEnemyType = Def.TYPE_ENEMY_BIRD
+                            addNextHigh = 80;
+                        } else if(playerHigh < Def.AIR_LV_3) {
+                            addEnemyType = Def.TYPE_ENEMY_SHURI
+                            addNextHigh = 80;
+                        } else if(playerHigh < Def.AIR_LV_4) {
+                            addEnemyType = Def.TYPE_ENEMY_DRONE
+                            addNextHigh = 75;
+                        } else if(playerHigh < Def.AIR_LV_5) {
+                            addEnemyType = Def.TYPE_ENEMY_SHINOBI
+                            addNextHigh = 65;
+                        } else if(playerHigh < Def.AIR_LV_6) {
+                            addEnemyType = Def.TYPE_ENEMY_UFO
+                            addNextHigh = 60;
+                        } else {
+                            addEnemyType = Def.TYPE_ENEMY_ALL
+                            addNextHigh = 40;
+                        }
+    
+                    }
+
                     if (
                         enemies[i].add(
-                            -1,
+                            addEnemyType,
                             Camera.getInLeft(),
-                            Camera.getInTop() - 60
+                            Camera.getInTop() - 80
                         )
                     ) {
                         Util.debug("add enemy")
-                        appearNextHigh = Camera.getHigh() + 50
                         break
                     }
                 }
             }
+
+            // 敵がでない時は出すタイミングを少し上に更新
+            appearNextHigh = Camera.getHigh() + addNextHigh
+
         }
     }
 
@@ -519,7 +551,7 @@ const sketch = (p: p5) => {
             Util.debug("Scene.TITLE")
             // キーが押されているかを調べてOn/Offを反転させる
             if (isPushKey(Def.P5_KEY_I)) {
-                Util.isDebugInfo = !Util.isDebugInfo
+                Util.isDebugDispInfo = !Util.isDebugDispInfo
             } else if (isPushKey(Def.P5_KEY_ENTER)) {
                 scene.set(Scene.READY)
             }
@@ -527,6 +559,7 @@ const sketch = (p: p5) => {
             // for Test
             if (scene.count() > 40) {
                 scene.set(Scene.PLAY)
+
             }
         } else if (scene.is(Scene.PLAY)) {
             // 雲の移動
@@ -552,7 +585,7 @@ const sketch = (p: p5) => {
 
             // for Debug
             if (isPushKey(Def.P5_KEY_I)) {
-                Util.isDebugInfo = !Util.isDebugInfo
+                Util.isDebugDispInfo = !Util.isDebugDispInfo
             }
 
             // キーを押しているかどうか
@@ -567,7 +600,7 @@ const sketch = (p: p5) => {
             player.updateImgNo(isPushKey(), isPushKeyNow(), isReleaseKeyNow())
 
             // 当たり判定
-            if (Util.isDebugHit == false) {
+            if (Util.isDebugNotHit == false) {
                 for (let i = 0; i < enemies.length; i++) {
                     if (
                         enemies[i].hitC(
@@ -584,7 +617,7 @@ const sketch = (p: p5) => {
             }
 
             // 敵出現
-            addEnemy()
+            addEnemy(player.posY)
 
             // 画面下に切れた場合もゲームオーバー
             if (player.checkOverUnder(Camera.getInBottom())) {
@@ -660,7 +693,7 @@ const sketch = (p: p5) => {
 
         // TODO: あとでカメラ位置に変更する(割り算適当)
 
-        let rgbi = Camera.getHigh() / 120
+        let rgbi = Camera.getHigh() / 240
         if (Def.BG_COLOR_RGBs.length - 12 < rgbi) {
             rgbi = Def.BG_COLOR_RGBs.length - 12
         }
