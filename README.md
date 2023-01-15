@@ -26,8 +26,8 @@ Have you nice day :)
 
 # Require (I'm writing...)
 [node.js](https://nodejs.org/)
-> node -v > v8.17.0  
-> npm -v > 6.9.0   
+> node -v > v16.14.0  
+> npm -v > 8.3.1   
   
 # Install
 ```
@@ -36,7 +36,27 @@ Have you nice day :)
 
 # Build & run
 ```
+
+// Show version
+npm run ver  
+
+// prettier
+// コードの整形
+npm run pre
+
+// jest
+// テストの実行
+npm run jest
+
+// test
+// コード整形とテストの実行
+npm run test  
+
+// run Develop
 npm run dev  
+
+// run Release
+npm run build  
 ```
 
 # Let's play
